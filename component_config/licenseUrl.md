@@ -1,0 +1,1 @@
+https://github.com/keboola/component-meta/blob/master/LICENSE.md
