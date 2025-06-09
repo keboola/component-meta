@@ -1,1 +1,0 @@
-Component Meta long description

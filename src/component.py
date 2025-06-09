@@ -1,87 +1,152 @@
-"""
-Template Component main class.
-
-"""
-import csv
-from datetime import datetime
 import logging
+from dataclasses import dataclass
+from typing import Any
 
-from keboola.component.base import ComponentBase
+from keboola.component.base import ComponentBase, sync_action
+from keboola.component.dao import TableDefinition
 from keboola.component.exceptions import UserException
+from keboola.csvwriter import ElasticDictWriter
 
+from client import FacebookClient
 from configuration import Configuration
+
+PREFERRED_COLUMNS_ORDER = [
+    "id",
+    "ex_account_id",
+    "fb_graph_node",
+    "parent_id",
+    "name",
+    "key1",
+    "key2",
+    "ads_action_name",
+    "action_type",
+    "action_reaction",
+    "value",
+    "period",
+    "end_time",
+    "title",
+]
+
+PRIMARY_KEY_CANDIDATES = [
+    "id",
+    "parent_id",
+    "key1",
+    "key2",
+    "end_time",
+    "account_id",
+    "campaign_id",
+    "date_start",
+    "date_stop",
+    "ads_action_name",
+    "action_type",
+    "action_reaction",
+]
+
+
+@dataclass
+class WriterCacheRecord:
+    writer: ElasticDictWriter
+    table_definition: TableDefinition
 
 
 class Component(ComponentBase):
-    """
-        Extends base class for general Python components. Initializes the CommonInterface
-        and performs configuration validation.
-
-        For easier debugging the data folder is picked up by default from `../data` path,
-        relative to working directory.
-
-        If `debug` parameter is present in the `config.json`, the default logger is set to verbose DEBUG mode.
-    """
-
     def __init__(self):
         super().__init__()
+        self._writer_cache: dict[str, WriterCacheRecord] = {}
+        self.client: FacebookClient = FacebookClient(
+            self.configuration.oauth_credentials, self.configuration.parameters.get("api_version", "v19.0")
+        )
 
-    def run(self):
-        """
-        Main execution code
-        """
+    def run(self) -> None:
+        config = Configuration(**self.configuration.parameters)
+        self._write_accounts_from_config(config)
+        self._process_queries(config)
+        self._finalize_tables()
 
-        # ####### EXAMPLE TO REMOVE
-        # check for missing configuration parameters
-        params = Configuration(**self.configuration.parameters)
+    def _write_accounts_from_config(self, config: Configuration) -> None:
+        logging.info("Writing accounts table from configuration")
+        accounts_data = [
+            {
+                "id": acc.id,
+                "name": acc.name,
+                "category": acc.category,
+                "category_list": acc.category_list,
+                "tasks": acc.tasks,
+                "fb_page_id": acc.fb_page_id,
+            }
+            for acc in config.accounts.values()
+        ]
+        if accounts_data:
+            self._write_rows("accounts", accounts_data, ["id"], False)
 
-        # Access parameters in configuration
-        if params.print_hello:
-            logging.info("Hello World")
+    def _process_queries(self, config: Configuration) -> None:
+        queries_to_process = [q for q in config.queries if not q.disabled]
 
-        # get input table definitions
-        input_tables = self.get_input_tables_definitions()
-        for table in input_tables:
-            logging.info(f'Received input table: {table.name} with path: {table.full_path}')
+        if not queries_to_process:
+            return
 
-        if len(input_tables) == 0:
-            raise UserException("No input tables found")
+        logging.info(f"Processing {len(queries_to_process)} queries.")
 
-        # get last state data/in/state.json from previous run
-        previous_state = self.get_state_file()
-        logging.info(previous_state.get('some_parameter'))
+        for parsed_data in self.client.process_queries(list(config.accounts.values()), queries_to_process):
+            for table_name, rows_list in parsed_data.items():
+                if not rows_list:
+                    continue
+                primary_key = self._get_primary_key(rows_list[0])
+                self._write_rows(table_name, rows_list, primary_key, True)
+                logging.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
-        # Create output table (Table definition - just metadata)
-        table = self.create_out_table_definition('output.csv', incremental=True, primary_key=['timestamp'])
+    def _finalize_tables(self) -> None:
+        for table_name, cache_record in self._writer_cache.items():
+            cache_record.writer.writeheader()
+            cache_record.writer.close()
+            self.write_manifest(cache_record.table_definition)
 
-        # get file path of the table (data/out/tables/Features.csv)
-        out_table_path = table.full_path
-        logging.info(out_table_path)
+    def _write_rows(self, table_name: str, rows: list[dict], primary_key: list[str], incremental: bool) -> None:
+        if not rows:
+            return
 
-        # Add timestamp column and save into out_table_path
-        input_table = input_tables[0]
-        with (open(input_table.full_path, 'r') as inp_file,
-              open(table.full_path, mode='wt', encoding='utf-8', newline='') as out_file):
-            reader = csv.DictReader(inp_file)
+        if table_name not in self._writer_cache:
+            self._create_cached_writer(table_name, rows, primary_key, incremental)
 
-            columns = list(reader.fieldnames)
-            # append timestamp
-            columns.append('timestamp')
+        writer = self._writer_cache[table_name].writer
+        for row in rows:
+            writer.writerow(row)
 
-            # write result with column added
-            writer = csv.DictWriter(out_file, fieldnames=columns)
-            writer.writeheader()
-            for in_row in reader:
-                in_row['timestamp'] = datetime.now().isoformat()
-                writer.writerow(in_row)
+    def _create_cached_writer(
+        self, table_name: str, rows: list[dict], primary_key: list[str], incremental: bool
+    ) -> None:
+        all_columns = rows[0].keys()
+        ordered_columns = [col for col in PREFERRED_COLUMNS_ORDER if col in all_columns] + sorted(
+            all_columns - set(PREFERRED_COLUMNS_ORDER)
+        )
 
-        # Save table manifest (output.csv.manifest) from the Table definition
-        self.write_manifest(table)
+        table_def = self.create_out_table_definition(
+            f"{table_name}.csv",
+            primary_key=primary_key,
+            incremental=incremental,
+        )
 
-        # Write new state - will be available next run
-        self.write_state_file({"some_state_parameter": "value"})
+        writer = ElasticDictWriter(table_def.full_path, ordered_columns)
+        self._writer_cache[table_name] = WriterCacheRecord(writer=writer, table_definition=table_def)
 
-        # ####### EXAMPLE TO REMOVE END
+    def _get_primary_key(self, parsed_data: dict[str, Any]) -> list[str]:
+        if not parsed_data:
+            return []
+        available_columns = set(parsed_data.keys())
+        primary_key = [col for col in PRIMARY_KEY_CANDIDATES if col in available_columns]
+        return primary_key or (["id"] if "id" in available_columns else [])
+
+    @sync_action("accounts")
+    def run_accounts_action(self) -> list[dict[str, Any]]:
+        return self.client.get_accounts("me/accounts", "id,business_name,name,category")
+
+    @sync_action("adaccounts")
+    def run_ad_accounts_action(self) -> list[dict[str, Any]]:
+        return self.client.get_accounts("me/adaccounts", "account_id,id,business_name,name,currency")
+
+    @sync_action("igaccounts")
+    def run_ig_accounts_action(self) -> list[dict[str, Any]]:
+        return self.client.get_accounts("me/accounts", "instagram_business_account,name,category")
 
 
 """
