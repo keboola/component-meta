@@ -3,3 +3,6 @@ keboola.csvwriter
 git+https://github.com/keboola/python-http-client.git@feature/async-retry
 pydantic
 duckdb
+mock==5.1.0
+freezegun==1.4.0
+aiolimiter==1.1.0
