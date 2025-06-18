@@ -175,7 +175,6 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
-
             response = self.client.get(endpoint_path=path, params=params)
 
             return response if response else {"data": []}
