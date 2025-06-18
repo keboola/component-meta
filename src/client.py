@@ -291,7 +291,7 @@ class FacebookClient:
                         if response:
                             return response
 
-                except Exception as page_token_error:
+                except Exception:
                     logging.warning(f"Page token approach also failed for {account_id}")
 
                 # If both approaches fail, raise the original error
