@@ -175,13 +175,8 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
-            # Handle async requests in pagination
-            if self.query_type == "async-insights-query":
-                # For async requests in pagination, treat as regular GET
-                response = self.client.get(endpoint_path=path, params=params)
-            else:
-                # Make the API request
-                response = self.client.get(endpoint_path=path, params=params)
+
+            response = self.client.get(endpoint_path=path, params=params)
 
             return response if response else {"data": []}
 
