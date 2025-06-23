@@ -65,8 +65,11 @@ class Component(ComponentBase):
         logging.info("Writing accounts table from configuration")
         accounts_data = [
             {
+                "account_id": acc.account_id,
                 "id": acc.id,
                 "name": acc.name,
+                "business_name": acc.business_name,
+                "currency": acc.currency,
                 "category": acc.category,
                 "category_list": acc.category_list,
                 "tasks": acc.tasks,

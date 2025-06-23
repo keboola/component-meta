@@ -25,6 +25,9 @@ class QueryRow(BaseModel):
 class Account(BaseModel):
     id: str
     name: str
+    account_id: Optional[str] = None
+    business_name: Optional[str] = None
+    currency: Optional[str] = None
     category: Optional[str] = None
     category_list: Optional[list[dict[str, Any]]] = None
     tasks: Optional[list[str]] = None
