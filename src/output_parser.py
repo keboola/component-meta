@@ -201,11 +201,11 @@ class OutputParser:
         return has_additional_data
 
     def _process_action_stats(
-            self,
-            action_stats: dict[str, Any],
-            original_row: dict[str, Any],
-            fb_graph_node: str,
-            result: dict[str, list[dict[str, Any]]],
+        self,
+        action_stats: dict[str, Any],
+        original_row: dict[str, Any],
+        fb_graph_node: str,
+        result: dict[str, list[dict[str, Any]]],
     ) -> None:
         """Process action stats as separate tables with _insights suffix or flatten for breakdowns."""
         is_action_breakdown = hasattr(self.row_config.query, "parameters") and any(
@@ -218,8 +218,7 @@ class OutputParser:
                 continue
 
             table_name = (
-                self._get_table_name("") if is_action_breakdown
-                else self._get_action_stats_table_name(stats_field_name)
+                self._get_table_name("") if is_action_breakdown else self._get_action_stats_table_name(stats_field_name)
             )
 
             base_row = self._create_base_row(fb_graph_node, self.page_id)
@@ -230,15 +229,11 @@ class OutputParser:
                     continue
 
                 action_row = base_row.copy()
-                self._populate_action_row(
-                    action_row, action, stats_field_name, original_row, is_action_breakdown
-                )
+                self._populate_action_row(action_row, action, stats_field_name, original_row, is_action_breakdown)
                 self._add_row(result, table_name, action_row)
 
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
-        fields = [
-            "account_id", "ad_id", "adset_id", "campaign_id", "date_start", "date_stop"
-        ]
+        fields = ["account_id", "ad_id", "adset_id", "campaign_id", "date_start", "date_stop"]
         if extended:
             fields += ["account_name", "campaign_name"]
 
@@ -247,23 +242,25 @@ class OutputParser:
                 base_row[field] = original_row[field]
 
     def _populate_action_row(
-            self,
-            action_row: dict,
-            action: dict,
-            stats_field_name: str,
-            original_row: dict,
-            is_action_breakdown: bool,
+        self,
+        action_row: dict,
+        action: dict,
+        stats_field_name: str,
+        original_row: dict,
+        is_action_breakdown: bool,
     ) -> None:
         raw_action_type = action.get("action_type", "")
         action_type = raw_action_type.split(".")[-1] if "." in raw_action_type else raw_action_type
         if action_type == "post_save":
             action_type = "post_reaction"
 
-        action_row.update({
-            "ads_action_name": stats_field_name,
-            "action_type": action_type,
-            "value": action.get("value", ""),
-        })
+        action_row.update(
+            {
+                "ads_action_name": stats_field_name,
+                "action_type": action_type,
+                "value": action.get("value", ""),
+            }
+        )
 
         if is_action_breakdown and "action_breakdowns=action_reaction" in str(self.row_config.query.parameters):
             action_reaction = action.get("action_reaction", original_row.get("action_reaction", ""))

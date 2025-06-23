@@ -53,14 +53,12 @@ class Component(ComponentBase):
     def __init__(self):
         super().__init__()
         self._writer_cache: dict[str, WriterCacheRecord] = {}
-        self.client: FacebookClient = FacebookClient(
-            self.configuration.oauth_credentials, self.configuration.parameters.get("api_version", "v19.0")
-        )
+        self.config = Configuration(**self.configuration.parameters)
+        self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
 
     def run(self) -> None:
-        config = Configuration(**self.configuration.parameters)
-        self._write_accounts_from_config(config)
-        self._process_queries(config)
+        self._write_accounts_from_config(self.config)
+        self._process_queries(self.config)
         self._finalize_tables()
 
     def _write_accounts_from_config(self, config: Configuration) -> None:
@@ -116,9 +114,11 @@ class Component(ComponentBase):
         self, table_name: str, rows: list[dict], primary_key: list[str], incremental: bool
     ) -> None:
         all_columns = rows[0].keys()
-        ordered_columns = [col for col in PREFERRED_COLUMNS_ORDER if col in all_columns] + sorted(
-            all_columns - set(PREFERRED_COLUMNS_ORDER)
-        )
+
+        # reorder columns based on the logic of clojure component
+        ordered_columns = [col for col in PREFERRED_COLUMNS_ORDER if col in all_columns]
+        remaining_columns = sorted(all_columns - set(PREFERRED_COLUMNS_ORDER))
+        all_columns = ordered_columns + remaining_columns
 
         table_def = self.create_out_table_definition(
             f"{table_name}.csv",
@@ -126,7 +126,7 @@ class Component(ComponentBase):
             incremental=incremental,
         )
 
-        writer = ElasticDictWriter(table_def.full_path, ordered_columns)
+        writer = ElasticDictWriter(table_def.full_path, all_columns)
         self._writer_cache[table_name] = WriterCacheRecord(writer=writer, table_definition=table_def)
 
     def _get_primary_key(self, parsed_data: dict[str, Any]) -> list[str]:
