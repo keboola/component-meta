@@ -333,14 +333,19 @@ class FacebookClient:
         page_tokens = {}
 
         for account in accounts:
-            page_id = account.fb_page_id or account.id
+            try:
+                page_id = account.fb_page_id or account.id
 
-            response = self.client.get(
-                endpoint_path=f"/{self.api_version}/{page_id}",
-                params=self._with_token({"fields": "access_token"}),
-            )
+                response = self.client.get(
+                    endpoint_path=f"/{self.api_version}/{page_id}",
+                    params=self._with_token({"fields": "access_token"}),
+                )
 
-            page_tokens[account.id] = response["access_token"]
+                page_tokens[account.id] = response["access_token"]
+            except HTTPError as e:
+                error_text = str(e.response.text) if hasattr(e, "response") else str(e)
+                if "Page Access Token" in error_text:
+                    logging.warning(f"Unable to get page token for accountId: {account.id}, error: {error_text}")
 
         return page_tokens
 
