@@ -5,6 +5,7 @@ from typing import Any, Generator, Optional
 from keboola.component.exceptions import UserException
 from keboola.component.dao import OauthCredentials
 from keboola.http_client import HttpClient
+from requests import HTTPError
 
 from output_parser import OutputParser
 from page_loader import PageLoader
@@ -156,28 +157,44 @@ class FacebookClient:
             }
 
             # Use the main user access token for this kind of batch request
-            response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
+            try:
+                response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
 
-            if not response or not isinstance(response, dict):
-                logging.warning("Empty or invalid response for batch ID fetch.")
+                if not response or not isinstance(response, dict):
+                    logging.warning("Empty or invalid response for batch ID fetch.")
+                    return
+
+                fb_graph_node = self._get_fb_graph_node(False, row_config)
+
+                for item_id, item_data in response.items():
+                    if isinstance(item_data, dict) and "error" in item_data:
+                        logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
+                        continue
+
+                    # The parser needs a page_loader for pagination, which is not supported here.
+                    # It also needs page_id for ex_account_id.
+                    output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+
+                    # The parser expects a `data` list or a single object. `item_data` is a single object.
+                    parsed_result = output_parser.parse_data(
+                        response=item_data, fb_node=fb_graph_node, parent_id=item_id
+                    )
+                    if parsed_result:
+                        yield parsed_result
                 return
 
-            fb_graph_node = self._get_fb_graph_node(False, row_config)
+            except HTTPError as e:
+                error_text = str(e.response.text) if hasattr(e, "response") else str(e)
+                if "Page Access Token" in error_text:
+                    logging.info("Page access token is required, falling back to individual requests with page tokens")
 
-            for item_id, item_data in response.items():
-                if isinstance(item_data, dict) and "error" in item_data:
-                    logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
-                    continue
+                    accounts = [
+                        type("Account", (), {"id": account_id, "fb_page_id": None})() for account_id in account_ids
+                    ]
 
-                # The parser needs a page_loader for pagination, which is not supported here.
-                # It also needs page_id for ex_account_id.
-                output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
-
-                # The parser expects a `data` list or a single object. `item_data` is a single object.
-                parsed_result = output_parser.parse_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
-                if parsed_result:
-                    yield parsed_result
-            return
+                else:
+                    logging.error(f"Batch request failed with non-token error: {error_text}")
+                    return
 
         if ids_str := row_config.query.ids:
             selected_ids = {id for id in ids_str.split(",")}
