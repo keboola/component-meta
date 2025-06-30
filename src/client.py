@@ -137,65 +137,78 @@ class FacebookClient:
             except Exception as e:
                 logging.error(f"Failed to process async job result for report_id: {report_id}: {e}")
 
+    def _handle_batch_request(self, account_ids: list[str], row_config) -> Generator[dict, None, None]:
+        """
+        Executes and parses a batch request for a list of account IDs.
+        Yields parsed data for each item in the response.
+        Raises HTTPError on failure so the caller can handle fallbacks.
+        """
+        logging.info(f"Batch fetching object details for IDs: {','.join(account_ids)}")
+        params = {"ids": ",".join(account_ids), "fields": row_config.query.fields}
+
+        # Raises HTTPError on failure
+        response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
+
+        if not response or not isinstance(response, dict):
+            logging.warning("Empty or invalid response for batch ID fetch.")
+            return
+
+        fb_graph_node = self._get_fb_graph_node(False, row_config)
+        for item_id, item_data in response.items():
+            if isinstance(item_data, dict) and "error" in item_data:
+                logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
+                continue
+
+            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+            parsed_result = output_parser.parse_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
+            if parsed_result:
+                yield parsed_result
+
     def _process_single_sync_query(self, accounts: list, row_config) -> Generator[dict, None, None]:
-        # Handle empty path query for fetching multiple objects by ID
-        if not row_config.query.path:
-            if row_config.query.ids:
-                account_ids = [id.strip() for id in row_config.query.ids.split(",")]
-            else:
-                # Automatic ID Population
-                account_ids = [acc.id for acc in accounts]
+        # Determine if a query is eligible for batch processing.
+        is_batchable_query = not row_config.query.path and getattr(row_config, "type", "") != "nested-query"
+        is_insights_query = str(row_config.query.fields or "").startswith("insights")
 
-            if not account_ids:
-                return
+        if is_batchable_query and not is_insights_query:
+            account_ids = (
+                [id.strip() for id in row_config.query.ids.split(",")]
+                if row_config.query.ids
+                else [acc.id for acc in accounts]
+            )
 
-            logging.info(f"Batch fetching object details for IDs: {','.join(account_ids)}")
+            if account_ids:
+                try:
+                    logging.info(f"Attempting to batch fetch data for {len(account_ids)} IDs.")
+                    params = {"ids": ",".join(account_ids), "fields": row_config.query.fields}
+                    response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
 
-            params = {
-                "ids": ",".join(account_ids),
-                "fields": row_config.query.fields,
-            }
+                    if not response or not isinstance(response, dict):
+                        logging.warning("Empty or invalid response for batch ID fetch.")
+                    else:
+                        fb_graph_node = self._get_fb_graph_node(False, row_config)
+                        for item_id, item_data in response.items():
+                            if isinstance(item_data, dict) and "error" in item_data:
+                                logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
+                                continue
+                            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+                            parsed_result = output_parser.parse_data(
+                                response=item_data, fb_node=fb_graph_node, parent_id=item_id
+                            )
+                            if parsed_result:
+                                yield parsed_result
+                        return  # Batch processing successful, exit the function.
 
-            # Use the main user access token for this kind of batch request
-            try:
-                response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
+                except HTTPError as e:
+                    error_text = str(e.response.text) if hasattr(e, "response") else str(e)
+                    if "Page Access Token" in error_text:
+                        logging.info("Batch request requires page token, falling back to individual requests.")
+                        # Let the code fall through to individual processing below.
+                    else:
+                        logging.error(f"Batch request failed with a non-token error: {error_text}")
+                        return  # A definitive failure, stop processing.
 
-                if not response or not isinstance(response, dict):
-                    logging.warning("Empty or invalid response for batch ID fetch.")
-                    return
-
-                fb_graph_node = self._get_fb_graph_node(False, row_config)
-
-                for item_id, item_data in response.items():
-                    if isinstance(item_data, dict) and "error" in item_data:
-                        logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
-                        continue
-
-                    # The parser needs a page_loader for pagination, which is not supported here.
-                    # It also needs page_id for ex_account_id.
-                    output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
-
-                    # The parser expects a `data` list or a single object. `item_data` is a single object.
-                    parsed_result = output_parser.parse_data(
-                        response=item_data, fb_node=fb_graph_node, parent_id=item_id
-                    )
-                    if parsed_result:
-                        yield parsed_result
-                return
-
-            except HTTPError as e:
-                error_text = str(e.response.text) if hasattr(e, "response") else str(e)
-                if "Page Access Token" in error_text:
-                    logging.info("Page access token is required, falling back to individual requests with page tokens")
-
-                    accounts = [
-                        type("Account", (), {"id": account_id, "fb_page_id": None})() for account_id in account_ids
-                    ]
-
-                else:
-                    logging.error(f"Batch request failed with non-token error: {error_text}")
-                    return
-
+        # If batch processing was not attempted, was skipped (insights), or failed with a token error,
+        # proceed with individual requests for all accounts.
         if ids_str := row_config.query.ids:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]

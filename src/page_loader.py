@@ -120,11 +120,24 @@ class PageLoader:
 
     def _build_params(self, query_config) -> dict[str, Any]:
         params = {
-            "fields": query_config.fields,
             "since": query_config.since,
             "until": query_config.until,
             "limit": query_config.limit,
         }
+
+        fields = str(getattr(query_config, "fields", ""))
+        # Insights queries have special parameter handling
+        if not query_config.path and fields.startswith("insights"):
+            # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
+            if ".metric(" in fields:
+                metric_part = fields.split(".metric(")[1].split(")")[0]
+                metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
+                if metrics:
+                    params["metric"] = ",".join(metrics)
+        else:
+            # Regular queries use the 'fields' parameter directly
+            if query_config.fields:
+                params["fields"] = query_config.fields
 
         # Remove keys with None values
         params = {k: v for k, v in params.items() if v is not None}
@@ -144,8 +157,11 @@ class PageLoader:
         # Start with the API version
         path_parts = [self.api_version, page_id]
 
-        # Add the query path if specified
-        if query_config.path:
+        # Check if this is an insights query
+        fields = str(getattr(query_config, "fields", ""))
+        if not query_config.path and fields.startswith("insights"):
+            path_parts.append("insights")
+        elif query_config.path:
             path_parts.append(query_config.path)
 
         return "/" + "/".join(path_parts)
