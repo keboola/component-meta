@@ -148,6 +148,16 @@ class PageLoader:
             if ".period(" in fields:
                 period_part = fields.split(".period(")[1].split(")")[0]
                 params["period"] = period_part.strip()
+
+            # Extract and convert 'since' from the 'fields' string (e.g., "insights.since(90 days ago)")
+            if ".since(" in fields:
+                since_part = fields.split(".since(")[1].split(")")[0]
+                params["since"] = get_past_date(since_part.strip()).strftime("%Y-%m-%d")
+
+            # Extract and convert 'until' from the 'fields' string (e.g., "insights.until(2 days ago)")
+            if ".until(" in fields:
+                until_part = fields.split(".until(")[1].split(")")[0]
+                params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
