@@ -236,7 +236,11 @@ class FacebookClient:
 
                 # Load data from Facebook API
                 page_data = page_loader.load_page(row_config.query, page_id, params={"access_token": token})
-                page_content = page_data.get("data", [])
+                # For page queries without path, the response is the page object itself, not wrapped in "data"
+                if not row_config.query.path and "data" not in page_data:
+                    page_content = [page_data] if page_data and "id" in page_data else []
+                else:
+                    page_content = page_data.get("data", [])
 
             except Exception as e:
                 if is_page_token and str(e).startswith("400"):
@@ -247,7 +251,11 @@ class FacebookClient:
                         output_parser = OutputParser(page_loader, page_id, row_config)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
-                        page_content = page_data.get("data", [])
+                        # For page queries without path, the response is the page object itself, not wrapped in "data"
+                        if not row_config.query.path and "data" not in page_data:
+                            page_content = [page_data] if page_data and "id" in page_data else []
+                        else:
+                            page_content = page_data.get("data", [])
                     except Exception as user_token_error:
                         logging.error(f"User token also failed for {page_id}: {str(user_token_error)}")
                         continue

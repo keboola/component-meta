@@ -12,6 +12,7 @@ dependencies = [
     "keboola-component>=1.6.10",
     "keboola-csvwriter>=1.0.1",
     "keboola-http-client",
+    "keboola-utils>=1.1.0",
     "mock==5.1.0",
     "pydantic>=2.11.7",
 ]
