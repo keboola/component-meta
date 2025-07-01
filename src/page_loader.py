@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, urlparse
 
 from keboola.component.exceptions import UserException
 from keboola.http_client import HttpClient
+from keboola.utils.date import get_past_date
 
 logger = logging.getLogger(__name__)
 
@@ -120,10 +121,14 @@ class PageLoader:
 
     def _build_params(self, query_config) -> dict[str, Any]:
         params = {
-            "since": query_config.since,
-            "until": query_config.until,
             "limit": query_config.limit,
         }
+
+        if getattr(query_config, "since", "").strip():
+            params["since"] = get_past_date(query_config.since).strftime("%Y-%m-%d")
+
+        if getattr(query_config, "until", "").strip():
+            params["until"] = get_past_date(query_config.until).strftime("%Y-%m-%d")
 
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
