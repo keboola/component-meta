@@ -6,6 +6,7 @@ from urllib.parse import parse_qs, urlparse
 from keboola.component.exceptions import UserException
 from keboola.http_client import HttpClient
 from keboola.utils.date import get_past_date
+from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +116,9 @@ class PageLoader:
             response = self.client.get(endpoint_path=endpoint_path, params=base_params)
             return response or {"data": []}
 
+        except HTTPError as e:
+                logging.error(f"HTTP error while loading page data: {e.response.text}")
+
         except Exception as e:
             logging.error(f"Failed to load page data: {e}")
             raise
@@ -199,6 +203,10 @@ class PageLoader:
             response = self.client.get(endpoint_path=path, params=params)
 
             return response if response else {"data": []}
+
+        except HTTPError as e:
+            logging.error(f"HTTP error while loading paginated data from URL {url}: {e.response.text}")
+            return {"data": []}
 
         except Exception as e:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
