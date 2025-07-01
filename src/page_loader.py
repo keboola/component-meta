@@ -117,7 +117,7 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
-                logging.error(f"HTTP error while loading page data: {e.response.text}")
+            logging.error(f"HTTP error while loading page data: {e.response.text}")
 
         except Exception as e:
             logging.error(f"Failed to load page data: {e}")
@@ -143,6 +143,11 @@ class PageLoader:
                 metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
                 if metrics:
                     params["metric"] = ",".join(metrics)
+
+            # Extract 'period' from the 'fields' string (e.g., "insights.period(day)")
+            if ".period(" in fields:
+                period_part = fields.split(".period(")[1].split(")")[0]
+                params["period"] = period_part.strip()
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
