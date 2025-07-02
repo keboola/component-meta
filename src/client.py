@@ -302,39 +302,11 @@ class FacebookClient:
         Get account data using proper token logic.
         """
         try:
-            # First try with user token
-            try:
-                response = self.client.get(
-                    endpoint_path=f"/{self.api_version}/{account_id}",
-                    params=self._with_token({"fields": fields}),
-                )
-                if response:
-                    return response
-            except Exception as user_token_error:
-                logging.info(f"User token failed for {account_id}, trying page token approach")
-
-                # Try to get page token first
-                try:
-                    token_response = self.client.get(
-                        endpoint_path=f"/{self.api_version}/{account_id}",
-                        params=self._with_token({"fields": "access_token"}),
-                    )
-
-                    if token_response and "access_token" in token_response:
-                        # Use page token to fetch account data
-                        response = self.client.get(
-                            endpoint_path=f"/{self.api_version}/{account_id}",
-                            params=self._with_token({"fields": fields}, token_response["access_token"]),
-                        )
-                        if response:
-                            return response
-
-                except Exception:
-                    logging.warning(f"Page token approach also failed for {account_id}")
-
-                # If both approaches fail, raise the original error
-                raise user_token_error
-
+            response = self.client.get(
+                endpoint_path=f"/{self.api_version}/{account_id}",
+                params=self._with_token({"fields": fields}),
+            )
+            return response
         except Exception as e:
             logging.error(f"Failed to fetch account data for {account_id}: {str(e)}")
             return None
@@ -351,23 +323,38 @@ class FacebookClient:
         return response
 
     def _get_pages_token(self, accounts: list) -> dict[str, str]:
+        # Return cached tokens if already fetched
+        if self.page_tokens is not None:
+            return self.page_tokens
+
         page_tokens = {}
 
-        for account in accounts:
-            try:
+        try:
+            # Request page tokens from the API
+            response = self.client.get(
+                endpoint_path=f"/{self.api_version}/me/accounts", params=self._with_token({"fields": "id,access_token"})
+            )
+
+            # Build a map of page_id to access_token if data is available
+            page_token_map = {
+                page["id"]: page["access_token"]
+                for page in response.get("data", [])
+                if "id" in page and "access_token" in page
+            }
+
+            # Assign the correct token to each account
+            for account in accounts:
                 page_id = account.fb_page_id or account.id
+                page_tokens[account.id] = page_token_map.get(page_id, self.oauth.data.get("access_token"))
 
-                response = self.client.get(
-                    endpoint_path=f"/{self.api_version}/{page_id}",
-                    params=self._with_token({"fields": "access_token"}),
-                )
+        except Exception as e:
+            logging.warning(f"Unable to get page tokens: {e}")
+            # Use the fallback user token for all accounts
+            for account in accounts:
+                page_tokens[account.id] = self.oauth.data.get("access_token")
 
-                page_tokens[account.id] = response["access_token"]
-            except HTTPError as e:
-                error_text = str(e.response.text) if hasattr(e, "response") else str(e)
-                if "Page Access Token" in error_text:
-                    logging.warning(f"Unable to get page token for accountId: {account.id}, error: {error_text}")
-
+        # Cache the tokens for future use
+        self.page_tokens = page_tokens
         return page_tokens
 
     def _request_require_page_token(self, row_config) -> bool:

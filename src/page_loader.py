@@ -117,7 +117,10 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
-            logging.error(f"HTTP error while loading page data: {e.response.text}")
+            logging.error(f"HTTP error while loading page data: {e}")
+            if hasattr(e, "response") and e.response:
+                logging.error(f"Response text: {e.response.text}")
+            raise
 
         except Exception as e:
             logging.error(f"Failed to load page data: {e}")
