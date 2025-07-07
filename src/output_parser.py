@@ -124,6 +124,13 @@ class OutputParser:
                 processed["values"] = value
             elif isinstance(value, dict) and "data" in value:
                 processed["nested_tables"][key] = value
+                # Also check if this nested object has summary alongside data
+                if "summary" in value:
+                    fake_nested = {"data": [value["summary"]]}
+                    processed["nested_tables"]["summary"] = fake_nested
+            elif isinstance(value, dict) and "summary" in value:
+                fake_nested = {"data": [value["summary"]]}
+                processed["nested_tables"]["summary"] = fake_nested
             elif key in self.ADS_ACTION_STATS_ROW and isinstance(value, list):
                 # Handle Facebook Ads action stats as separate table
                 processed["action_stats"][key] = value
