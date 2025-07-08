@@ -341,10 +341,10 @@ class OutputParser:
         """
         row_name = self.row_config.name
         is_async = hasattr(self.row_config, "type") and self.row_config.type == "async-insights-query"
-        
+
         # Check if this is an insights query by examining the fields
         is_insights_query = str(getattr(self.row_config.query, "fields", "")).startswith("insights")
-        
+
         final_name = row_name
 
         if not table_name:
