@@ -93,16 +93,22 @@ class OutputParser:
         # For action breakdown queries, only create main row if there are no action stats to process
         # Otherwise, actions become the main rows
         if not is_action_breakdown_query or not processed_data["action_stats"]:
-            # Always create the main row (even if it has action stats)
-            # This matches the original behavior where both main and action rows are created
-            if processed_data["values"]:
-                self._add_value_rows(result, table_name, full_row_data, processed_data["values"])
+            # For normal queries (not action breakdown), include action stats in main table
+            if not is_action_breakdown_query and processed_data["action_stats"]:
+                # Process action stats as main table rows
+                self._add_action_stats_to_main_table(result, table_name, full_row_data, processed_data["action_stats"])
             else:
-                # Always add the main row, even if it only has basic fields
-                self._add_row(result, table_name, full_row_data)
+                # Always create the main row (even if it has action stats)
+                # This matches the original behavior where both main and action rows are created
+                if processed_data["values"]:
+                    self._add_value_rows(result, table_name, full_row_data, processed_data["values"])
+                else:
+                    # Always add the main row, even if it only has basic fields
+                    self._add_row(result, table_name, full_row_data)
 
-        # Process action stats as separate tables
-        self._process_action_stats(processed_data["action_stats"], row, fb_graph_node, result)
+        # Process action stats as separate tables (only for action breakdown queries)
+        if is_action_breakdown_query:
+            self._process_action_stats(processed_data["action_stats"], row, fb_graph_node, result)
 
         # Process nested tables recursively
         self._process_nested_data(processed_data["nested_tables"], row, fb_graph_node, result)
@@ -195,6 +201,46 @@ class OutputParser:
         if table_name not in result:
             result[table_name] = []
         result[table_name].append(row_data)
+
+    def _add_action_stats_to_main_table(
+        self,
+        result: dict[str, list[dict[str, Any]]],
+        table_name: str,
+        base_row: dict[str, Any],
+        action_stats: dict[str, Any],
+    ) -> None:
+        """Add action stats rows to main table (like old implementation)."""
+        for stats_field_name, stats_data in action_stats.items():
+            if not isinstance(stats_data, list):
+                continue
+
+            for action in stats_data:
+                if not isinstance(action, dict):
+                    continue
+
+                # Create row with action data (similar to old implementation)
+                action_row = base_row.copy()
+
+                # Process action_type (same logic as _populate_action_row)
+                raw_action_type = action.get("action_type", "")
+                action_type = raw_action_type.split(".")[-1] if "." in raw_action_type else raw_action_type
+                if action_type == "post_save":
+                    action_type = "post_reaction"
+
+                action_row.update(
+                    {
+                        "ads_action_name": stats_field_name,
+                        "action_type": action_type,
+                        "value": action.get("value", ""),
+                    }
+                )
+
+                # Add all other fields from action (except the ones we already handled)
+                for key, value in action.items():
+                    if key not in ["action_type", "value"]:
+                        action_row[key] = value
+
+                self._add_row(result, table_name, action_row)
 
     def _has_meaningful_data(self, row_data: dict[str, Any]) -> bool:
         """Check if row contains meaningful data beyond basic identifiers."""
