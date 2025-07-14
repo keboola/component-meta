@@ -40,6 +40,7 @@ PRIMARY_KEY_CANDIDATES = [
     "ads_action_name",
     "action_type",
     "action_reaction",
+    "ad_id"
 ]
 
 

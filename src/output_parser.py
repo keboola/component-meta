@@ -302,8 +302,7 @@ class OutputParser:
         original_row: dict,
         is_action_breakdown: bool,
     ) -> None:
-        raw_action_type = action.get("action_type", "")
-        action_type = raw_action_type.split(".")[-1] if "." in raw_action_type else raw_action_type
+        action_type = action.get("action_type", "")
         if action_type == "post_save":
             action_type = "post_reaction"
 
