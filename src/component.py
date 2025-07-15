@@ -25,6 +25,7 @@ PREFERRED_COLUMNS_ORDER = [
     "period",
     "end_time",
     "title",
+    "publisher_platform",
 ]
 
 PRIMARY_KEY_CANDIDATES = [
@@ -40,7 +41,8 @@ PRIMARY_KEY_CANDIDATES = [
     "ads_action_name",
     "action_type",
     "action_reaction",
-    "ad_id"
+    "ad_id",
+    "publisher_platform"
 ]
 
 
