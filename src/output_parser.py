@@ -286,7 +286,7 @@ class OutputParser:
                 self._add_row(result, table_name, action_row)
 
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
-        fields = ["account_id", "ad_id", "adset_id", "campaign_id", "date_start", "date_stop"]
+        fields = ["account_id", "ad_id", "adset_id", "campaign_id", "date_start", "date_stop", "publisher_platform"]
         if extended:
             fields += ["account_name", "campaign_name"]
 
