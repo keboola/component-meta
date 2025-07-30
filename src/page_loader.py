@@ -97,7 +97,7 @@ class PageLoader:
         # Get final results with access token
         try:
             params = {"access_token": access_token} if access_token else {}
-            final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
+            final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights/", params=params)
             return final_response if final_response else {"data": []}
         except Exception as e:
             logging.error(f"Failed to get final results for job {report_id}: {str(e)}")
