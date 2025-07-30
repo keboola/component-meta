@@ -126,6 +126,7 @@ class FacebookClient:
                 # Get the access token from the job details
                 access_token = details.get("access_token", self.oauth.data.get("access_token"))
                 page_data = page_loader.poll_async_job(report_id, access_token)
+                print(page_data)
                 if not page_data.get("data"):
                     continue
                 output_parser = details["output_parser"]
