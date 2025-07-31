@@ -16,6 +16,8 @@ class AccessTokenFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         record.msg = self._mask(record.msg)
         record.args = self._mask(record.args)
+        record.exc_text = self._mask(record.exc_text)
+        record.exc_info = self._mask(record.exc_info)
         return True
 
     def _mask(self, obj):
