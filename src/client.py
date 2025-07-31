@@ -37,7 +37,7 @@ LOGGING_CONFIG = {
     "formatters": {
         "simple": {
             "datefmt": "%Y-%m-%d %H:%M:%S",
-            "format": "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s - %()",
+            "format": "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s",
         }
     },
     "handlers": {
@@ -46,6 +46,7 @@ LOGGING_CONFIG = {
             "class": "logging.StreamHandler",
             # "stream": "ext://sys.stdout",
             "level": "DEBUG",
+            "filters": [access_token_filter]
         },
     },
     "loggers": {
@@ -60,10 +61,10 @@ LOGGING_CONFIG = {
     },
 }
 logging.config.dictConfig(LOGGING_CONFIG)
-# logger = logging.getLogger(__name__)
-# logging.getLogger().addFilter(access_token_filter)
-# for name in logging.root.manager.loggerDict:
-#     logging.getLogger(name).addFilter(access_token_filter)
+logger = logging.getLogger(__name__)
+logging.getLogger().addFilter(access_token_filter)
+for name in logging.root.manager.loggerDict:
+    logging.getLogger(name).addFilter(access_token_filter)
 
 
 class FacebookClient:
