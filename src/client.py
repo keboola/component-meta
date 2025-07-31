@@ -1,4 +1,5 @@
 import logging
+import logging.config
 import re
 from typing import Any, Generator, Optional
 
@@ -29,9 +30,40 @@ class AccessTokenFilter(logging.Filter):
 
 
 access_token_filter = AccessTokenFilter()
-logging.getLogger().addFilter(access_token_filter)
-for name in logging.root.manager.loggerDict:
-    logging.getLogger(name).addFilter(access_token_filter)
+
+LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "format": "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s - %()",
+        }
+    },
+    "handlers": {
+        "console": {
+            "formatter": "simple",
+            "class": "logging.StreamHandler",
+            # "stream": "ext://sys.stdout",
+            "level": "DEBUG",
+        },
+    },
+    "loggers": {
+        # "__main__": {"level": "DEBUG", "propagate": False, "handlers": ["console"]},
+        # "urllib3": {"level": "DEBUG", "propagate": False, "handlers": ["console"]},
+    },
+    "root": {
+        "level": "DEBUG",
+        "propagate": True,
+        "handlers": ["console"],
+        "filters": [access_token_filter],
+    },
+}
+logging.config.dictConfig(LOGGING_CONFIG)
+# logger = logging.getLogger(__name__)
+# logging.getLogger().addFilter(access_token_filter)
+# for name in logging.root.manager.loggerDict:
+#     logging.getLogger(name).addFilter(access_token_filter)
 
 
 class FacebookClient:
