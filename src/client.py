@@ -127,6 +127,8 @@ class FacebookClient:
                 try:
                     page_id = details["page_id"]
                     page_token = self.page_tokens.get(page_id)
+                    logging.info(
+                        f"Trying to poll with page token for report_id: {report_id}, pagetoken len: {len(page_token)}")
                     page_loader = details["page_loader"]
                     # Get the access token from the job details
                     # access_token = details.get("access_token", self.oauth.data.get("access_token"))
@@ -145,6 +147,8 @@ class FacebookClient:
                     page_loader = details["page_loader"]
                     # Get the access token from the job details
                     access_token = details.get("access_token", self.oauth.data.get("access_token"))
+                    logging.info(
+                        f"Tryingtopollwith page token for report_id: {report_id}, Acess token len: {len(access_token)}")
                     page_data = page_loader.poll_async_job(report_id, access_token)
                     print(page_data)
                     if not page_data.get("data"):
@@ -261,6 +265,7 @@ class FacebookClient:
                 if not row_config.query.path and "data" not in page_data:
                     page_content = [page_data] if page_data and "id" in page_data else []
                 else:
+                    logging.info(f"No page data: {page_data}")
                     page_content = page_data.get("data", [])
 
             except Exception as e:
