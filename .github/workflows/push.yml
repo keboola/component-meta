@@ -3,9 +3,9 @@ on: [ push ]
 concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 env:
   # repository variables:
-  KBC_DEVELOPERPORTAL_APP: "keboola.ex-facebook" # replace with your component id
-  KBC_DEVELOPERPORTAL_APP_ADS: "keboola.ex-facebook-ads"
-  KBC_DEVELOPERPORTAL_APP_INSTAGRAM: "keboola.ex-instagram"
+  KBC_DEVELOPERPORTAL_APP: "keboola.ex-facebook-pages" # replace with your component id
+  KBC_DEVELOPERPORTAL_APP_ADS: "keboola.ex-facebook-ads-v2"
+  KBC_DEVELOPERPORTAL_APP_INSTAGRAM: "keboola.ex-instagram-v2"
   KBC_DEVELOPERPORTAL_VENDOR: "keboola" # replace with your vendor
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
   KBC_DEVELOPERPORTAL_USERNAME: ${{ vars.KBC_DEVELOPERPORTAL_USERNAME }}
