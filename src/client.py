@@ -128,7 +128,8 @@ class FacebookClient:
                     page_id = details["page_id"]
                     page_token = self.page_tokens.get(page_id)
                     logging.info(
-                        f"Trying to poll with page token for report_id: {report_id}, pagetoken len: {len(page_token)}")
+                        f"Trying to poll with page token for "
+                        f"report_id: {report_id}, pagetoken len: {len(page_token)}, page_id: {page_id}")
                     page_loader = details["page_loader"]
                     # Get the access token from the job details
                     # access_token = details.get("access_token", self.oauth.data.get("access_token"))
