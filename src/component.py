@@ -42,7 +42,9 @@ PRIMARY_KEY_CANDIDATES = [
     "action_type",
     "action_reaction",
     "ad_id",
-    "publisher_platform"
+    "publisher_platform",
+    "ads_action_name",
+    "adset_id"
 ]
 
 
