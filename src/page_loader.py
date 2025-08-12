@@ -89,7 +89,7 @@ class PageLoader:
 
             except Exception as e:
                 logging.error(f"Error polling async job {report_id}: {str(e)}")
-                break
+                raise e
 
         if not is_finished:
             raise UserException(f"Async insights job {report_id} did not complete within timeout")
