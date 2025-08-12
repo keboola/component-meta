@@ -95,9 +95,11 @@ class FacebookClient:
         if self._request_require_page_token(row_config):
             is_page_token = True
             page_tokens = self._get_pages_token(accounts)
+            self.page_tokens = page_tokens
         else:
             is_page_token = False
             page_tokens = {account.id: self.oauth.data.get("access_token") for account in accounts}
+            self.page_tokens = page_tokens
         job_details = {}
         for page_id, token in page_tokens.items():
             page_id = str(page_id)
@@ -122,19 +124,37 @@ class FacebookClient:
     def _poll_and_process_async_jobs(self, all_job_details: dict) -> Generator[dict, None, None]:
         for report_id, details in all_job_details.items():
             try:
-                page_loader = details["page_loader"]
-                # Get the access token from the job details
-                access_token = details.get("access_token", self.oauth.data.get("access_token"))
-                page_data = page_loader.poll_async_job(report_id, access_token)
-                print(page_data)
-                if not page_data.get("data"):
-                    continue
-                output_parser = details["output_parser"]
-                fb_graph_node = details["fb_graph_node"]
-                page_id = details["page_id"]
-                res = output_parser.parse_data(page_data, fb_graph_node, page_id)
-                if res:
-                    yield res
+                try:
+                    page_id = details["page_id"]
+                    page_token = self.page_tokens.get(page_id)
+                    page_loader = details["page_loader"]
+                    # Get the access token from the job details
+                    # access_token = details.get("access_token", self.oauth.data.get("access_token"))
+                    page_data = page_loader.poll_async_job(report_id, page_token)
+                    print(page_data)
+                    if not page_data.get("data"):
+                        continue
+                    output_parser = details["output_parser"]
+                    fb_graph_node = details["fb_graph_node"]
+
+                    res = output_parser.parse_data(page_data, fb_graph_node, page_id)
+                    if res:
+                        yield res
+                except Exception as e:
+                    logging.error(f"Unable to use page token, falling back to user token. {e}")
+                    page_loader = details["page_loader"]
+                    # Get the access token from the job details
+                    access_token = details.get("access_token", self.oauth.data.get("access_token"))
+                    page_data = page_loader.poll_async_job(report_id, access_token)
+                    print(page_data)
+                    if not page_data.get("data"):
+                        continue
+                    output_parser = details["output_parser"]
+                    fb_graph_node = details["fb_graph_node"]
+                    page_id = details["page_id"]
+                    res = output_parser.parse_data(page_data, fb_graph_node, page_id)
+                    if res:
+                        yield res
             except Exception as e:
                 logging.error(f"Failed to process async job result for report_id: {report_id}: {e}")
 
