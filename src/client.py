@@ -25,6 +25,16 @@ class AccessTokenFilter(logging.Filter):
             obj = re.sub(r"access_token=[^&\s]+", "access_token=---ACCESS-TOKEN---", obj)
             return re.sub(r"'access_token': '[^']+'", "'access_token': '---ACCESS-TOKEN---'", obj)
 
+        if isinstance(obj, Exception):
+            # Convert exception to string and mask it
+            masked_str = self._mask(str(obj))
+            # Try to create new exception with masked message
+            try:
+                return type(obj)(masked_str)
+            except Exception:
+                # If that fails, return the masked string
+                return masked_str
+
         if isinstance(obj, tuple):
             return type(obj)(self._mask(v) for v in obj)
 
