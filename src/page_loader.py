@@ -83,10 +83,11 @@ class PageLoader:
                 if async_status in ["Job Failed", "Job Skipped"]:
                     raise UserException(f"Async insights job failed: {async_status}")
 
-                if not is_finished:
+                if not is_finished and async_status != "Job Failed":
                     time.sleep(5)
                     attempt += 1
                 else:
+                    # If the job is finished, wait for 5 seconds to ensure the data are available
                     time.sleep(5)
 
             except Exception as e:
