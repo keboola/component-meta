@@ -62,8 +62,9 @@ class PageLoader:
         is_finished = False
         max_attempts = 60  # 5 minutes max wait time
         attempt = 0
+        async_status = ""
 
-        while not is_finished and attempt < max_attempts:
+        while (not is_finished or async_status != "Job Completed") and attempt < max_attempts:
             try:
                 # Include access token in polling request
                 params = {"access_token": access_token} if access_token else {}
@@ -92,9 +93,9 @@ class PageLoader:
 
             except Exception as e:
                 logging.error(f"Error polling async job {report_id}: {str(e)}")
-                break
+                raise e
 
-        if not is_finished:
+        if not is_finished or async_status != "Job Completed":
             raise UserException(f"Async insights job {report_id} did not complete within timeout")
 
         # Get final results with access token
