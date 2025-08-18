@@ -17,7 +17,7 @@ class AccessTokenFilter(logging.Filter):
         record.msg = self._mask(record.msg)
         record.args = self._mask(record.args)
         record.exc_text = self._mask(record.exc_text)
-        record.exc_info = self._mask_exc_info(record.exc_info)
+        record.exc_info = self._mask(record.exc_info)
         return True
 
     def _mask(self, obj):
@@ -40,8 +40,9 @@ class AccessTokenFilter(logging.Filter):
 
         return obj
 
+    """
     def _mask_exc_info(self, exc_info):
-        """Separate method for masking exception info in stack traces"""
+        \"\"\"Separate method for masking exception info in stack traces\"\"\"
         if not exc_info or not isinstance(exc_info, tuple) or len(exc_info) != 3:
             return exc_info
 
@@ -59,6 +60,7 @@ class AccessTokenFilter(logging.Filter):
                 return exc_info
 
         return exc_info
+    """
 
 
 access_token_filter = AccessTokenFilter()
