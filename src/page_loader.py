@@ -86,6 +86,8 @@ class PageLoader:
                 if not is_finished:
                     time.sleep(5)
                     attempt += 1
+                else:
+                    time.sleep(5)
 
             except Exception as e:
                 logging.error(f"Error polling async job {report_id}: {str(e)}")
