@@ -40,62 +40,8 @@ class AccessTokenFilter(logging.Filter):
 
         return obj
 
-    """
-    def _mask_exc_info(self, exc_info):
-        \"\"\"Separate method for masking exception info in stack traces\"\"\"
-        if not exc_info or not isinstance(exc_info, tuple) or len(exc_info) != 3:
-            return exc_info
-
-        exc_type, exc_value, exc_traceback = exc_info
-
-        if exc_value and hasattr(exc_value, 'args'):
-            # Mask arguments in exception
-            masked_args = tuple(self._mask(str(arg)) for arg in exc_value.args)
-            try:
-                # Create new exception with masked arguments
-                new_exc = exc_type(*masked_args)
-                return (exc_type, new_exc, exc_traceback)
-            except Exception:
-                # If creating new exception fails, return original
-                return exc_info
-
-        return exc_info
-    """
-
 
 access_token_filter = AccessTokenFilter()
-
-LOGGING_CONFIG = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "simple": {
-            "datefmt": "%Y-%m-%d %H:%M:%S",
-            "format": "%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s",
-        }
-    },
-    "handlers": {
-        "console": {
-            "formatter": "simple",
-            "class": "logging.StreamHandler",
-            # "stream": "ext://sys.stdout",
-            "level": "DEBUG",
-            "filters": [access_token_filter]
-        },
-    },
-    "loggers": {
-        # "__main__": {"level": "DEBUG", "propagate": False, "handlers": ["console"]},
-        # "urllib3": {"level": "DEBUG", "propagate": False, "handlers": ["console"]},
-    },
-    "root": {
-        "level": "DEBUG",
-        "propagate": True,
-        "handlers": ["console"],
-        "filters": [access_token_filter],
-    },
-}
-logging.config.dictConfig(LOGGING_CONFIG)
-logger = logging.getLogger(__name__)
 
 # Add filter to root logger and all existing loggers
 logging.getLogger().addFilter(access_token_filter)
