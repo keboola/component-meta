@@ -100,19 +100,6 @@ logging.getLogger().addFilter(access_token_filter)
 for name in logging.root.manager.loggerDict:
     logging.getLogger(name).addFilter(access_token_filter)
 
-# Fix getLogger to automatically add our filter to new loggers
-original_getLogger = logging.getLogger
-
-
-def patched_getLogger(name=None):
-    logger_instance = original_getLogger(name)
-    if access_token_filter not in logger_instance.filters:
-        logger_instance.addFilter(access_token_filter)
-    return logger_instance
-
-
-logging.getLogger = patched_getLogger
-
 
 class FacebookClient:
     def __init__(self, oauth: OauthCredentials, api_version: str = "v22.0"):
