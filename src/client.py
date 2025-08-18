@@ -84,9 +84,24 @@ LOGGING_CONFIG = {
 }
 logging.config.dictConfig(LOGGING_CONFIG)
 logger = logging.getLogger(__name__)
+
+# Add filter to root logger and all existing loggers
 logging.getLogger().addFilter(access_token_filter)
 for name in logging.root.manager.loggerDict:
     logging.getLogger(name).addFilter(access_token_filter)
+
+# Fix getLogger to automatically add our filter to new loggers
+original_getLogger = logging.getLogger
+
+
+def patched_getLogger(name=None):
+    logger_instance = original_getLogger(name)
+    if access_token_filter not in logger_instance.filters:
+        logger_instance.addFilter(access_token_filter)
+    return logger_instance
+
+
+logging.getLogger = patched_getLogger
 
 
 class FacebookClient:
@@ -99,11 +114,6 @@ class FacebookClient:
             base_url="https://graph.facebook.com",
             default_http_header={"Content-Type": "application/json"},
         )
-
-        # Apply access token filter to HttpClient logger
-        http_logger = logging.getLogger('keboola.http_client')
-        if access_token_filter not in http_logger.filters:
-            http_logger.addFilter(access_token_filter)
 
     def _with_token(self, params: dict, token: str = None) -> dict:
         """
