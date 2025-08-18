@@ -42,7 +42,8 @@ PRIMARY_KEY_CANDIDATES = [
     "action_type",
     "action_reaction",
     "ad_id",
-    "publisher_platform"
+    "publisher_platform",
+    "adset_id"
 ]
 
 
@@ -97,7 +98,7 @@ class Component(ComponentBase):
             for table_name, rows_list in parsed_data.items():
                 if not rows_list:
                     continue
-                primary_key = self._get_primary_key(rows_list[0])
+                primary_key = self._get_primary_key(rows_list)
                 self._write_rows(table_name, rows_list, primary_key, True)
                 logging.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
@@ -121,11 +122,14 @@ class Component(ComponentBase):
     def _create_cached_writer(
         self, table_name: str, rows: list[dict], primary_key: list[str], incremental: bool
     ) -> None:
-        all_columns = rows[0].keys()
+        # Build union of all columns across the batch
+        all_columns_set: set[str] = set()
+        for row in rows:
+            all_columns_set.update(row.keys())
 
-        # reorder columns based on the logic of clojure component
-        ordered_columns = [col for col in PREFERRED_COLUMNS_ORDER if col in all_columns]
-        remaining_columns = sorted(all_columns - set(PREFERRED_COLUMNS_ORDER))
+        # Reorder columns based on preferred order, then add remaining sorted
+        ordered_columns = [col for col in PREFERRED_COLUMNS_ORDER if col in all_columns_set]
+        remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
         table_def = self.create_out_table_definition(
@@ -137,10 +141,13 @@ class Component(ComponentBase):
         writer = ElasticDictWriter(table_def.full_path, all_columns)
         self._writer_cache[table_name] = WriterCacheRecord(writer=writer, table_definition=table_def)
 
-    def _get_primary_key(self, parsed_data: dict[str, Any]) -> list[str]:
-        if not parsed_data:
+    def _get_primary_key(self, rows: list[dict[str, Any]]) -> list[str]:
+        if not rows:
             return []
-        available_columns = set(parsed_data.keys())
+        # Union of keys across all rows in the batch
+        available_columns: set[str] = set()
+        for row in rows:
+            available_columns.update(row.keys())
         primary_key = [col for col in PRIMARY_KEY_CANDIDATES if col in available_columns]
         return primary_key or (["id"] if "id" in available_columns else [])
 
