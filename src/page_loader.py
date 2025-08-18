@@ -87,8 +87,6 @@ class PageLoader:
                 if not is_finished or async_status != "Job Completed":
                     time.sleep(5)
                     attempt += 1
-                    is_finished = True
-                    async_status = "Job Completed"
                 else:
                     # If the job is finished, wait for 5 seconds to ensure the data are available
                     time.sleep(5)
