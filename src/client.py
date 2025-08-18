@@ -100,6 +100,11 @@ class FacebookClient:
             default_http_header={"Content-Type": "application/json"},
         )
 
+        # Apply access token filter to HttpClient logger
+        http_logger = logging.getLogger('keboola.http_client')
+        if access_token_filter not in http_logger.filters:
+            http_logger.addFilter(access_token_filter)
+
     def _with_token(self, params: dict, token: str = None) -> dict:
         """
         Return a copy of params with the access_token added.
