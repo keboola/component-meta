@@ -87,9 +87,6 @@ class PageLoader:
                 if not is_finished or async_status != "Job Completed":
                     time.sleep(5)
                     attempt += 1
-                else:
-                    # If the job is finished, wait for 5 seconds to ensure the data are available
-                    time.sleep(5)
 
             except Exception as e:
                 logging.error(f"Error polling async job {report_id}: {str(e)}")
