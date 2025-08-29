@@ -62,8 +62,6 @@ class FacebookClient:
         if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
             logging.info("Direct insert token is used for authentication.")
             self.oauth.data["access_token"] = self.oauth.data["token"]
-        else:
-            raise Exception("No access_token found in OAuth data")
 
         self.client = HttpClient(
             base_url="https://graph.facebook.com",
