@@ -55,6 +55,8 @@ class FacebookClient:
         self.api_version = api_version
         self.page_tokens = None  # Cache for page tokens
 
+        logging.info(f"OAuth data: {self.oauth.data}")
+
         self.client = HttpClient(
             base_url="https://graph.facebook.com",
             default_http_header={"Content-Type": "application/json"},
