@@ -365,7 +365,7 @@ class FacebookClient:
 
         try:
             response = self.client.get(
-                endpoint_path=f"/{self.api_version}/{url_path}", params=params
+                endpoint_path=f"/{self.api_version}/{url_path}", params=self._with_token(params),
             )
 
             if not response:
