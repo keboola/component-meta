@@ -138,7 +138,7 @@ class Component(ComponentBase):
             f"{table_name}.csv",
             primary_key=primary_key,
             incremental=incremental,
-            destination=self.bucket_id,
+            destination=f"{self.bucket_id}.{table_name}",
         )
 
         writer = ElasticDictWriter(table_def.full_path, all_columns)
