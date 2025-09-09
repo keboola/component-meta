@@ -60,7 +60,7 @@ class Component(ComponentBase):
         self._writer_cache: dict[str, WriterCacheRecord] = {}
         self.config = Configuration(**self.configuration.parameters)
         self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
-        self.bucket_id = self._retrieve_bucket_id(self)
+        self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:
         self._write_accounts_from_config(self.config)
