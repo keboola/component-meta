@@ -158,6 +158,7 @@ class Component(ComponentBase):
         # This function replace default bucket option in Developer portal with custom implementation.
         # It allows set own bucket.
         if self.config.bucket_id:
+            logging.info(f"Using bucket ID from configuration: {self.config.bucket_id}")
             return self.config.bucket_id
         config_id = self.environment_variables.config_id
         component_id = self.environment_variables.component_id
@@ -165,6 +166,7 @@ class Component(ComponentBase):
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
             component_id = "keboola.ex-meta"
+        logging.info(f"Using default bucket: in.c-{component_id}-{config_id}")
         return f"in.c-{component_id}-{config_id}"
 
     @sync_action("accounts")
