@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from typing import Any
+from datetime import datetime
 
 from keboola.component.base import ComponentBase, sync_action
 from keboola.component.dao import TableDefinition
@@ -59,6 +60,7 @@ class Component(ComponentBase):
         self._writer_cache: dict[str, WriterCacheRecord] = {}
         self.config = Configuration(**self.configuration.parameters)
         self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
+        self.bucket_id = self._retrieve_bucket_id(self)
 
     def run(self) -> None:
         self._write_accounts_from_config(self.config)
@@ -136,6 +138,7 @@ class Component(ComponentBase):
             f"{table_name}.csv",
             primary_key=primary_key,
             incremental=incremental,
+            destination=self.bucket_id,
         )
 
         writer = ElasticDictWriter(table_def.full_path, all_columns)
@@ -150,6 +153,19 @@ class Component(ComponentBase):
             available_columns.update(row.keys())
         primary_key = [col for col in PRIMARY_KEY_CANDIDATES if col in available_columns]
         return primary_key or (["id"] if "id" in available_columns else [])
+
+    def _retrieve_bucket_id(self) -> str:
+        # This function replace default bucket option in Developer portal with custom implementation.
+        # It allows set own bucket.
+        if self.config.bucket_id:
+            return self.config.bucket_id
+        config_id = self.environment_variables.config_id
+        component_id = self.environment_variables.component_id
+        if not config_id:
+            config_id = datetime.now().strftime("%Y%m%d%H%M%S")
+        if not component_id:
+            component_id = "keboola.ex-meta"
+        return f"in.c-{component_id}-{config_id}"
 
     @sync_action("accounts")
     def run_accounts_action(self) -> list[dict[str, Any]]:
