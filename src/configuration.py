@@ -8,8 +8,8 @@ class QueryConfig(BaseModel):
     fields: Optional[str] = ""
     ids: Optional[str] = ""
     limit: Optional[str] = "25"
-    since: Optional[str] = None
-    until: Optional[str] = None
+    since: Optional[str] = ""
+    until: Optional[str] = ""
     parameters: Optional[str] = None
 
 
@@ -38,3 +38,4 @@ class Configuration(BaseModel):
     accounts: dict[str, Account] = Field(default_factory=dict)
     queries: list[QueryRow] = Field(default_factory=list)
     api_version: str = Field(alias="api-version", default="v19.0")
+    bucket_id: Optional[str] = Field(alias="bucket-id", default=None)
