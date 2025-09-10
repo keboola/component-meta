@@ -10,6 +10,5 @@ __pycache__/
 
 # kbc datafolder
 /data
-/old_component
 /todo.md
 /venv

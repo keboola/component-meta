@@ -59,7 +59,11 @@ class FacebookClient:
         self.api_version = api_version
         self.page_tokens = None  # Cache for page tokens
 
-        if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
+        if (
+            self.oauth.data
+            and self.oauth.data.get("token", None)
+            and not self.oauth.data.get("access_token", None)
+        ):
             logging.info("Direct insert token is used for authentication.")
             self.oauth.data["access_token"] = self.oauth.data["token"]
 
@@ -365,7 +369,8 @@ class FacebookClient:
 
         try:
             response = self.client.get(
-                endpoint_path=f"/{self.api_version}/{url_path}", params=self._with_token(params),
+                endpoint_path=f"/{self.api_version}/{url_path}",
+                params=self._with_token(params),
             )
 
             if not response:
