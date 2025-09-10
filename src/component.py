@@ -165,8 +165,8 @@ class Component(ComponentBase):
         if not config_id:
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
-            component_id = "keboola.ex-meta"
-        logging.info(f"Using default bucket: in.c-{component_id}-{config_id}")
+            component_id = "keboola-ex-meta"
+        logging.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}")
         return f"in.c-{component_id}-{config_id}"
 
     @sync_action("accounts")
