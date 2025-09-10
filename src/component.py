@@ -138,7 +138,7 @@ class Component(ComponentBase):
             f"{table_name}.csv",
             primary_key=primary_key,
             incremental=incremental,
-            destination=f"{self.bucket_id}.{table_name}",
+            destination=f"{self.bucket_id}.{table_name}.csv",
         )
 
         writer = ElasticDictWriter(table_def.full_path, all_columns)
@@ -158,16 +158,16 @@ class Component(ComponentBase):
         # This function replace default bucket option in Developer portal with custom implementation.
         # It allows set own bucket.
         if self.config.bucket_id:
-            logging.info(f"Using bucket ID from configuration: {self.config.bucket_id}.csv")
-            return f"{self.config.bucket_id}.csv"
+            logging.info(f"Using bucket ID from configuration: {self.config.bucket_id}")
+            return f"{self.config.bucket_id}"
         config_id = self.environment_variables.config_id
         component_id = self.environment_variables.component_id
         if not config_id:
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
             component_id = "keboola-ex-meta"
-        logging.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}.csv")
-        return f"in.c-{component_id}-{config_id}.csv"
+        logging.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}")
+        return f"in.c-{component_id.replace('.', '-')}-{config_id}"
 
     @sync_action("accounts")
     def run_accounts_action(self) -> list[dict[str, Any]]:
