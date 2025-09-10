@@ -134,11 +134,12 @@ class Component(ComponentBase):
         remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
+        logging.debug(f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}")
         table_def = self.create_out_table_definition(
             f"{table_name}.csv",
             primary_key=primary_key,
             incremental=incremental,
-            destination=f"{self.bucket_id}.{table_name}.csv",
+            destination=f"{self.bucket_id}.{table_name}",
         )
 
         writer = ElasticDictWriter(table_def.full_path, all_columns)
