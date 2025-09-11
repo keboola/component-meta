@@ -37,4 +37,4 @@ class Account(BaseModel):
 class Configuration(BaseModel):
     accounts: dict[str, Account] = Field(default_factory=dict)
     queries: list[QueryRow] = Field(default_factory=list)
-    api_version: str = Field(alias="api-version", default="v19.0")
+    api_version: str = Field(alias="api-version", default="v23.0")

@@ -1,7 +1,7 @@
 import logging
-import logging.config
 import re
-from typing import Any, Generator, Optional
+from typing import Any, Optional
+from collections.abc import Iterator
 
 from keboola.component.exceptions import UserException
 from keboola.component.dao import OauthCredentials
@@ -54,12 +54,16 @@ for name in logging.root.manager.loggerDict:
 
 
 class FacebookClient:
-    def __init__(self, oauth: OauthCredentials, api_version: str = "v22.0"):
+    def __init__(self, oauth: OauthCredentials, api_version: str):
         self.oauth = oauth
         self.api_version = api_version
         self.page_tokens = None  # Cache for page tokens
 
-        if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
+        if (
+            self.oauth.data
+            and self.oauth.data.get("token", None)
+            and not self.oauth.data.get("access_token", None)
+        ):
             logging.info("Direct insert token is used for authentication.")
             self.oauth.data["access_token"] = self.oauth.data["token"]
 
@@ -77,9 +81,7 @@ class FacebookClient:
         params["access_token"] = token or self.oauth.data.get("access_token")
         return params
 
-    def process_queries(
-        self, accounts: list, queries: list
-    ) -> Generator[dict, None, None]:
+    def process_queries(self, accounts: list, queries: list) -> Iterator[dict]:
         """
         Processes a list of queries, handling sync and async execution.
         Async queries are started in parallel, then all results are polled.
@@ -148,9 +150,7 @@ class FacebookClient:
                 logging.error(f"Failed to start async job for {page_id}: {e}")
         return job_details
 
-    def _poll_and_process_async_jobs(
-        self, all_job_details: dict
-    ) -> Generator[dict, None, None]:
+    def _poll_and_process_async_jobs(self, all_job_details: dict) -> Iterator[dict]:
         for report_id, details in all_job_details.items():
             try:
                 page_loader = details["page_loader"]
@@ -174,7 +174,7 @@ class FacebookClient:
 
     def _handle_batch_request(
         self, account_ids: list[str], row_config
-    ) -> Generator[dict, None, None]:
+    ) -> Iterator[dict]:
         """
         Executes and parses a batch request for a list of account IDs.
         Yields parsed data for each item in the response.
@@ -209,9 +209,7 @@ class FacebookClient:
             if parsed_result:
                 yield parsed_result
 
-    def _process_single_sync_query(
-        self, accounts: list, row_config
-    ) -> Generator[dict, None, None]:
+    def _process_single_sync_query(self, accounts: list, row_config) -> Iterator[dict]:
         # Determine if a query is eligible for batch processing.
         is_batchable_query = (
             not row_config.query.path
@@ -365,7 +363,8 @@ class FacebookClient:
 
         try:
             response = self.client.get(
-                endpoint_path=f"/{self.api_version}/{url_path}", params=self._with_token(params),
+                endpoint_path=f"/{self.api_version}/{url_path}",
+                params=self._with_token(params),
             )
 
             if not response:

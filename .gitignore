@@ -6,8 +6,8 @@ __pycache__/
 .DS_Store
 /example/.project
 /example/.pydevproject
-/xold_component/
 
 # kbc datafolder
 /data
 /venv
+/.venv
