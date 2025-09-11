@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from typing import Any
+from datetime import datetime
 
 from keboola.component.base import ComponentBase, sync_action
 from keboola.component.dao import TableDefinition
@@ -61,6 +62,7 @@ class Component(ComponentBase):
         self.client: FacebookClient = FacebookClient(
             self.configuration.oauth_credentials, self.config.api_version
         )
+        self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:
         self._write_accounts_from_config(self.config)
@@ -151,10 +153,12 @@ class Component(ComponentBase):
         remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
+        logging.debug(f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}")
         table_def = self.create_out_table_definition(
             f"{table_name}.csv",
             primary_key=primary_key,
             incremental=incremental,
+            destination=f"{self.bucket_id}.{table_name}",
         )
 
         writer = ElasticDictWriter(table_def.full_path, all_columns)
@@ -173,6 +177,21 @@ class Component(ComponentBase):
             col for col in PRIMARY_KEY_CANDIDATES if col in available_columns
         ]
         return primary_key or (["id"] if "id" in available_columns else [])
+
+    def _retrieve_bucket_id(self) -> str:
+        # This function replace default bucket option in Developer portal with custom implementation.
+        # It allows set own bucket.
+        if self.config.bucket_id:
+            logging.info(f"Using bucket ID from configuration: {self.config.bucket_id}")
+            return f"{self.config.bucket_id}"
+        config_id = self.environment_variables.config_id
+        component_id = self.environment_variables.component_id
+        if not config_id:
+            config_id = datetime.now().strftime("%Y%m%d%H%M%S")
+        if not component_id:
+            component_id = "keboola-ex-meta"
+        logging.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}")
+        return f"in.c-{component_id.replace('.', '-')}-{config_id}"
 
     @sync_action("accounts")
     def run_accounts_action(self) -> list[dict[str, Any]]:

@@ -3,9 +3,9 @@ on: [ push ]
 concurrency: ci-${{ github.ref }} # to avoid tag collisions in the ECR
 env:
   # repository variables:
-  KBC_DEVELOPERPORTAL_APP: "keboola.ex-facebook" # replace with your component id
-  KBC_DEVELOPERPORTAL_APP_ADS: "keboola.ex-facebook-ads"
-  KBC_DEVELOPERPORTAL_APP_INSTAGRAM: "keboola.ex-instagram"
+  KBC_DEVELOPERPORTAL_APP: "keboola.ex-facebook-pages" # replace with your component id
+  KBC_DEVELOPERPORTAL_APP_ADS: "keboola.ex-facebook-ads-v2"
+  KBC_DEVELOPERPORTAL_APP_INSTAGRAM: "keboola.ex-instagram-v2"
   KBC_DEVELOPERPORTAL_VENDOR: "keboola" # replace with your vendor
   DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
   KBC_DEVELOPERPORTAL_USERNAME: ${{ vars.KBC_DEVELOPERPORTAL_USERNAME }}
@@ -67,12 +67,11 @@ jobs:
       - name: Deploy-Ready check
         id: deploy_ready
         run: |
-          if [[ "${{ steps.default_branch.outputs.is_default_branch }}" == "true" \
-            && "${{ github.ref }}" == refs/tags/* \
+          if [[ "${{ github.ref }}" == refs/tags/* \
             && "${{ steps.tag.outputs.is_semantic_tag }}" == "true" ]]; then
-              echo "is_deploy_ready=true" | tee -a $GITHUB_OUTPUT
+                echo "is_deploy_ready=true" | tee -a $GITHUB_OUTPUT
           else
-              echo "is_deploy_ready=false" | tee -a $GITHUB_OUTPUT
+                echo "is_deploy_ready=false" | tee -a $GITHUB_OUTPUT
           fi
 
   build:
@@ -307,3 +306,85 @@ jobs:
         run: |
           chmod +x scripts/developer_portal/*.sh
           scripts/developer_portal/update_properties.sh
+
+  update_developer_portal_properties_ads:
+    name: Developer Portal Properties Update - Ads
+    env:
+      KBC_DEVELOPERPORTAL_PASSWORD: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+    needs:
+      - push_event_info
+      - build
+      - push-ad
+    runs-on: ubuntu-latest
+    if: needs.push_event_info.outputs.is_deploy_ready == 'true'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Update developer portal properties
+        env:
+          KBC_DEVELOPERPORTAL_APP: ${{ env.KBC_DEVELOPERPORTAL_APP_ADS }}
+        run: |
+          chmod +x scripts/developer_portal/*.sh
+          scripts/developer_portal/update_properties.sh
+
+  update_developer_portal_properties_instagram:
+    name: Developer Portal Properties Update - Instagram
+    env:
+      KBC_DEVELOPERPORTAL_PASSWORD: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+    needs:
+      - push_event_info
+      - build
+      - push-instagram
+    runs-on: ubuntu-latest
+    if: needs.push_event_info.outputs.is_deploy_ready == 'true'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Update developer portal properties
+        env:
+          KBC_DEVELOPERPORTAL_APP: ${{ env.KBC_DEVELOPERPORTAL_APP_INSTAGRAM }}
+        run: |
+          chmod +x scripts/developer_portal/*.sh
+          scripts/developer_portal/update_properties.sh
+
+  deploy-ad:
+    name: Deploy to KBC - Ads
+    env:
+      KBC_DEVELOPERPORTAL_PASSWORD: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+    needs:
+      - push_event_info
+      - build
+      - push-ad
+    if: needs.push_event_info.outputs.is_deploy_ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Developer Portal Tag
+        uses: keboola/action-set-tag-developer-portal@master
+        with:
+          vendor: ${{ env.KBC_DEVELOPERPORTAL_VENDOR }}
+          app_id: ${{ env.KBC_DEVELOPERPORTAL_APP_ADS }}
+          username: ${{ env.KBC_DEVELOPERPORTAL_USERNAME }}
+          password: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+          tag: ${{ needs.push_event_info.outputs.app_image_tag }}
+
+  deploy-instagram:
+    name: Deploy to KBC - Instagram
+    env:
+      KBC_DEVELOPERPORTAL_PASSWORD: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+    needs:
+      - push_event_info
+      - build
+      - push-instagram
+    if: needs.push_event_info.outputs.is_deploy_ready == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Developer Portal Tag
+        uses: keboola/action-set-tag-developer-portal@master
+        with:
+          vendor: ${{ env.KBC_DEVELOPERPORTAL_VENDOR }}
+          app_id: ${{ env.KBC_DEVELOPERPORTAL_APP_INSTAGRAM }}
+          username: ${{ env.KBC_DEVELOPERPORTAL_USERNAME }}
+          password: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
+          tag: ${{ needs.push_event_info.outputs.app_image_tag }}
