@@ -1,25 +1,41 @@
-import logging
-from pydantic import BaseModel, Field, ValidationError, field_validator
-from keboola.component.exceptions import UserException
+from typing import Any, Optional
+
+from pydantic import BaseModel, Field
+
+
+class QueryConfig(BaseModel):
+    path: Optional[str] = ""
+    fields: Optional[str] = ""
+    ids: Optional[str] = ""
+    limit: Optional[str] = "25"
+    since: Optional[str] = ""
+    until: Optional[str] = ""
+    parameters: Optional[str] = None
+
+
+class QueryRow(BaseModel):
+    id: int
+    type: str
+    name: str
+    run_by_id: bool = Field(alias="run-by-id", default=False)
+    query: QueryConfig
+    disabled: bool = Field(default=False)
+
+
+class Account(BaseModel):
+    id: str
+    name: str
+    account_id: Optional[str] = None
+    business_name: Optional[str] = None
+    currency: Optional[str] = None
+    category: Optional[str] = None
+    category_list: Optional[list[dict[str, Any]]] = None
+    tasks: Optional[list[str]] = None
+    fb_page_id: Optional[str] = None
 
 
 class Configuration(BaseModel):
-    print_hello: bool
-    api_token: str = Field(alias="#api_token")
-    debug: bool = False
-
-    def __init__(self, **data):
-        try:
-            super().__init__(**data)
-        except ValidationError as e:
-            error_messages = [f"{err['loc'][0]}: {err['msg']}" for err in e.errors()]
-            raise UserException(f"Validation Error: {', '.join(error_messages)}")
-
-        if self.debug:
-            logging.debug("Component will run in Debug mode")
-
-    @field_validator('api_token')
-    def token_must_be_uppercase(cls, v):
-        if not v.isupper():
-            raise UserException('API token must be uppercase')
-        return v
+    accounts: dict[str, Account] = Field(default_factory=dict)
+    queries: list[QueryRow] = Field(default_factory=list)
+    api_version: str = Field(alias="api-version", default="v23.0")
+    bucket_id: Optional[str] = Field(alias="bucket-id", default=None)
