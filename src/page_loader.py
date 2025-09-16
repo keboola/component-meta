@@ -17,17 +17,13 @@ class PageLoader:
         self.query_type = query_type
         self.api_version = api_version
 
-    def load_page(
-        self, query_config, page_id: str, params: dict[str, Any] = None
-    ) -> dict[str, Any]:
+    def load_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
         if self.query_type == "async-insights-query":
             return self._load_async_insights(query_config, page_id, params)
         else:
             return self._load_regular_page(query_config, page_id, params)
 
-    def _load_async_insights(
-        self, query_config, page_id: str, params: dict[str, Any] = None
-    ) -> dict[str, Any]:
+    def _load_async_insights(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
         report_id = self.start_async_insights_job(query_config, page_id, params)
         if not report_id:
             return {"data": []}
@@ -37,17 +33,13 @@ class PageLoader:
         # Poll for completion
         return self.poll_async_job(report_id)
 
-    def start_async_insights_job(
-        self, query_config, page_id: str, params: dict = {}
-    ) -> Optional[str]:
+    def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> Optional[str]:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
         endpoint_path = f"/{self.api_version}/{page_id}/insights"
 
         # Extract query parameters if present
         if getattr(query_config, "parameters", None):
-            param_pairs = (
-                p.split("=", 1) for p in query_config.parameters.split("&") if "=" in p
-            )
+            param_pairs = (p.split("=", 1) for p in query_config.parameters.split("&") if "=" in p)
             params.update({k.strip(): v.strip() for k, v in param_pairs})
 
         logging.info(f"Starting async insights request: {endpoint_path}")
@@ -56,9 +48,7 @@ class PageLoader:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
             report_id = response.get("report_run_id")
             if not report_id:
-                logging.warning(
-                    "No 'report_run_id' found in the async insights response."
-                )
+                logging.warning("No 'report_run_id' found in the async insights response.")
                 return None
 
             logging.info(f"Async job started successfully with report ID: {report_id}")
@@ -68,23 +58,17 @@ class PageLoader:
             logging.error(f"Error starting async insights job: {e}")
             return None
 
-    def poll_async_job(
-        self, report_id: str, access_token: str = None
-    ) -> dict[str, Any]:
+    def poll_async_job(self, report_id: str, access_token: str = None) -> dict[str, Any]:
         is_finished = False
         max_attempts = 60  # 5 minutes max wait time
         attempt = 0
         async_status = ""
 
-        while (
-            not is_finished or async_status != "Job Completed"
-        ) and attempt < max_attempts:
+        while (not is_finished or async_status != "Job Completed") and attempt < max_attempts:
             try:
                 # Include access token in polling request
                 params = {"access_token": access_token} if access_token else {}
-                response = self.client.get(
-                    endpoint_path=f"/{self.api_version}/{report_id}", params=params
-                )
+                response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}", params=params)
 
                 if not response:
                     logging.error("Empty response from async job status check")
@@ -93,9 +77,7 @@ class PageLoader:
                 async_percent = response.get("async_percent_completion", 0)
                 async_status = response.get("async_status", "Unknown")
 
-                logging.info(
-                    f"Async job {report_id}: {async_percent}% complete, status: {async_status}"
-                )
+                logging.info(f"Async job {report_id}: {async_percent}% complete, status: {async_status}")
 
                 is_finished = async_percent == 100
 
@@ -111,24 +93,18 @@ class PageLoader:
                 raise e
 
         if not is_finished or async_status != "Job Completed":
-            raise UserException(
-                f"Async insights job {report_id} did not complete within timeout"
-            )
+            raise UserException(f"Async insights job {report_id} did not complete within timeout")
 
         # Get final results with access token
         try:
             params = {"access_token": access_token} if access_token else {}
-            final_response = self.client.get(
-                endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params
-            )
+            final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
             return final_response if final_response else {"data": []}
         except Exception as e:
             logging.error(f"Failed to get final results for job {report_id}: {str(e)}")
             return {"data": []}
 
-    def _load_regular_page(
-        self, query_config, page_id: str, params: dict[str, Any] = None
-    ) -> dict[str, Any]:
+    def _load_regular_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
         base_params = self._build_params(query_config)
         base_params.update(params or {})
 
@@ -168,11 +144,7 @@ class PageLoader:
             # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
             if ".metric(" in fields:
                 metric_part = fields.split(".metric(")[1].split(")")[0]
-                metrics = [
-                    m.strip()
-                    for m in metric_part.replace("\n", "").split(",")
-                    if m.strip()
-                ]
+                metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
                 if metrics:
                     params["metric"] = ",".join(metrics)
 
@@ -242,10 +214,7 @@ class PageLoader:
             # Parse query parameters
             query_params = parse_qs(parsed_url.query)
             # Convert lists to single values (parse_qs returns lists)
-            params = {
-                k: v[0] if isinstance(v, list) and len(v) == 1 else v
-                for k, v in query_params.items()
-            }
+            params = {k: v[0] if isinstance(v, list) and len(v) == 1 else v for k, v in query_params.items()}
 
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
@@ -255,9 +224,7 @@ class PageLoader:
             return response if response else {"data": []}
 
         except HTTPError as e:
-            logging.error(
-                f"HTTP error while loading paginated data from URL {url}: {e.response.text}"
-            )
+            logging.error(f"HTTP error while loading paginated data from URL {url}: {e.response.text}")
             return {"data": []}
 
         except Exception as e:

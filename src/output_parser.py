@@ -79,9 +79,7 @@ class OutputParser:
         result: dict[str, list[dict[str, Any]]],
     ) -> None:
         """Process a single row from the API response."""
-        table_name = self._get_table_name(
-            table_name or getattr(self.row_config.query, "path", "")
-        )
+        table_name = self._get_table_name(table_name or getattr(self.row_config.query, "path", ""))
 
         # Create base row with metadata
         base_row = self._create_base_row(fb_graph_node, parent_id)
@@ -104,30 +102,22 @@ class OutputParser:
             # For normal queries (not action breakdown), include action stats in main table
             if not is_action_breakdown_query and processed_data["action_stats"]:
                 # Process action stats as main table rows
-                self._add_action_stats_to_main_table(
-                    result, table_name, full_row_data, processed_data["action_stats"]
-                )
+                self._add_action_stats_to_main_table(result, table_name, full_row_data, processed_data["action_stats"])
             else:
                 # Always create the main row (even if it has action stats)
                 # This matches the original behavior where both main and action rows are created
                 if processed_data["values"]:
-                    self._add_value_rows(
-                        result, table_name, full_row_data, processed_data["values"]
-                    )
+                    self._add_value_rows(result, table_name, full_row_data, processed_data["values"])
                 else:
                     # Always add the main row, even if it only has basic fields
                     self._add_row(result, table_name, full_row_data)
 
         # Process action stats as separate tables (only for action breakdown queries)
         if is_action_breakdown_query:
-            self._process_action_stats(
-                processed_data["action_stats"], row, fb_graph_node, result
-            )
+            self._process_action_stats(processed_data["action_stats"], row, fb_graph_node, result)
 
         # Process nested tables recursively
-        self._process_nested_data(
-            processed_data["nested_tables"], row, fb_graph_node, result
-        )
+        self._process_nested_data(processed_data["nested_tables"], row, fb_graph_node, result)
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
@@ -197,17 +187,13 @@ class OutputParser:
             row = self._create_value_row(full_row_data, value_data)
             self._add_row(result, table_name, row)
 
-    def _create_value_row(
-        self, base_row: dict[str, Any], value_data: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _create_value_row(self, base_row: dict[str, Any], value_data: dict[str, Any]) -> dict[str, Any]:
         """Create a row from value data."""
         row = base_row.copy()
         row.update({"key1": "", "key2": "", "value": value_data["value"]})
 
         # Handle end_time for backward compatibility
-        if hasattr(self.row_config.query, "fields") and "insights" in str(
-            self.row_config.query.fields
-        ):
+        if hasattr(self.row_config.query, "fields") and "insights" in str(self.row_config.query.fields):
             row["end_time"] = value_data.get("end_time", None)
         elif "end_time" in value_data:
             row["end_time"] = value_data["end_time"]
@@ -216,11 +202,7 @@ class OutputParser:
 
     def _has_meaningful_value(self, value_data: dict[str, Any]) -> bool:
         """Check if value data contains meaningful content."""
-        return (
-            "value" in value_data
-            and value_data["value"] is not None
-            and value_data["value"] != ""
-        )
+        return "value" in value_data and value_data["value"] is not None and value_data["value"] != ""
 
     def _add_row(
         self,
@@ -282,8 +264,7 @@ class OutputParser:
 
         # If we have any data beyond just the basic identifiers, it's meaningful
         has_additional_data = any(
-            key not in basic_identifiers and value is not None and value != ""
-            for key, value in row_data.items()
+            key not in basic_identifiers and value is not None and value != "" for key, value in row_data.items()
         )
 
         return has_additional_data
@@ -309,15 +290,11 @@ class OutputParser:
                 continue
 
             table_name = (
-                self._get_table_name("")
-                if is_action_breakdown
-                else self._get_action_stats_table_name(stats_field_name)
+                self._get_table_name("") if is_action_breakdown else self._get_action_stats_table_name(stats_field_name)
             )
 
             base_row = self._create_base_row(fb_graph_node, self.page_id)
-            self._copy_common_fields(
-                base_row, original_row, extended=is_action_breakdown
-            )
+            self._copy_common_fields(base_row, original_row, extended=is_action_breakdown)
 
             for action in stats_data:
                 if not isinstance(action, dict):
@@ -333,9 +310,7 @@ class OutputParser:
                 )
                 self._add_row(result, table_name, action_row)
 
-    def _copy_common_fields(
-        self, base_row: dict, original_row: dict, extended: bool
-    ) -> None:
+    def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
         fields = [
             "account_id",
             "ad_id",
@@ -372,12 +347,8 @@ class OutputParser:
             }
         )
 
-        if is_action_breakdown and "action_breakdowns=action_reaction" in str(
-            self.row_config.query.parameters
-        ):
-            action_reaction = action.get(
-                "action_reaction", original_row.get("action_reaction", "")
-            )
+        if is_action_breakdown and "action_breakdowns=action_reaction" in str(self.row_config.query.parameters):
+            action_reaction = action.get("action_reaction", original_row.get("action_reaction", ""))
             action_row["action_reaction"] = action_reaction
 
         for key, value in action.items():
@@ -392,17 +363,13 @@ class OutputParser:
         else:
             return f"{self.row_config.name}_{stats_field_name}_insights"
 
-    def _process_nested_data(
-        self, nested_tables: dict, original_row: dict, fb_graph_node: str, result: dict
-    ) -> None:
+    def _process_nested_data(self, nested_tables: dict, original_row: dict, fb_graph_node: str, result: dict) -> None:
         """Process nested table data recursively."""
         for table_name, table_data in nested_tables.items():
             nested_graph_node = f"{fb_graph_node}_{table_name}"
             nested_row_id = original_row.get("id")
 
-            nested_result = self.parse_data(
-                table_data, nested_graph_node, nested_row_id, table_name
-            )
+            nested_result = self.parse_data(table_data, nested_graph_node, nested_row_id, table_name)
 
             # Merge nested results
             for nested_table, nested_rows in nested_result.items():
@@ -422,12 +389,8 @@ class OutputParser:
         if "paging" not in response or "next" not in response["paging"]:
             return
 
-        next_page_response = self.page_loader.load_page_from_url(
-            response["paging"]["next"]
-        )
-        next_page_result = self.parse_data(
-            next_page_response, fb_node, parent_id, table_name
-        )
+        next_page_response = self.page_loader.load_page_from_url(response["paging"]["next"])
+        next_page_result = self.parse_data(next_page_response, fb_node, parent_id, table_name)
 
         # Merge pagination results
         for page_table, page_rows in next_page_result.items():
@@ -460,15 +423,10 @@ class OutputParser:
         following Clojure-inspired logic.
         """
         row_name = self.row_config.name
-        is_async = (
-            hasattr(self.row_config, "type")
-            and self.row_config.type == "async-insights-query"
-        )
+        is_async = hasattr(self.row_config, "type") and self.row_config.type == "async-insights-query"
 
         # Check if this is an insights query by examining the fields
-        is_insights_query = str(
-            getattr(self.row_config.query, "fields", "")
-        ).startswith("insights")
+        is_insights_query = str(getattr(self.row_config.query, "fields", "")).startswith("insights")
 
         final_name = row_name
 
