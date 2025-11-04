@@ -301,28 +301,28 @@ class FacebookClient:
             params["fields"] = fields
 
         try:
-            response = self.client.get(
-                endpoint_path=f"/{self.api_version}/{url_path}",
-                params=self._with_token(params),
-            )
+            all_accounts = []
+            endpoint_path = f"/{self.api_version}/{url_path}"
 
-            if not response:
-                return []
+            while endpoint_path:
+                response = self.client.get(
+                    endpoint_path=endpoint_path,
+                    params=self._with_token(params),
+                )
 
-            # Handle both single account response and list response
-            if isinstance(response, dict):
-                if "data" in response:
-                    return response["data"]
+                if not response:
+                    break
+
+                if isinstance(response, dict) and "data" in response:
+                    all_accounts.extend(response["data"])
+                    endpoint_path = response.get("paging", {}).get("next")
                 else:
-                    # Single account response
-                    return [response]
-            elif isinstance(response, list):
-                return response
+                    break
 
-            return []
+            return all_accounts
 
         except Exception as e:
-            raise UserException(f"Authorization failed: {str(e)}")
+            raise UserException(f"Failed to list accounts: {str(e)}")
 
     def get_account_data(self, account_id: str, fields: str) -> dict[str, Any] | None:
         """
