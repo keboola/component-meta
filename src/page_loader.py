@@ -162,6 +162,7 @@ class PageLoader:
             if ".until(" in fields:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
@@ -178,7 +179,6 @@ class PageLoader:
                 params.update({k.strip(): v.strip() for k, v in pairs})
             elif isinstance(extras, dict):
                 params.update(extras)
-
         return params
 
     def _build_endpoint_path(self, query_config, page_id: str) -> str:

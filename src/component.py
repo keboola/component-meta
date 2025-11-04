@@ -45,6 +45,7 @@ PRIMARY_KEY_CANDIDATES = [
     "ad_id",
     "publisher_platform",
     "adset_id",
+    "country",
 ]
 
 
