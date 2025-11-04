@@ -322,7 +322,7 @@ class FacebookClient:
             return all_accounts
 
         except Exception as e:
-            raise UserException(f"Authorization failed: {str(e)}")
+            raise UserException(f"Failed to list accounts: {str(e)}")
 
     def get_account_data(self, account_id: str, fields: str) -> dict[str, Any] | None:
         """
