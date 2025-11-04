@@ -163,30 +163,6 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
-            # Extract 'breakdowns' from the 'fields' string (e.g., "insights.breakdowns(country)")
-            if ".breakdowns(" in fields:
-                breakdown_part = fields.split(".breakdowns(")[1].split(")")[0]
-                params["breakdowns"] = breakdown_part.strip()
-
-            # Extract 'level' from the 'fields' string (e.g., "insights.level(campaign)")
-            if ".level(" in fields:
-                level_part = fields.split(".level(")[1].split(")")[0]
-                params["level"] = level_part.strip()
-
-            # Extract 'date_preset' from the 'fields' string (e.g., "insights.date_preset(last_90d)")
-            if ".date_preset(" in fields:
-                preset_part = fields.split(".date_preset(")[1].split(")")[0]
-                params["date_preset"] = preset_part.strip()
-
-            # Extract 'time_increment' from the 'fields' string (e.g., "insights.time_increment(1)")
-            if ".time_increment(" in fields:
-                increment_part = fields.split(".time_increment(")[1].split(")")[0]
-                params["time_increment"] = increment_part.strip()
-
-            # Extract actual fields from curly braces {} (e.g., "insights.level(campaign){campaign_id,spend}")
-            if "{" in fields and "}" in fields:
-                fields_part = fields.split("{")[1].split("}")[0]
-                params["fields"] = fields_part.strip()
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
@@ -203,7 +179,6 @@ class PageLoader:
                 params.update({k.strip(): v.strip() for k, v in pairs})
             elif isinstance(extras, dict):
                 params.update(extras)
-
         return params
 
     def _build_endpoint_path(self, query_config, page_id: str) -> str:
