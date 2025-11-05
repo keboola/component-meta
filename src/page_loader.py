@@ -42,6 +42,14 @@ class PageLoader:
             param_pairs = (p.split("=", 1) for p in query_config.parameters.split("&") if "=" in p)
             params.update({k.strip(): v.strip() for k, v in param_pairs})
 
+        has_time_increment = "time_increment" in params
+        has_date_preset = "date_preset" in params
+        has_time_ranges = "time_ranges" in params
+
+        if not has_time_increment and (has_date_preset or has_time_ranges):
+            params["time_increment"] = "1"
+            logging.info("Adding default time_increment=1 to async insights query to ensure daily breakdown")
+
         logging.info(f"Starting async insights request: {endpoint_path}")
 
         try:
