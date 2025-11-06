@@ -171,6 +171,13 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
+            has_period = "period" in params
+            has_date_range = "since" in params or "until" in params
+
+            if not has_period and has_date_range:
+                params["period"] = "day"
+                logging.info("Adding default period=day to sync insights query to ensure daily breakdown")
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
