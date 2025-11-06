@@ -51,9 +51,10 @@ class PageLoader:
             logging.info("Adding default time_increment=1 to async insights query to ensure daily breakdown")
 
         logging.info(f"Starting async insights request: {endpoint_path}")
+        logging.info(f"Async insights params: {params}")
 
         try:
-            response = self.client.post(endpoint_path=endpoint_path, json=params)
+            response = self.client.post(endpoint_path=endpoint_path, data=params)
             report_id = response.get("report_run_id")
             if not report_id:
                 logging.warning("No 'report_run_id' found in the async insights response.")
