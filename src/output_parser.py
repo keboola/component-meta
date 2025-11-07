@@ -1,5 +1,11 @@
 import json
+import logging
 from typing import Any, Optional
+from urllib.parse import parse_qs, urlparse
+
+logger = logging.getLogger(__name__)
+
+MAX_PAGES_PER_QUERY = 10000
 
 
 class OutputParser:
@@ -385,18 +391,51 @@ class OutputParser:
         table_name: Optional[str],
         result: dict,
     ) -> None:
-        """Process pagination by loading and merging next pages."""
+        """Process pagination iteratively by loading and merging next pages."""
         if "paging" not in response or "next" not in response["paging"]:
             return
 
-        next_page_response = self.page_loader.load_page_from_url(response["paging"]["next"])
-        next_page_result = self.parse_data(next_page_response, fb_node, parent_id, table_name)
+        seen_cursors = set()
+        page_count = 1
+        next_url = response["paging"]["next"]
 
-        # Merge pagination results
-        for page_table, page_rows in next_page_result.items():
-            if page_table not in result:
-                result[page_table] = []
-            result[page_table].extend(page_rows)
+        while next_url and page_count < MAX_PAGES_PER_QUERY:
+            cursor = self._extract_pagination_cursor(next_url)
+            if cursor in seen_cursors:
+                logger.warning(f"Circular pagination detected at page {page_count}, cursor: {cursor}")
+                break
+            if cursor:
+                seen_cursors.add(cursor)
+
+            try:
+                next_page_response = self.page_loader.load_page_from_url(next_url)
+            except Exception as e:
+                logger.error(f"Failed to load page {page_count + 1}: {str(e)}")
+                break
+
+            if not next_page_response or "data" not in next_page_response:
+                break
+
+            data = next_page_response.get("data", [])
+            if data:
+                for row in data:
+                    self._process_row(row, fb_node, parent_id, table_name, result)
+
+            page_count += 1
+            next_url = next_page_response.get("paging", {}).get("next")
+
+        if page_count >= MAX_PAGES_PER_QUERY:
+            logger.warning(f"Reached maximum page limit ({MAX_PAGES_PER_QUERY}) for query")
+
+    def _extract_pagination_cursor(self, url: str) -> Optional[str]:
+        """Extract the 'after' cursor from a pagination URL for loop detection."""
+        try:
+            parsed_url = urlparse(url)
+            query_params = parse_qs(parsed_url.query)
+            after_cursor = query_params.get("after", [None])[0]
+            return after_cursor
+        except Exception:
+            return None
 
     def _flatten_array(self, parent_key: str, values: Any) -> dict[str, Any]:
         """
