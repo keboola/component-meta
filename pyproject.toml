@@ -3,18 +3,18 @@ name = "component-meta"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = "~=3.13.0"
 dependencies = [
-    "aiolimiter==1.1.0",
+    "aiolimiter>=1.1.0",
     "flake8>=7.3.0",
-    "freezegun==1.5.2",
+    "freezegun>=1.5.2",
     "keboola-component>=1.6.10",
     "keboola-csvwriter>=1.0.1",
     "keboola-http-client",
     "keboola-utils>=1.1.0",
-    "mock==5.1.0",
+    "mock>=5.1.0",
     "pydantic>=2.11.7",
 ]
 
 [tool.uv.sources]
-keboola-http-client = { git = "https://github.com/keboola/python-http-client.git", rev = "feature/async-retry" }
+keboola-http-client = { git = "https://github.com/keboola/python-http-client.git", rev = "feature/async" }
