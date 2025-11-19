@@ -43,6 +43,7 @@ class PageLoader:
             params.update({k.strip(): v.strip() for k, v in param_pairs})
 
         logging.info(f"Starting async insights request: {endpoint_path}")
+        logging.info(f"Async insights query parameters: {params}")
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
