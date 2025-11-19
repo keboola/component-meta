@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Any, Optional
 
 
@@ -385,18 +386,32 @@ class OutputParser:
         table_name: Optional[str],
         result: dict,
     ) -> None:
-        """Process pagination by loading and merging next pages."""
-        if "paging" not in response or "next" not in response["paging"]:
-            return
+        """Process pagination by loading and merging next pages iteratively."""
+        current_response = response
+        page_count = 0
+        max_pages = 100_000  # Safety limit to prevent infinite loops
 
-        next_page_response = self.page_loader.load_page_from_url(response["paging"]["next"])
-        next_page_result = self.parse_data(next_page_response, fb_node, parent_id, table_name)
+        while "paging" in current_response and "next" in current_response["paging"]:
+            page_count += 1
+            if page_count >= max_pages:
+                logging.warning(f"Reached maximum pagination limit of {max_pages} pages for {fb_node}")
+                break
 
-        # Merge pagination results
-        for page_table, page_rows in next_page_result.items():
-            if page_table not in result:
-                result[page_table] = []
-            result[page_table].extend(page_rows)
+            next_url = current_response["paging"]["next"]
+            next_page_response = self.page_loader.load_page_from_url(next_url)
+
+            # Check if we got valid data back
+            if not next_page_response or "data" not in next_page_response:
+                break
+
+            # Process the data from this page
+            data = next_page_response.get("insights", next_page_response).get("data")
+            if data:
+                for row in data:
+                    self._process_row(row, fb_node, parent_id, table_name, result)
+
+            # Move to the next page
+            current_response = next_page_response
 
     def _flatten_array(self, parent_key: str, values: Any) -> dict[str, Any]:
         """
