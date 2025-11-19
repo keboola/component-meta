@@ -140,6 +140,14 @@ class PageLoader:
             params["until"] = get_past_date(query_config.until).strftime("%Y-%m-%d")
 
         fields = str(getattr(query_config, "fields", ""))
+
+        # Extract breakdown parameter if present (works for both insights and nested queries)
+        if ".breakdown(" in fields:
+            breakdown_part = fields.split(".breakdown(")[1].split(")")[0]
+            breakdowns = [b.strip() for b in breakdown_part.replace("\n", "").split(",") if b.strip()]
+            if breakdowns:
+                params["breakdowns"] = ",".join(breakdowns)
+
         # Insights queries have special parameter handling
         if not query_config.path and fields.startswith("insights"):
             # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
@@ -167,7 +175,14 @@ class PageLoader:
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
-                params["fields"] = query_config.fields
+                # For nested insights queries (path + insights), remove breakdown from fields
+                if query_config.path and "insights" in fields and ".breakdown(" in fields:
+                    before_breakdown = fields.split(".breakdown(")[0]
+                    breakdown_section = fields.split(".breakdown(")[1]
+                    after_breakdown = breakdown_section.split(")", 1)[1] if ")" in breakdown_section else ""
+                    params["fields"] = before_breakdown + after_breakdown
+                else:
+                    params["fields"] = query_config.fields
 
         # Remove keys with None values
         params = {k: v for k, v in params.items() if v is not None}
