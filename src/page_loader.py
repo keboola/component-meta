@@ -47,9 +47,11 @@ class PageLoader:
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
+            logging.debug(f"Raw async job start response: {response}")
             report_id = response.get("report_run_id")
             if not report_id:
                 logging.warning("No 'report_run_id' found in the async insights response.")
+                logging.debug(f"Full response: {response}")
                 return None
 
             logging.info(f"Async job started successfully with report ID: {report_id}")
@@ -70,6 +72,7 @@ class PageLoader:
                 # Include access token in polling request
                 params = {"access_token": access_token} if access_token else {}
                 response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}", params=params)
+                logging.debug(f"Async job status response: {response}")
 
                 if not response:
                     logging.error("Empty response from async job status check")
@@ -100,6 +103,7 @@ class PageLoader:
         try:
             params = {"access_token": access_token} if access_token else {}
             final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
+            logging.debug(f"Raw async insights response for report {report_id}: {final_response}")
             return final_response if final_response else {"data": []}
         except Exception as e:
             logging.error(f"Failed to get final results for job {report_id}: {str(e)}")
@@ -116,6 +120,7 @@ class PageLoader:
 
         try:
             response = self.client.get(endpoint_path=endpoint_path, params=base_params)
+            logging.debug(f"Raw API response: {response}")
             return response or {"data": []}
 
         except HTTPError as e:
@@ -236,6 +241,7 @@ class PageLoader:
             logging.debug(f"Pagination params: {params}")
 
             response = self.client.get(endpoint_path=path, params=params)
+            logging.debug(f"Raw pagination response: {response}")
 
             return response if response else {"data": []}
 
