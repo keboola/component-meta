@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional
+from typing import Any, Iterator, Optional
 
 
 class OutputParser:
@@ -57,18 +57,37 @@ class OutputParser:
         table_name: Optional[str] = None,
     ) -> dict:
         result = {}
+
+        for page_response in self._iter_paginated_responses(response):
+            for row in self._extract_rows(page_response):
+                self._process_row(row, fb_node, parent_id, table_name, result)
+
+        return result
+
+    def _iter_paginated_responses(self, response: dict[str, Any]) -> Iterator[dict[str, Any]]:
+        """Yield the current response and any subsequent paginated responses."""
+        current = response or {}
+        current_url = None
+
+        while isinstance(current, dict) and current:
+            yield current
+
+            paging = current.get("paging") or {}
+            next_url = paging.get("next")
+            if not next_url or next_url == current_url:
+                break
+
+            current_url = next_url
+            current = self.page_loader.load_page_from_url(next_url)
+
+    def _extract_rows(self, response: dict[str, Any]) -> list[dict[str, Any]]:
+        """Normalize response payload into a list of rows to process."""
         data = response.get("insights", response).get("data")
 
         if not data and isinstance(response, dict) and "id" in response:
-            data = [response]
+            return [response]
 
-        if data:
-            for row in data:
-                self._process_row(row, fb_node, parent_id, table_name, result)
-
-            self._process_pagination(response, fb_node, parent_id, table_name, result)
-
-        return result
+        return data or []
 
     def _process_row(
         self,
@@ -376,27 +395,6 @@ class OutputParser:
                 if nested_table not in result:
                     result[nested_table] = []
                 result[nested_table].extend(nested_rows)
-
-    def _process_pagination(
-        self,
-        response: dict,
-        fb_node: str,
-        parent_id: str,
-        table_name: Optional[str],
-        result: dict,
-    ) -> None:
-        """Process pagination by loading and merging next pages."""
-        if "paging" not in response or "next" not in response["paging"]:
-            return
-
-        next_page_response = self.page_loader.load_page_from_url(response["paging"]["next"])
-        next_page_result = self.parse_data(next_page_response, fb_node, parent_id, table_name)
-
-        # Merge pagination results
-        for page_table, page_rows in next_page_result.items():
-            if page_table not in result:
-                result[page_table] = []
-            result[page_table].extend(page_rows)
 
     def _flatten_array(self, parent_key: str, values: Any) -> dict[str, Any]:
         """
