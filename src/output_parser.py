@@ -399,7 +399,7 @@ class OutputParser:
             for row in data:
                 self._process_row(row, fb_node, parent_id, table_name, result)
 
-            next_url = response["paging"]["next"]
+            next_url = response.get("paging",{}).get("next")
             if next_url:
                 next_page_response = self.page_loader.load_page_from_url(next_url)
                 response = next_page_response
