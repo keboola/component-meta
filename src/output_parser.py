@@ -67,15 +67,17 @@ class OutputParser:
     def _iter_paginated_responses(self, response: dict[str, Any]) -> Iterator[dict[str, Any]]:
         """Yield the current response and any subsequent paginated responses."""
         current = response or {}
+        current_url = None
 
         while isinstance(current, dict) and current:
             yield current
 
             paging = current.get("paging") or {}
             next_url = paging.get("next")
-            if not next_url:
+            if not next_url or next_url == current_url:
                 break
 
+            current_url = next_url
             current = self.page_loader.load_page_from_url(next_url) or {}
 
     def _extract_rows(self, response: dict[str, Any]) -> list[dict[str, Any]]:
