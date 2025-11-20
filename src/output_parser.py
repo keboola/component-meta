@@ -388,15 +388,8 @@ class OutputParser:
     ) -> None:
         """Process pagination by loading and merging next pages iteratively."""
         current_response = response
-        page_count = 0
-        max_pages = 100_000  # Safety limit to prevent infinite loops
 
         while "paging" in current_response and "next" in current_response["paging"]:
-            page_count += 1
-            if page_count >= max_pages:
-                logging.warning(f"Reached maximum pagination limit of {max_pages} pages for {fb_node}")
-                break
-
             next_url = current_response["paging"]["next"]
             next_page_response = self.page_loader.load_page_from_url(next_url)
 
