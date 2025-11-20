@@ -70,6 +70,10 @@ class OutputParser:
         current_url = None
 
         while isinstance(current, dict) and current:
+            rows = self._extract_rows(current)
+            if not rows:
+                break
+
             yield current
 
             paging = current.get("paging") or {}
