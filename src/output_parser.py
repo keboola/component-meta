@@ -78,11 +78,11 @@ class OutputParser:
                 break
 
             current_url = next_url
-            current = self.page_loader.load_page_from_url(next_url) or {}
+            current = self.page_loader.load_page_from_url(next_url)
 
     def _extract_rows(self, response: dict[str, Any]) -> list[dict[str, Any]]:
         """Normalize response payload into a list of rows to process."""
-        data = (response.get("insights", response) or {}).get("data")
+        data = response.get("insights", response).get("data")
 
         if not data and isinstance(response, dict) and "id" in response:
             return [response]
