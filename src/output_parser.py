@@ -383,27 +383,26 @@ class OutputParser:
         fb_node: str,
         parent_id: str,
         table_name: Optional[str],
-        result: dict,
     ) -> None:
         """Process pagination by loading and merging next pages iteratively."""
-        current_response = response
 
-        while "paging" in current_response and "next" in current_response["paging"]:
-            next_url = current_response["paging"]["next"]
-            next_page_response = self.page_loader.load_page_from_url(next_url)
+        while True:
+            result = {}
+            data = response.get("insights", response).get("data")
 
-            # Check if we got valid data back
-            if not next_page_response or "data" not in next_page_response:
+            if not data and isinstance(response, dict) and "id" in response:
+                data = [response]
+
+            if not data:
                 break
 
-            # Process the data from this page
-            data = next_page_response.get("insights", next_page_response).get("data")
-            if data:
-                for row in data:
-                    self._process_row(row, fb_node, parent_id, table_name, result)
+            for row in data:
+                self._process_row(row, fb_node, parent_id, table_name, result)
 
-            # Move to the next page
-            current_response = next_page_response
+            next_url = response["paging"]["next"]
+            if next_url:
+                next_page_response = self.page_loader.load_page_from_url(next_url)
+                response = next_page_response
 
     def _flatten_array(self, parent_key: str, values: Any) -> dict[str, Any]:
         """
