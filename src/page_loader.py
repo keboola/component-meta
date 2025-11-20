@@ -224,13 +224,9 @@ class PageLoader:
             return response if response else {"data": []}
 
         except HTTPError as e:
-            error_msg = f"HTTP error while loading paginated data from URL {url}"
-            if hasattr(e, "response") and e.response:
-                logging.error(f"{error_msg}: {e.response.text}")
-            else:
-                logging.error(f"{error_msg}: {str(e)}")
-            raise UserException(f"Failed to load paginated data from URL {url}: {str(e)}")
+            logging.error(f"HTTP error while loading paginated data from URL {url}: {e.response.text}")
+            return {"data": []}
 
         except Exception as e:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
-            raise UserException(f"Failed to load paginated data from URL {url}: {str(e)}")
+            return {"data": []}
