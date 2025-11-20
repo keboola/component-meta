@@ -2,6 +2,7 @@ import json
 from typing import Any, Optional
 # nothing
 
+
 class OutputParser:
     # Facebook Ads action stats fields that need special handling
     ADS_ACTION_STATS_ROW = [
@@ -399,7 +400,7 @@ class OutputParser:
             for row in data:
                 self._process_row(row, fb_node, parent_id, table_name, result)
 
-            next_url = response.get("paging",{}).get("next")
+            next_url = response.get("paging", {}).get("next")
             if next_url:
                 next_page_response = self.page_loader.load_page_from_url(next_url)
                 response = next_page_response
