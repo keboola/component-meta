@@ -1,5 +1,6 @@
 import json
-from typing import Any, Iterator, Optional
+from typing import Any, Optional
+from collections.abc import Iterator
 
 
 class OutputParser:
@@ -59,7 +60,11 @@ class OutputParser:
         result = {}
 
         for page_response in self._iter_paginated_responses(response):
-            for row in self._extract_rows(page_response):
+            rows = self._extract_rows(page_response)
+            if not rows:
+                break
+
+            for row in rows:
                 self._process_row(row, fb_node, parent_id, table_name, result)
 
         return result
