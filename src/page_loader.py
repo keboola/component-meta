@@ -43,12 +43,15 @@ class PageLoader:
             params.update({k.strip(): v.strip() for k, v in param_pairs})
 
         logging.info(f"Starting async insights request: {endpoint_path}")
+        logging.info(f"Async insights query parameters: {params}")
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
+            logging.debug(f"Raw async job start response: {response}")
             report_id = response.get("report_run_id")
             if not report_id:
                 logging.warning("No 'report_run_id' found in the async insights response.")
+                logging.debug(f"Full response: {response}")
                 return None
 
             logging.info(f"Async job started successfully with report ID: {report_id}")
@@ -69,6 +72,7 @@ class PageLoader:
                 # Include access token in polling request
                 params = {"access_token": access_token} if access_token else {}
                 response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}", params=params)
+                logging.debug(f"Async job status response: {response}")
 
                 if not response:
                     logging.error("Empty response from async job status check")
@@ -99,6 +103,7 @@ class PageLoader:
         try:
             params = {"access_token": access_token} if access_token else {}
             final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
+            logging.debug(f"Raw async insights response for report {report_id}: {final_response}")
             return final_response if final_response else {"data": []}
         except Exception as e:
             logging.error(f"Failed to get final results for job {report_id}: {str(e)}")
@@ -115,6 +120,7 @@ class PageLoader:
 
         try:
             response = self.client.get(endpoint_path=endpoint_path, params=base_params)
+            logging.debug(f"Raw API response: {response}")
             return response or {"data": []}
 
         except HTTPError as e:
@@ -139,6 +145,14 @@ class PageLoader:
             params["until"] = get_past_date(query_config.until).strftime("%Y-%m-%d")
 
         fields = str(getattr(query_config, "fields", ""))
+
+        # Extract breakdown parameter if present (works for both insights and nested queries)
+        if ".breakdown(" in fields:
+            breakdown_part = fields.split(".breakdown(")[1].split(")")[0]
+            breakdowns = [b.strip() for b in breakdown_part.replace("\n", "").split(",") if b.strip()]
+            if breakdowns:
+                params["breakdowns"] = ",".join(breakdowns)
+
         # Insights queries have special parameter handling
         if not query_config.path and fields.startswith("insights"):
             # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
@@ -166,7 +180,14 @@ class PageLoader:
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
-                params["fields"] = query_config.fields
+                # For nested insights queries (path + insights), remove breakdown from fields
+                if query_config.path and "insights" in fields and ".breakdown(" in fields:
+                    before_breakdown = fields.split(".breakdown(")[0]
+                    breakdown_section = fields.split(".breakdown(")[1]
+                    after_breakdown = breakdown_section.split(")", 1)[1] if ")" in breakdown_section else ""
+                    params["fields"] = before_breakdown + after_breakdown
+                else:
+                    params["fields"] = query_config.fields
 
         # Remove keys with None values
         params = {k: v for k, v in params.items() if v is not None}
@@ -220,6 +241,7 @@ class PageLoader:
             logging.debug(f"Pagination params: {params}")
 
             response = self.client.get(endpoint_path=path, params=params)
+            logging.debug(f"Raw pagination response: {response}")
 
             return response if response else {"data": []}
 
