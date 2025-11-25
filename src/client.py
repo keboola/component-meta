@@ -62,6 +62,7 @@ class FacebookClient:
         self.client = HttpClient(
             base_url="https://graph.facebook.com",
             default_http_header={"Content-Type": "application/json"},
+            status_forcelist=(500, 502, 503, 504),
         )
 
     def _with_token(self, params: dict, token: str = None) -> dict:
