@@ -224,9 +224,10 @@ class PageLoader:
             return response if response else {"data": []}
 
         except HTTPError as e:
-            logging.error(f"HTTP error while loading paginated data from URL {url}: {e.response.text}")
-            return {"data": []}
+            status_code = getattr(getattr(e, "response", None), "status_code", None)
+            logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
+            raise
 
         except Exception as e:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
-            return {"data": []}
+            raise
