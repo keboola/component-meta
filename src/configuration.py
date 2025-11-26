@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class QueryConfig(BaseModel):
@@ -39,3 +39,21 @@ class Configuration(BaseModel):
     queries: list[QueryRow] = Field(default_factory=list)
     api_version: str = Field(alias="api-version", default="v23.0")
     bucket_id: Optional[str] = Field(alias="bucket-id", default=None)
+
+    @field_validator("accounts", mode="before")
+    @classmethod
+    def normalize_accounts(cls, v: Any) -> dict[str, Any]:
+        """Convert empty list to empty dict for accounts field.
+
+        The UI may send an empty list [] when no accounts are configured,
+        but the model expects a dict.
+        """
+        if v is None:
+            return {}
+        if isinstance(v, list):
+            if not v:
+                return {}
+            raise TypeError("accounts must be an object, not a list")
+        if isinstance(v, dict):
+            return v
+        raise TypeError("accounts must be an object (mapping id -> account)")
