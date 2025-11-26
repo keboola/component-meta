@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 from typing import Any, Optional
@@ -9,6 +10,35 @@ from keboola.utils.date import get_past_date
 from requests import HTTPError
 
 logger = logging.getLogger(__name__)
+
+
+def _parse_facebook_error(response) -> str:
+    """
+    Parse Facebook API error response and return a human-readable error message.
+    Facebook errors typically have this structure:
+    {"error": {"message": "...", "type": "...", "code": 123, "error_subcode": 456}}
+    """
+    if not response or not hasattr(response, "text"):
+        return ""
+    try:
+        error_data = json.loads(response.text)
+        if "error" in error_data:
+            err = error_data["error"]
+            parts = []
+            if "message" in err:
+                parts.append(f"Message: {err['message']}")
+            if "type" in err:
+                parts.append(f"Type: {err['type']}")
+            if "code" in err:
+                parts.append(f"Code: {err['code']}")
+            if "error_subcode" in err:
+                parts.append(f"Subcode: {err['error_subcode']}")
+            if "fbtrace_id" in err:
+                parts.append(f"Trace ID: {err['fbtrace_id']}")
+            return " | ".join(parts)
+    except (json.JSONDecodeError, KeyError, TypeError):
+        pass
+    return ""
 
 
 class PageLoader:
@@ -118,9 +148,11 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
-            logging.error(f"HTTP error while loading page data: {e}")
-            if hasattr(e, "response") and e.response:
-                logging.error(f"Response text: {e.response.text}")
+            status_code = getattr(getattr(e, "response", None), "status_code", None)
+            fb_error = _parse_facebook_error(getattr(e, "response", None))
+            logging.error(f"HTTP error while loading page data (status={status_code}): {e}")
+            if fb_error:
+                logging.error(f"Facebook API error: {fb_error}")
             raise
 
         except Exception as e:
@@ -225,7 +257,10 @@ class PageLoader:
 
         except HTTPError as e:
             status_code = getattr(getattr(e, "response", None), "status_code", None)
+            fb_error = _parse_facebook_error(getattr(e, "response", None))
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
+            if fb_error:
+                logging.error(f"Facebook API error: {fb_error}")
             raise
 
         except Exception as e:
