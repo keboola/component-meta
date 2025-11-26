@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import parse_qs, urlparse
 
@@ -211,6 +212,16 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
+            # Check if pagination URL contains future dates (invalid for insights queries)
+            # Facebook sometimes returns paging.next URLs with timestamps pointing to the future,
+            # which will always fail with "since param is not valid" error
+            if self._has_future_date_params(params):
+                logging.warning(
+                    f"Skipping pagination URL with future date range - treating as end of data. "
+                    f"URL: {url}"
+                )
+                return {"data": []}
+
             response = self.client.get(endpoint_path=path, params=params)
 
             return response if response else {"data": []}
@@ -225,3 +236,35 @@ class PageLoader:
         except Exception as e:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
+
+    def _has_future_date_params(self, params: dict[str, Any]) -> bool:
+        """
+        Check if pagination params contain future date timestamps.
+
+        Facebook sometimes returns paging.next URLs with since/until timestamps
+        pointing to the future, which will always fail because insights data
+        is only available for historical dates.
+
+        Args:
+            params: Query parameters from the pagination URL
+
+        Returns:
+            True if until timestamp is in the future (with 5 min grace for clock skew)
+        """
+        until_value = params.get("until")
+        if not until_value:
+            return False
+
+        # Only check values that look like Unix timestamps (10-digit numbers)
+        until_str = str(until_value)
+        if not until_str.isdigit() or len(until_str) != 10:
+            return False
+
+        try:
+            until_ts = int(until_str)
+            now_ts = int(datetime.now(timezone.utc).timestamp())
+            grace_seconds = 300  # 5 minutes grace for clock skew
+
+            return until_ts > now_ts + grace_seconds
+        except (ValueError, TypeError):
+            return False
