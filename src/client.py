@@ -49,6 +49,15 @@ for name in logging.root.manager.loggerDict:
     logging.getLogger(name).addFilter(access_token_filter)
 
 
+def _normalize_ad_account_id(account_id: str) -> str:
+    """
+    Normalize ad account ID by adding 'act_' prefix if not present.
+    Facebook Ads API requires ad account IDs to be prefixed with 'act_'.
+    """
+    account_id = str(account_id)
+    return account_id if account_id.startswith("act_") else f"act_{account_id}"
+
+
 class FacebookClient:
     def __init__(self, oauth: OauthCredentials, api_version: str):
         self.oauth = oauth
@@ -250,6 +259,12 @@ class FacebookClient:
         for page_id, token in page_tokens.items():
             page_id = str(page_id)
 
+            # Normalize ad account ID for insights queries (add 'act_' prefix if needed)
+            # This is required by Facebook Ads API for ad account insights endpoints
+            loader_page_id = page_id
+            if is_insights_query or row_config.query.path == "insights":
+                loader_page_id = _normalize_ad_account_id(page_id)
+
             try:
                 # Create new client with page token
                 # Use the shared client and pass token in params
@@ -260,7 +275,7 @@ class FacebookClient:
                 fb_graph_node = self._get_fb_graph_node(is_page_token, row_config)
 
                 # Load data from Facebook API
-                page_data = page_loader.load_page(row_config.query, page_id, params={"access_token": token})
+                page_data = page_loader.load_page(row_config.query, loader_page_id, params={"access_token": token})
                 # For page queries without path, the response is the page object itself, not wrapped in "data"
                 if not row_config.query.path and "data" not in page_data:
                     page_content = [page_data] if page_data and "id" in page_data else []
@@ -275,7 +290,7 @@ class FacebookClient:
                         page_loader = PageLoader(self.client, row_config.type, self.api_version)
                         output_parser = OutputParser(page_loader, page_id, row_config)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
-                        page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
+                        page_data = page_loader.load_page(row_config.query, loader_page_id, params=self._with_token({}))
                         # For page queries without path, the response is the page object itself, not wrapped in "data"
                         if not row_config.query.path and "data" not in page_data:
                             page_content = [page_data] if page_data and "id" in page_data else []
