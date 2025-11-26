@@ -197,17 +197,11 @@ class PageLoader:
     def load_page_from_url(self, url: str) -> dict[str, Any]:
         """
         Load page data from a full Facebook API URL (used for pagination).
+        Respects the paging.next URL as returned by the Facebook API.
         """
         try:
             parsed_url = urlparse(url)
-
-            # Extract the path - keep the API version if present in the URL
-            # URL format: https://graph.facebook.com/v19.0/path?params
             path = parsed_url.path
-
-            # If the URL doesn't include an API version, prepend our configured version
-            if not path.startswith("/v"):
-                path = f"/{self.api_version}{path}"
 
             # Parse query parameters
             query_params = parse_qs(parsed_url.query)
