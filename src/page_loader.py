@@ -182,12 +182,19 @@ class PageLoader:
         return params
 
     def _build_endpoint_path(self, query_config, page_id: str) -> str:
+        # Check if this is an insights query
+        fields = str(getattr(query_config, "fields", ""))
+        is_insights_query = not query_config.path and fields.startswith("insights")
+
+        # For insights queries, normalize page_id to include act_ prefix (like async path does)
+        # This is required for Facebook Ads API ad account insights endpoints
+        if is_insights_query and page_id and not page_id.startswith("act_"):
+            page_id = f"act_{page_id}"
+
         # Start with the API version
         path_parts = [self.api_version, page_id]
 
-        # Check if this is an insights query
-        fields = str(getattr(query_config, "fields", ""))
-        if not query_config.path and fields.startswith("insights"):
+        if is_insights_query:
             path_parts.append("insights")
         elif query_config.path:
             path_parts.append(query_config.path)
