@@ -218,6 +218,8 @@ class PageLoader:
         except HTTPError as e:
             status_code = getattr(getattr(e, "response", None), "status_code", None)
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logging.error(f"Facebook API error response: {e.response.text}")
             raise
 
         except Exception as e:
