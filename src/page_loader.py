@@ -216,16 +216,16 @@ class PageLoader:
             logging.debug(f"Pagination params: {params}")
 
             # Handle Meta bug: pagination URLs sometimes have future timestamps
-            # - both since and until in future -> skip (end of data)
-            # - since in past, until in future -> clamp until to now
             until_ts = self._parse_unix_ts(params.get("until"))
             if until_ts is not None:
                 now_ts = int(datetime.now(timezone.utc).timestamp())
+                until_is_future = until_ts > now_ts + FUTURE_TS_GRACE_SECONDS
 
-                if until_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
+                if until_is_future:
                     since_ts = self._parse_unix_ts(params.get("since"))
+                    since_is_future = since_ts is not None and since_ts > now_ts + FUTURE_TS_GRACE_SECONDS
 
-                    if since_ts is not None and since_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
+                    if since_is_future:
                         logging.warning(f"Skipping future-only pagination range. URL: {url}")
                         return {"data": []}
 
