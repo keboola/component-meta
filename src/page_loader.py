@@ -11,6 +11,9 @@ from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
+# Grace period for clock skew when checking future timestamps
+FUTURE_TS_GRACE_SECONDS = 300  # 5 minutes
+
 
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
@@ -212,27 +215,24 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
-            # Normalize pagination params to handle future date timestamps
-            # Facebook sometimes returns paging.next URLs with timestamps pointing to the future,
-            # which will always fail with "since param is not valid" error
-            normalized_params, mode = self._normalize_pagination_params(params)
+            # Handle Meta bug: pagination URLs sometimes have future timestamps
+            # - both since and until in future -> skip (end of data)
+            # - since in past, until in future -> clamp until to now
+            until_ts = self._parse_unix_ts(params.get("until"))
+            if until_ts is not None:
+                now_ts = int(datetime.now(timezone.utc).timestamp())
 
-            if mode == "skip":
-                # Both since and until are in the future - end of data
-                logging.warning(
-                    f"Skipping pagination URL with fully future date range - treating as end of data. "
-                    f"URL: {url}"
-                )
-                return {"data": []}
-            elif mode == "clamped":
-                # since is in past but until is in future - clamp until to now
-                original_until = params.get("until")
-                new_until = normalized_params.get("until")
-                logging.warning(
-                    f"Clamping future 'until' timestamp from {original_until} to {new_until} (now) "
-                    f"to avoid requesting future data. URL: {url}"
-                )
-                params = normalized_params
+                if until_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
+                    since_ts = self._parse_unix_ts(params.get("since"))
+
+                    if since_ts is not None and since_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
+                        logging.warning(f"Skipping future-only pagination range. URL: {url}")
+                        return {"data": []}
+
+                    logging.warning(
+                        f"Clamping future 'until' from {params.get('until')} to {now_ts}. URL: {url}"
+                    )
+                    params["until"] = str(now_ts)
 
             response = self.client.get(endpoint_path=path, params=params)
 
@@ -249,61 +249,11 @@ class PageLoader:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
 
-    def _normalize_pagination_params(self, params: dict[str, Any]) -> tuple[dict[str, Any], str]:
-        """
-        Normalize pagination params to handle future date timestamps.
-
-        Facebook sometimes returns paging.next URLs with since/until timestamps
-        pointing to the future, which will always fail because insights data
-        is only available for historical dates.
-
-        This method handles three cases:
-        1. Normal: both since and until are in the past/present -> use as-is
-        2. Clamp: since is in past but until is in future -> clamp until to now
-        3. Skip: both since and until are in future -> skip entirely (end of data)
-
-        Args:
-            params: Query parameters from the pagination URL
-
-        Returns:
-            Tuple of (normalized_params, mode) where mode is "normal", "clamped", or "skip"
-        """
-        since_value = params.get("since")
-        until_value = params.get("until")
-
-        # If no until parameter, nothing to normalize
-        if not until_value:
-            return params, "normal"
-
-        # Only check values that look like Unix timestamps (10-digit numbers)
-        until_str = str(until_value)
-        if not until_str.isdigit() or len(until_str) != 10:
-            return params, "normal"
-
-        try:
-            until_ts = int(until_str)
-            now_ts = int(datetime.now(timezone.utc).timestamp())
-            grace_seconds = 300  # 5 minutes grace for clock skew
-
-            # If until is not in the future, no normalization needed
-            if until_ts <= now_ts + grace_seconds:
-                return params, "normal"
-
-            # until is in the future - check since to decide action
-            since_ts = None
-            if since_value:
-                since_str = str(since_value)
-                if since_str.isdigit() and len(since_str) == 10:
-                    since_ts = int(since_str)
-
-            # If since is also in the future (or very close to now), skip entirely
-            if since_ts is not None and since_ts > now_ts + grace_seconds:
-                return params, "skip"
-
-            # since is in the past but until is in future -> clamp until to now
-            normalized_params = params.copy()
-            normalized_params["until"] = str(now_ts)
-            return normalized_params, "clamped"
-
-        except (ValueError, TypeError):
-            return params, "normal"
+    def _parse_unix_ts(self, value: Any) -> int | None:
+        """Parse a 10-digit Unix timestamp, return None if not valid."""
+        if value is None:
+            return None
+        s = str(value)
+        if s.isdigit() and len(s) == 10:
+            return int(s)
+        return None
