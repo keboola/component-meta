@@ -212,15 +212,27 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
-            # Check if pagination URL contains future dates (invalid for insights queries)
+            # Normalize pagination params to handle future date timestamps
             # Facebook sometimes returns paging.next URLs with timestamps pointing to the future,
             # which will always fail with "since param is not valid" error
-            if self._has_future_date_params(params):
+            normalized_params, mode = self._normalize_pagination_params(params)
+
+            if mode == "skip":
+                # Both since and until are in the future - end of data
                 logging.warning(
-                    f"Skipping pagination URL with future date range - treating as end of data. "
+                    f"Skipping pagination URL with fully future date range - treating as end of data. "
                     f"URL: {url}"
                 )
                 return {"data": []}
+            elif mode == "clamped":
+                # since is in past but until is in future - clamp until to now
+                original_until = params.get("until")
+                new_until = normalized_params.get("until")
+                logging.warning(
+                    f"Clamping future 'until' timestamp from {original_until} to {new_until} (now) "
+                    f"to avoid requesting future data. URL: {url}"
+                )
+                params = normalized_params
 
             response = self.client.get(endpoint_path=path, params=params)
 
@@ -237,34 +249,61 @@ class PageLoader:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
 
-    def _has_future_date_params(self, params: dict[str, Any]) -> bool:
+    def _normalize_pagination_params(self, params: dict[str, Any]) -> tuple[dict[str, Any], str]:
         """
-        Check if pagination params contain future date timestamps.
+        Normalize pagination params to handle future date timestamps.
 
         Facebook sometimes returns paging.next URLs with since/until timestamps
         pointing to the future, which will always fail because insights data
         is only available for historical dates.
 
+        This method handles three cases:
+        1. Normal: both since and until are in the past/present -> use as-is
+        2. Clamp: since is in past but until is in future -> clamp until to now
+        3. Skip: both since and until are in future -> skip entirely (end of data)
+
         Args:
             params: Query parameters from the pagination URL
 
         Returns:
-            True if until timestamp is in the future (with 5 min grace for clock skew)
+            Tuple of (normalized_params, mode) where mode is "normal", "clamped", or "skip"
         """
+        since_value = params.get("since")
         until_value = params.get("until")
+
+        # If no until parameter, nothing to normalize
         if not until_value:
-            return False
+            return params, "normal"
 
         # Only check values that look like Unix timestamps (10-digit numbers)
         until_str = str(until_value)
         if not until_str.isdigit() or len(until_str) != 10:
-            return False
+            return params, "normal"
 
         try:
             until_ts = int(until_str)
             now_ts = int(datetime.now(timezone.utc).timestamp())
             grace_seconds = 300  # 5 minutes grace for clock skew
 
-            return until_ts > now_ts + grace_seconds
+            # If until is not in the future, no normalization needed
+            if until_ts <= now_ts + grace_seconds:
+                return params, "normal"
+
+            # until is in the future - check since to decide action
+            since_ts = None
+            if since_value:
+                since_str = str(since_value)
+                if since_str.isdigit() and len(since_str) == 10:
+                    since_ts = int(since_str)
+
+            # If since is also in the future (or very close to now), skip entirely
+            if since_ts is not None and since_ts > now_ts + grace_seconds:
+                return params, "skip"
+
+            # since is in the past but until is in future -> clamp until to now
+            normalized_params = params.copy()
+            normalized_params["until"] = str(now_ts)
+            return normalized_params, "clamped"
+
         except (ValueError, TypeError):
-            return False
+            return params, "normal"
