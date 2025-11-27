@@ -219,16 +219,17 @@ class PageLoader:
             until_ts = self._parse_unix_ts(params.get("until"))
             if until_ts is not None:
                 now_ts = int(datetime.now(timezone.utc).timestamp())
-                until_is_future = until_ts > now_ts + FUTURE_TS_GRACE_SECONDS
 
-                if until_is_future:
+                # Check if 'until' is in the future
+                if until_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
                     since_ts = self._parse_unix_ts(params.get("since"))
-                    since_is_future = since_ts is not None and since_ts > now_ts + FUTURE_TS_GRACE_SECONDS
 
-                    if since_is_future:
+                    # Both since and until in future -> no historical data to fetch
+                    if since_ts is not None and since_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
                         logging.warning(f"Skipping future-only pagination range. URL: {url}")
                         return {"data": []}
 
+                    # Only until in future -> clamp to now to get [since, now] data
                     logging.warning(
                         f"Clamping future 'until' from {params.get('until')} to {now_ts}. URL: {url}"
                     )
