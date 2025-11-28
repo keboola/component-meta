@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import parse_qs, urlparse
 
@@ -211,6 +212,24 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
+            # Handle Meta bug: pagination URLs sometimes have future timestamps
+            until_ts = self._parse_unix_ts(params.get("until"))
+            if until_ts is not None:
+                now_ts = int(datetime.now(timezone.utc).timestamp())
+
+                # Check if 'until' is in the future
+                if until_ts > now_ts:
+                    since_ts = self._parse_unix_ts(params.get("since"))
+
+                    # Both since and until in future -> no historical data to fetch
+                    if since_ts is not None and since_ts > now_ts:
+                        logging.warning(f"Skipping future-only pagination range. URL: {url}")
+                        return {"data": []}
+
+                    # Only until in future -> remove it, API will use 'now' implicitly
+                    logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
+                    params.pop("until", None)
+
             response = self.client.get(endpoint_path=path, params=params)
 
             return response if response else {"data": []}
@@ -218,8 +237,19 @@ class PageLoader:
         except HTTPError as e:
             status_code = getattr(getattr(e, "response", None), "status_code", None)
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
+            if hasattr(e, "response") and e.response is not None:
+                logging.error(f"Facebook API error response: {e.response.text}")
             raise
 
         except Exception as e:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
+
+    def _parse_unix_ts(self, value: Any) -> int | None:
+        """Parse a 10-digit Unix timestamp, return None if not valid."""
+        if value is None:
+            return None
+        s = str(value)
+        if s.isdigit() and len(s) == 10:
+            return int(s)
+        return None
