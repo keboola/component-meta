@@ -12,7 +12,6 @@ from requests import HTTPError
 logger = logging.getLogger(__name__)
 
 
-
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
         self.client = client
