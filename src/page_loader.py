@@ -11,8 +11,6 @@ from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
-# Grace period for clock skew when checking future timestamps
-FUTURE_TS_GRACE_SECONDS = 300  # 5 minutes
 
 
 class PageLoader:
@@ -221,19 +219,17 @@ class PageLoader:
                 now_ts = int(datetime.now(timezone.utc).timestamp())
 
                 # Check if 'until' is in the future
-                if until_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
+                if until_ts > now_ts:
                     since_ts = self._parse_unix_ts(params.get("since"))
 
                     # Both since and until in future -> no historical data to fetch
-                    if since_ts is not None and since_ts > now_ts + FUTURE_TS_GRACE_SECONDS:
+                    if since_ts is not None and since_ts > now_ts:
                         logging.warning(f"Skipping future-only pagination range. URL: {url}")
                         return {"data": []}
 
-                    # Only until in future -> clamp to now to get [since, now] data
-                    logging.warning(
-                        f"Clamping future 'until' from {params.get('until')} to {now_ts}. URL: {url}"
-                    )
-                    params["until"] = str(now_ts)
+                    # Only until in future -> remove it, API will use 'now' implicitly
+                    logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
+                    params.pop("until", None)
 
             response = self.client.get(endpoint_path=path, params=params)
 
