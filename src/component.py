@@ -87,7 +87,9 @@ class Component(ComponentBase):
     def __init__(self):
         super().__init__()
         self._writer_cache: dict[str, WriterCacheRecord] = {}
-        self.config = Configuration(**self.configuration.parameters)
+        params = self.configuration.parameters
+        params["accounts"] = params.get("accounts") or {}
+        self.config = Configuration(**params)
         self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
         self.bucket_id = self._retrieve_bucket_id()
 
