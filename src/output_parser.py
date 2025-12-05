@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Any, Optional
 from collections.abc import Iterator
 
@@ -82,6 +83,7 @@ class OutputParser:
             if not next_url or next_url == current_url:
                 break
 
+            logging.debug(f"Following pagination URL: {next_url}")
             current_url = next_url
             current = self.page_loader.load_page_from_url(next_url)
 
