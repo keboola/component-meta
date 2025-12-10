@@ -11,6 +11,12 @@ from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
+# Facebook error code and subcode for "Media Posted Before Business Account Conversion"
+# This error occurs when requesting insights for data that existed before the account
+# was converted from personal to business. V1 handles this gracefully by returning empty data.
+BUSINESS_CONVERSION_ERROR_CODE = 100
+BUSINESS_CONVERSION_ERROR_SUBCODE = 2108006
+
 
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
@@ -119,6 +125,15 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
+            # Check for "Media Posted Before Business Account Conversion" error
+            # This is a recoverable error - return empty data like V1 does
+            if self._is_business_conversion_error(e):
+                logging.warning(
+                    f"Recoverable error: Media Posted Before Business Account Conversion "
+                    f"for endpoint {endpoint_path}. Returning empty data."
+                )
+                return {"data": []}
+
             logging.error(f"HTTP error while loading page data: {e}")
             if hasattr(e, "response") and e.response:
                 logging.error(f"Response text: {e.response.text}")
@@ -235,6 +250,15 @@ class PageLoader:
             return response if response else {"data": []}
 
         except HTTPError as e:
+            # Check for "Media Posted Before Business Account Conversion" error
+            # This is a recoverable error - return empty data like V1 does
+            if self._is_business_conversion_error(e):
+                logging.warning(
+                    f"Recoverable error: Media Posted Before Business Account Conversion "
+                    f"for paginated URL. Returning empty data."
+                )
+                return {"data": []}
+
             status_code = getattr(getattr(e, "response", None), "status_code", None)
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
             if hasattr(e, "response") and e.response is not None:
@@ -253,3 +277,29 @@ class PageLoader:
         if s.isdigit() and len(s) == 10:
             return int(s)
         return None
+
+    def _is_business_conversion_error(self, http_error: HTTPError) -> bool:
+        """
+        Check if the HTTP error is the "Media Posted Before Business Account Conversion" error.
+
+        This error (code 100, subcode 2108006) occurs when requesting insights for data
+        that existed before the Instagram account was converted from personal to business.
+        V1 handles this gracefully by returning empty data instead of failing.
+        """
+        if not hasattr(http_error, "response") or http_error.response is None:
+            return False
+
+        try:
+            error_data = http_error.response.json()
+            error_info = error_data.get("error", {})
+            return (
+                error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                and error_info.get("error_subcode") == BUSINESS_CONVERSION_ERROR_SUBCODE
+            )
+        except Exception:
+            # If we can't parse the JSON, check for the error message text as fallback
+            try:
+                response_text = http_error.response.text.lower()
+                return "media posted before business account conversion" in response_text
+            except Exception:
+                return False
