@@ -128,15 +128,18 @@ class PageLoader:
             # Check for "Media Posted Before Business Account Conversion" error
             # This is a recoverable error - return empty data like V1 does
             if self._is_business_conversion_error(e):
+                response_body = getattr(getattr(e, "response", None), "text", "N/A")
                 logging.warning(
                     f"Recoverable error: Media Posted Before Business Account Conversion "
-                    f"for endpoint {endpoint_path}. Returning empty data."
+                    f"for endpoint {endpoint_path}. Returning empty data. Response: {response_body}"
                 )
                 return {"data": []}
 
             logging.error(f"HTTP error while loading page data: {e}")
-            if hasattr(e, "response") and e.response:
-                logging.error(f"Response text: {e.response.text}")
+            # Log the full error response for debugging
+            response = getattr(e, "response", None)
+            if response is not None:
+                logging.error(f"Facebook API error response: {response.text}")
             raise
 
         except Exception as e:
@@ -285,21 +288,48 @@ class PageLoader:
         This error (code 100, subcode 2108006) occurs when requesting insights for data
         that existed before the Instagram account was converted from personal to business.
         V1 handles this gracefully by returning empty data instead of failing.
-        """
-        if not hasattr(http_error, "response") or http_error.response is None:
-            return False
 
-        try:
-            error_data = http_error.response.json()
-            error_info = error_data.get("error", {})
-            return (
-                error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
-                and error_info.get("error_subcode") == BUSINESS_CONVERSION_ERROR_SUBCODE
-            )
-        except Exception:
-            # If we can't parse the JSON, check for the error message text as fallback
+        This implementation mirrors V1's approach: check for the error phrase in the response
+        body text, regardless of the specific error code/subcode structure.
+        """
+        error_phrase = "media posted before business account conversion"
+
+        # 1. Try to check the response body if available
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            # Try JSON parsing first for structured error info
             try:
-                response_text = http_error.response.text.lower()
-                return "media posted before business account conversion" in response_text
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+                # Check by code/subcode (strong signal)
+                if (
+                    error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                    and error_info.get("error_subcode") == BUSINESS_CONVERSION_ERROR_SUBCODE
+                ):
+                    return True
+                # Also check error message text
+                error_msg = str(error_info.get("error_user_title", "")).lower()
+                error_msg += " " + str(error_info.get("error_user_msg", "")).lower()
+                error_msg += " " + str(error_info.get("message", "")).lower()
+                if error_phrase in error_msg:
+                    return True
             except Exception:
-                return False
+                pass
+
+            # Try raw response text
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        # 2. Fallback: check the exception message itself (like V1 does)
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
