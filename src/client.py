@@ -238,6 +238,17 @@ class FacebookClient:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]
 
+        # For Instagram-specific insights queries, filter out Facebook Page entries
+        # Only process accounts that have fb_page_id set (Instagram Business Account entries)
+        if self._is_instagram_insights_query(row_config):
+            original_count = len(accounts)
+            accounts = [account for account in accounts if account.fb_page_id]
+            if len(accounts) < original_count:
+                logging.info(
+                    f"Filtered {original_count - len(accounts)} non-Instagram accounts "
+                    f"for Instagram insights query (keeping {len(accounts)} accounts)"
+                )
+
         if self._request_require_page_token(row_config):
             logging.info("Require page token")
             is_page_token = True
@@ -392,6 +403,26 @@ class FacebookClient:
         # Cache the tokens for future use
         self.page_tokens = page_tokens
         return page_tokens
+
+    def _is_instagram_insights_query(self, row_config) -> bool:
+        """
+        Determine if a query is an Instagram-specific insights query.
+
+        Instagram insights queries use metrics like follower_count, reach, impressions
+        that are only valid for Instagram Business Accounts, not Facebook Pages.
+        For these queries, we should only process accounts that have fb_page_id set
+        (which indicates they are Instagram Business Account entries in the config).
+        """
+        query_config = row_config.query if hasattr(row_config, "query") else row_config
+        fields = str(query_config.fields or "")
+
+        # Check if this is an insights query without a path (account-level insights)
+        if not query_config.path and fields.startswith("insights"):
+            # Check for Instagram-specific metrics
+            ig_metrics = ["follower_count", "reach", "impressions", "profile_views"]
+            return any(metric in fields for metric in ig_metrics)
+
+        return False
 
     def _request_require_page_token(self, row_config) -> bool:
         """
