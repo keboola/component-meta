@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 BUSINESS_CONVERSION_ERROR_CODE = 100
 BUSINESS_CONVERSION_ERROR_SUBCODE = 2108006
 
+# Error subcode for "Object does not exist / missing permissions"
+OBJECT_NOT_FOUND_ERROR_SUBCODE = 33
+
 
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
@@ -125,13 +128,13 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
-            # Check for "Media Posted Before Business Account Conversion" error
-            # This is a recoverable error - return empty data like V1 does
-            if self._is_business_conversion_error(e):
+            # Check for recoverable errors - return empty data instead of failing
+            is_recoverable, error_type = self._is_recoverable_error(e)
+            if is_recoverable:
                 response_body = getattr(getattr(e, "response", None), "text", "N/A")
                 logging.warning(
-                    f"Recoverable error: Media Posted Before Business Account Conversion "
-                    f"for endpoint {endpoint_path}. Returning empty data. Response: {response_body}"
+                    f"Recoverable error: {error_type} for endpoint {endpoint_path}. "
+                    f"Returning empty data. Response: {response_body}"
                 )
                 return {"data": []}
 
@@ -273,12 +276,11 @@ class PageLoader:
             return response if response else {"data": []}
 
         except HTTPError as e:
-            # Check for "Media Posted Before Business Account Conversion" error
-            # This is a recoverable error - return empty data like V1 does
-            if self._is_business_conversion_error(e):
+            # Check for recoverable errors - return empty data instead of failing
+            is_recoverable, error_type = self._is_recoverable_error(e)
+            if is_recoverable:
                 logging.warning(
-                    "Recoverable error: Media Posted Before Business Account Conversion "
-                    "for paginated URL. Returning empty data."
+                    f"Recoverable error: {error_type} for paginated URL. Returning empty data."
                 )
                 return {"data": []}
 
@@ -353,3 +355,83 @@ class PageLoader:
             pass
 
         return False
+
+    def _is_30day_limit_error(self, http_error: HTTPError) -> bool:
+        """
+        Check if the HTTP error is the "30 day limit exceeded" error.
+
+        This error occurs when the date range between since and until exceeds 30 days
+        (2592000 seconds). For backwards compatibility, we handle this gracefully.
+        """
+        error_phrase = "there cannot be more than 30 days"
+
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
+
+    def _is_object_not_found_error(self, http_error: HTTPError) -> bool:
+        """
+        Check if the HTTP error is the "Object does not exist / missing permissions" error.
+
+        This error (code 100, subcode 33) occurs when the account no longer exists,
+        has been deleted, or the token doesn't have permission to access it.
+        For backwards compatibility with old configs, we handle this gracefully.
+        """
+        error_phrase = "does not exist, cannot be loaded due to missing permissions"
+
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+                # Check by code/subcode
+                if (
+                    error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                    and error_info.get("error_subcode") == OBJECT_NOT_FOUND_ERROR_SUBCODE
+                ):
+                    return True
+            except Exception:
+                pass
+
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
+
+    def _is_recoverable_error(self, http_error: HTTPError) -> tuple[bool, str]:
+        """
+        Check if the HTTP error is a recoverable error that should return empty data
+        instead of failing the job. Returns (is_recoverable, error_type).
+        """
+        if self._is_business_conversion_error(http_error):
+            return True, "Media Posted Before Business Account Conversion"
+        if self._is_30day_limit_error(http_error):
+            return True, "30-day limit exceeded (config uses 'since(30 days ago)', please change to '29 days ago')"
+        if self._is_object_not_found_error(http_error):
+            return True, "Object does not exist or missing permissions"
+        return False, ""
