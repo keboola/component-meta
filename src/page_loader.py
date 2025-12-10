@@ -20,6 +20,12 @@ BUSINESS_CONVERSION_ERROR_SUBCODE = 2108006
 # Error subcode for "Object does not exist / missing permissions"
 OBJECT_NOT_FOUND_ERROR_SUBCODE = 33
 
+# Maximum allowed days for Instagram insights queries (Facebook API constraint)
+MAX_INSTAGRAM_INSIGHTS_DAYS = 30
+
+# Instagram-specific metrics that indicate an IG insights query
+IG_INSIGHTS_METRICS = ["follower_count", "reach", "impressions", "profile_views"]
+
 
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
@@ -181,6 +187,9 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
+            # Validate 30-day limit for Instagram insights queries
+            self._validate_ig_insights_date_range(params, fields)
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
@@ -211,6 +220,55 @@ class PageLoader:
             path_parts.append(query_config.path)
 
         return "/" + "/".join(path_parts)
+
+    def _validate_ig_insights_date_range(self, params: dict[str, Any], fields: str) -> None:
+        """
+        Validate that the date range for Instagram insights queries does not exceed 30 days.
+
+        Facebook API enforces a strict 30-day maximum window for Instagram insights queries.
+        This validation catches the issue early with a clear error message instead of
+        letting the API return a cryptic 400 error.
+
+        Args:
+            params: The query parameters containing 'since' and optionally 'until'
+            fields: The fields string to check for Instagram-specific metrics
+
+        Raises:
+            UserException: If the date range exceeds 30 days for an IG insights query
+        """
+        # Only validate if this is an Instagram insights query (contains IG-specific metrics)
+        if not any(metric in fields for metric in IG_INSIGHTS_METRICS):
+            return
+
+        since_str = params.get("since")
+        if not since_str:
+            return
+
+        # Parse since date
+        try:
+            since_date = datetime.strptime(since_str, "%Y-%m-%d")
+        except ValueError:
+            return  # Can't parse, let the API handle it
+
+        # Parse until date (defaults to today if not specified)
+        until_str = params.get("until")
+        if until_str:
+            try:
+                until_date = datetime.strptime(until_str, "%Y-%m-%d")
+            except ValueError:
+                return  # Can't parse, let the API handle it
+        else:
+            until_date = datetime.now()
+
+        # Calculate the difference in days
+        delta_days = (until_date - since_date).days
+
+        if delta_days > MAX_INSTAGRAM_INSIGHTS_DAYS:
+            raise UserException(
+                f"Instagram insights queries cannot exceed {MAX_INSTAGRAM_INSIGHTS_DAYS} days. "
+                f"Your query spans {delta_days} days (from {since_str} to "
+                f"{until_str or 'today'}). Please reduce the date range to 29 days or less."
+            )
 
     def load_page_from_url(self, url: str) -> dict[str, Any]:
         """
