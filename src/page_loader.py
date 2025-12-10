@@ -254,8 +254,8 @@ class PageLoader:
             # This is a recoverable error - return empty data like V1 does
             if self._is_business_conversion_error(e):
                 logging.warning(
-                    f"Recoverable error: Media Posted Before Business Account Conversion "
-                    f"for paginated URL. Returning empty data."
+                    "Recoverable error: Media Posted Before Business Account Conversion "
+                    "for paginated URL. Returning empty data."
                 )
                 return {"data": []}
 
