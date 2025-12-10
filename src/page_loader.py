@@ -131,11 +131,7 @@ class PageLoader:
             # Check for recoverable errors - return empty data instead of failing
             is_recoverable, error_type = self._is_recoverable_error(e)
             if is_recoverable:
-                response_body = getattr(getattr(e, "response", None), "text", "N/A")
-                logging.warning(
-                    f"Recoverable error: {error_type} for endpoint {endpoint_path}. "
-                    f"Returning empty data. Response: {response_body}"
-                )
+                logging.warning(f"Skipping account: {error_type}")
                 return {"data": []}
 
             logging.error(f"HTTP error while loading page data: {e}")
@@ -244,9 +240,8 @@ class PageLoader:
             if since_ts is not None and until_ts is None:
                 one_hour_ago = now_ts - 3600
                 if since_ts > one_hour_ago:
-                    logging.warning(
-                        f"Skipping pagination with since={since_ts} (too recent, no until). "
-                        f"No more historical data to fetch. URL: {url}"
+                    logging.debug(
+                        f"Skipping pagination: reached end of historical data (since={since_ts})"
                     )
                     return {"data": []}
 
@@ -254,21 +249,20 @@ class PageLoader:
             if until_ts is not None and until_ts > now_ts:
                 # Both since and until in future -> no historical data to fetch
                 if since_ts is not None and since_ts > now_ts:
-                    logging.warning(f"Skipping future-only pagination range. URL: {url}")
+                    logging.debug("Skipping pagination: reached end of historical data")
                     return {"data": []}
 
                 # Only until in future -> check if since is also too recent
                 # If since is within the last hour, there's no meaningful data to fetch
                 one_hour_ago = now_ts - 3600
                 if since_ts is not None and since_ts > one_hour_ago:
-                    logging.warning(
-                        f"Skipping pagination with future until and recent since={since_ts}. "
-                        f"No more historical data to fetch. URL: {url}"
+                    logging.debug(
+                        f"Skipping pagination: reached end of historical data (since={since_ts})"
                     )
                     return {"data": []}
 
                 # since is old enough, just remove the future until
-                logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
+                logging.debug("Adjusting pagination window to end at current time")
                 params.pop("until", None)
 
             response = self.client.get(endpoint_path=path, params=params)
@@ -279,9 +273,7 @@ class PageLoader:
             # Check for recoverable errors - return empty data instead of failing
             is_recoverable, error_type = self._is_recoverable_error(e)
             if is_recoverable:
-                logging.warning(
-                    f"Recoverable error: {error_type} for paginated URL. Returning empty data."
-                )
+                logging.warning(f"Skipping account: {error_type}")
                 return {"data": []}
 
             status_code = getattr(getattr(e, "response", None), "status_code", None)
@@ -431,7 +423,7 @@ class PageLoader:
         if self._is_business_conversion_error(http_error):
             return True, "Media Posted Before Business Account Conversion"
         if self._is_30day_limit_error(http_error):
-            return True, "30-day limit exceeded (config uses 'since(30 days ago)', please change to '29 days ago')"
+            return True, "30-day limit exceeded. Change 'since(30 days ago)' to '29 days ago' in config."
         if self._is_object_not_found_error(http_error):
-            return True, "Object does not exist or missing permissions"
+            return True, "Account no longer exists or is inaccessible. Remove it or re-run Add Account."
         return False, ""
