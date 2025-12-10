@@ -254,7 +254,17 @@ class PageLoader:
                     logging.warning(f"Skipping future-only pagination range. URL: {url}")
                     return {"data": []}
 
-                # Only until in future -> remove it, API will use 'now' implicitly
+                # Only until in future -> check if since is also too recent
+                # If since is within the last hour, there's no meaningful data to fetch
+                one_hour_ago = now_ts - 3600
+                if since_ts is not None and since_ts > one_hour_ago:
+                    logging.warning(
+                        f"Skipping pagination with future until and recent since={since_ts}. "
+                        f"No more historical data to fetch. URL: {url}"
+                    )
+                    return {"data": []}
+
+                # since is old enough, just remove the future until
                 logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
                 params.pop("until", None)
 
