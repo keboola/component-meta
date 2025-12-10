@@ -373,13 +373,15 @@ class FacebookClient:
 
             # Assign the correct token to each account
             for account in accounts:
-                # Instagram Business Account IDs don't need page tokens - user token is sufficient
-                # This removes the dependency on fb_page_id for Instagram accounts
-                if self._is_instagram_business_account_id(account.id):
-                    page_tokens[account.id] = self.oauth.data.get("access_token")
+                if account.fb_page_id:
+                    # Account has fb_page_id - look up page token using the Facebook Page ID
+                    page_tokens[account.id] = page_token_map.get(
+                        account.fb_page_id, self.oauth.data.get("access_token")
+                    )
                 else:
-                    page_id = account.fb_page_id or account.id
-                    page_tokens[account.id] = page_token_map.get(page_id, self.oauth.data.get("access_token"))
+                    # Account without fb_page_id (e.g., Instagram Business Accounts)
+                    # Use user token directly - no page token lookup needed
+                    page_tokens[account.id] = self.oauth.data.get("access_token")
 
         except Exception as e:
             logging.warning(f"Unable to get page tokens: {e}")
@@ -390,20 +392,6 @@ class FacebookClient:
         # Cache the tokens for future use
         self.page_tokens = page_tokens
         return page_tokens
-
-    def _is_instagram_business_account_id(self, account_id: str) -> bool:
-        """
-        Detect if an account ID is an Instagram Business Account ID.
-
-        Instagram Business Account IDs are typically 17 digits starting with '17841'.
-        This heuristic is based on observed patterns from the Facebook Graph API.
-        For these accounts, the user access token is sufficient for insights queries,
-        and we don't need to look up a page token via fb_page_id.
-
-        Note: This is a pragmatic heuristic based on current Meta ID patterns,
-        not a documented contract. If Meta changes their ID format, this may need updating.
-        """
-        return len(account_id) == 17 and account_id.startswith("17841")
 
     def _request_require_page_token(self, row_config) -> bool:
         """
