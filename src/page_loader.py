@@ -230,23 +230,33 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
-            # Handle Meta bug: pagination URLs sometimes have future timestamps
+            # Handle Meta bug: pagination URLs sometimes have invalid timestamps
+            now_ts = int(datetime.now(timezone.utc).timestamp())
+            since_ts = self._parse_unix_ts(params.get("since"))
             until_ts = self._parse_unix_ts(params.get("until"))
-            if until_ts is not None:
-                now_ts = int(datetime.now(timezone.utc).timestamp())
 
-                # Check if 'until' is in the future
-                if until_ts > now_ts:
-                    since_ts = self._parse_unix_ts(params.get("since"))
+            # Case 1: since is very recent (within last hour) and no until
+            # This happens when Facebook returns pagination URLs pointing to "now"
+            # which is invalid for insights queries. Skip these pagination requests.
+            if since_ts is not None and until_ts is None:
+                one_hour_ago = now_ts - 3600
+                if since_ts > one_hour_ago:
+                    logging.warning(
+                        f"Skipping pagination with since={since_ts} (too recent, no until). "
+                        f"No more historical data to fetch. URL: {url}"
+                    )
+                    return {"data": []}
 
-                    # Both since and until in future -> no historical data to fetch
-                    if since_ts is not None and since_ts > now_ts:
-                        logging.warning(f"Skipping future-only pagination range. URL: {url}")
-                        return {"data": []}
+            # Case 2: Handle future timestamps
+            if until_ts is not None and until_ts > now_ts:
+                # Both since and until in future -> no historical data to fetch
+                if since_ts is not None and since_ts > now_ts:
+                    logging.warning(f"Skipping future-only pagination range. URL: {url}")
+                    return {"data": []}
 
-                    # Only until in future -> remove it, API will use 'now' implicitly
-                    logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
-                    params.pop("until", None)
+                # Only until in future -> remove it, API will use 'now' implicitly
+                logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
+                params.pop("until", None)
 
             response = self.client.get(endpoint_path=path, params=params)
 
