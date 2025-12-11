@@ -11,6 +11,21 @@ from requests import HTTPError
 
 logger = logging.getLogger(__name__)
 
+# Facebook error code and subcode for "Media Posted Before Business Account Conversion"
+# This error occurs when requesting insights for data that existed before the account
+# was converted from personal to business. V1 handles this gracefully by returning empty data.
+BUSINESS_CONVERSION_ERROR_CODE = 100
+BUSINESS_CONVERSION_ERROR_SUBCODE = 2108006
+
+# Error subcode for "Object does not exist / missing permissions"
+OBJECT_NOT_FOUND_ERROR_SUBCODE = 33
+
+# Maximum allowed days for Instagram insights queries (Facebook API constraint)
+MAX_INSTAGRAM_INSIGHTS_DAYS = 30
+
+# Instagram-specific metrics that indicate an IG insights query
+IG_INSIGHTS_METRICS = ["follower_count", "reach", "impressions", "profile_views"]
+
 
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
@@ -119,9 +134,17 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
+            # Check for recoverable errors - return empty data instead of failing
+            is_recoverable, error_type = self._is_recoverable_error(e)
+            if is_recoverable:
+                logging.warning(f"Skipping account: {error_type}")
+                return {"data": []}
+
             logging.error(f"HTTP error while loading page data: {e}")
-            if hasattr(e, "response") and e.response:
-                logging.error(f"Response text: {e.response.text}")
+            # Log the full error response for debugging
+            response = getattr(e, "response", None)
+            if response is not None:
+                logging.error(f"Facebook API error response: {response.text}")
             raise
 
         except Exception as e:
@@ -164,6 +187,9 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
+            # Validate 30-day limit for Instagram insights queries
+            self._validate_ig_insights_date_range(params, fields)
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
@@ -195,6 +221,55 @@ class PageLoader:
 
         return "/" + "/".join(path_parts)
 
+    def _validate_ig_insights_date_range(self, params: dict[str, Any], fields: str) -> None:
+        """
+        Validate that the date range for Instagram insights queries does not exceed 30 days.
+
+        Facebook API enforces a strict 30-day maximum window for Instagram insights queries.
+        This validation catches the issue early with a clear error message instead of
+        letting the API return a cryptic 400 error.
+
+        Args:
+            params: The query parameters containing 'since' and optionally 'until'
+            fields: The fields string to check for Instagram-specific metrics
+
+        Raises:
+            UserException: If the date range exceeds 30 days for an IG insights query
+        """
+        # Only validate if this is an Instagram insights query (contains IG-specific metrics)
+        if not any(metric in fields for metric in IG_INSIGHTS_METRICS):
+            return
+
+        since_str = params.get("since")
+        if not since_str:
+            return
+
+        # Parse since date
+        try:
+            since_date = datetime.strptime(since_str, "%Y-%m-%d")
+        except ValueError:
+            return  # Can't parse, let the API handle it
+
+        # Parse until date (defaults to today if not specified)
+        until_str = params.get("until")
+        if until_str:
+            try:
+                until_date = datetime.strptime(until_str, "%Y-%m-%d")
+            except ValueError:
+                return  # Can't parse, let the API handle it
+        else:
+            until_date = datetime.now()
+
+        # Calculate the difference in days
+        delta_days = (until_date - since_date).days
+
+        if delta_days > MAX_INSTAGRAM_INSIGHTS_DAYS:
+            raise UserException(
+                f"Instagram insights queries cannot exceed {MAX_INSTAGRAM_INSIGHTS_DAYS} days. "
+                f"Your query spans {delta_days} days (from {since_str} to "
+                f"{until_str or 'today'}). Please reduce the date range to 29 days or less."
+            )
+
     def load_page_from_url(self, url: str) -> dict[str, Any]:
         """
         Load page data from a full Facebook API URL (used for pagination).
@@ -212,29 +287,53 @@ class PageLoader:
             logging.debug(f"Loading paginated data from path: {path}")
             logging.debug(f"Pagination params: {params}")
 
-            # Handle Meta bug: pagination URLs sometimes have future timestamps
+            # Handle Meta bug: pagination URLs sometimes have invalid timestamps
+            now_ts = int(datetime.now(timezone.utc).timestamp())
+            since_ts = self._parse_unix_ts(params.get("since"))
             until_ts = self._parse_unix_ts(params.get("until"))
-            if until_ts is not None:
-                now_ts = int(datetime.now(timezone.utc).timestamp())
 
-                # Check if 'until' is in the future
-                if until_ts > now_ts:
-                    since_ts = self._parse_unix_ts(params.get("since"))
+            # Case 1: since is very recent (within last hour) and no until
+            # This happens when Facebook returns pagination URLs pointing to "now"
+            # which is invalid for insights queries. Skip these pagination requests.
+            if since_ts is not None and until_ts is None:
+                one_hour_ago = now_ts - 3600
+                if since_ts > one_hour_ago:
+                    logging.debug(
+                        f"Skipping pagination: reached end of historical data (since={since_ts})"
+                    )
+                    return {"data": []}
 
-                    # Both since and until in future -> no historical data to fetch
-                    if since_ts is not None and since_ts > now_ts:
-                        logging.warning(f"Skipping future-only pagination range. URL: {url}")
-                        return {"data": []}
+            # Case 2: Handle future timestamps
+            if until_ts is not None and until_ts > now_ts:
+                # Both since and until in future -> no historical data to fetch
+                if since_ts is not None and since_ts > now_ts:
+                    logging.debug("Skipping pagination: reached end of historical data")
+                    return {"data": []}
 
-                    # Only until in future -> remove it, API will use 'now' implicitly
-                    logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
-                    params.pop("until", None)
+                # Only until in future -> check if since is also too recent
+                # If since is within the last hour, there's no meaningful data to fetch
+                one_hour_ago = now_ts - 3600
+                if since_ts is not None and since_ts > one_hour_ago:
+                    logging.debug(
+                        f"Skipping pagination: reached end of historical data (since={since_ts})"
+                    )
+                    return {"data": []}
+
+                # since is old enough, just remove the future until
+                logging.debug("Adjusting pagination window to end at current time")
+                params.pop("until", None)
 
             response = self.client.get(endpoint_path=path, params=params)
 
             return response if response else {"data": []}
 
         except HTTPError as e:
+            # Check for recoverable errors - return empty data instead of failing
+            is_recoverable, error_type = self._is_recoverable_error(e)
+            if is_recoverable:
+                logging.warning(f"Skipping account: {error_type}")
+                return {"data": []}
+
             status_code = getattr(getattr(e, "response", None), "status_code", None)
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
             if hasattr(e, "response") and e.response is not None:
@@ -253,3 +352,136 @@ class PageLoader:
         if s.isdigit() and len(s) == 10:
             return int(s)
         return None
+
+    def _is_business_conversion_error(self, http_error: HTTPError) -> bool:
+        """
+        Check if the HTTP error is the "Media Posted Before Business Account Conversion" error.
+
+        This error (code 100, subcode 2108006) occurs when requesting insights for data
+        that existed before the Instagram account was converted from personal to business.
+        V1 handles this gracefully by returning empty data instead of failing.
+
+        This implementation mirrors V1's approach: check for the error phrase in the response
+        body text, regardless of the specific error code/subcode structure.
+        """
+        error_phrase = "media posted before business account conversion"
+
+        # 1. Try to check the response body if available
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            # Try JSON parsing first for structured error info
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+                # Check by code/subcode (strong signal)
+                if (
+                    error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                    and error_info.get("error_subcode") == BUSINESS_CONVERSION_ERROR_SUBCODE
+                ):
+                    return True
+                # Also check error message text
+                error_msg = str(error_info.get("error_user_title", "")).lower()
+                error_msg += " " + str(error_info.get("error_user_msg", "")).lower()
+                error_msg += " " + str(error_info.get("message", "")).lower()
+                if error_phrase in error_msg:
+                    return True
+            except Exception:
+                pass
+
+            # Try raw response text
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        # 2. Fallback: check the exception message itself (like V1 does)
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
+
+    def _is_30day_limit_error(self, http_error: HTTPError) -> bool:
+        """
+        Check if the HTTP error is the "30 day limit exceeded" error.
+
+        This error occurs when the date range between since and until exceeds 30 days
+        (2592000 seconds). For backwards compatibility, we handle this gracefully.
+        """
+        error_phrase = "there cannot be more than 30 days"
+
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
+
+    def _is_object_not_found_error(self, http_error: HTTPError) -> bool:
+        """
+        Check if the HTTP error is the "Object does not exist / missing permissions" error.
+
+        This error (code 100, subcode 33) occurs when the account no longer exists,
+        has been deleted, or the token doesn't have permission to access it.
+        For backwards compatibility with old configs, we handle this gracefully.
+        """
+        error_phrase = "does not exist, cannot be loaded due to missing permissions"
+
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+                # Check by code/subcode
+                if (
+                    error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                    and error_info.get("error_subcode") == OBJECT_NOT_FOUND_ERROR_SUBCODE
+                ):
+                    return True
+            except Exception:
+                pass
+
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
+
+    def _is_recoverable_error(self, http_error: HTTPError) -> tuple[bool, str]:
+        """
+        Check if the HTTP error is a recoverable error that should return empty data
+        instead of failing the job. Returns (is_recoverable, error_type).
+        """
+        if self._is_business_conversion_error(http_error):
+            return True, "Media Posted Before Business Account Conversion"
+        if self._is_30day_limit_error(http_error):
+            return True, "30-day limit exceeded. Change 'since(30 days ago)' to '29 days ago' in config."
+        if self._is_object_not_found_error(http_error):
+            return True, "Account no longer exists or is inaccessible. Remove it or re-run Add Account."
+        return False, ""

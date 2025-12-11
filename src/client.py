@@ -226,7 +226,7 @@ class FacebookClient:
                 except HTTPError as e:
                     error_text = str(e.response.text) if hasattr(e, "response") else str(e)
                     if "Page Access Token" in error_text:
-                        logging.info("Batch request requires page token, falling back to individual requests.")
+                        logging.debug("Batch request requires page token, falling back to individual requests.")
                         # Let the code fall through to individual processing below.
                     else:
                         logging.error(f"Batch request failed with a non-token error: {error_text}")
@@ -238,12 +238,25 @@ class FacebookClient:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]
 
+        # For Instagram-specific insights queries, filter out Facebook Page entries
+        # Only process accounts that have fb_page_id set (Instagram Business Account entries)
+        if self._is_instagram_insights_query(row_config):
+            non_ig_accounts = [account for account in accounts if not account.fb_page_id]
+            accounts = [account for account in accounts if account.fb_page_id]
+            if non_ig_accounts:
+                non_ig_ids = [acc.id for acc in non_ig_accounts]
+                logging.warning(
+                    f"Skipping {len(non_ig_accounts)} Facebook Page account(s) for Instagram insights query: "
+                    f"{', '.join(non_ig_ids)}. These are Facebook Pages, not Instagram Business Accounts. "
+                    f"Please remove them from your config or re-run Add Account to refresh."
+                )
+
         if self._request_require_page_token(row_config):
-            logging.info("Require page token")
+            logging.debug("Require page token")
             is_page_token = True
             page_tokens = self._get_pages_token(accounts)
         else:
-            logging.info("Don't need page token")
+            logging.debug("Don't need page token")
             is_page_token = False
             page_tokens = {account.id: self.oauth.data.get("access_token") for account in accounts}
 
@@ -373,8 +386,15 @@ class FacebookClient:
 
             # Assign the correct token to each account
             for account in accounts:
-                page_id = account.fb_page_id or account.id
-                page_tokens[account.id] = page_token_map.get(page_id, self.oauth.data.get("access_token"))
+                if account.fb_page_id:
+                    # Account has fb_page_id - look up page token using the Facebook Page ID
+                    page_tokens[account.id] = page_token_map.get(
+                        account.fb_page_id, self.oauth.data.get("access_token")
+                    )
+                else:
+                    # Account without fb_page_id (e.g., Instagram Business Accounts)
+                    # Use user token directly - no page token lookup needed
+                    page_tokens[account.id] = self.oauth.data.get("access_token")
 
         except Exception as e:
             logging.warning(f"Unable to get page tokens: {e}")
@@ -385,6 +405,26 @@ class FacebookClient:
         # Cache the tokens for future use
         self.page_tokens = page_tokens
         return page_tokens
+
+    def _is_instagram_insights_query(self, row_config) -> bool:
+        """
+        Determine if a query is an Instagram-specific insights query.
+
+        Instagram insights queries use metrics like follower_count, reach, impressions
+        that are only valid for Instagram Business Accounts, not Facebook Pages.
+        For these queries, we should only process accounts that have fb_page_id set
+        (which indicates they are Instagram Business Account entries in the config).
+        """
+        query_config = row_config.query if hasattr(row_config, "query") else row_config
+        fields = str(query_config.fields or "")
+
+        # Check if this is an insights query without a path (account-level insights)
+        if not query_config.path and fields.startswith("insights"):
+            # Check for Instagram-specific metrics
+            ig_metrics = ["follower_count", "reach", "impressions", "profile_views"]
+            return any(metric in fields for metric in ig_metrics)
+
+        return False
 
     def _request_require_page_token(self, row_config) -> bool:
         """
