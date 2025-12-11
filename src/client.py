@@ -216,7 +216,7 @@ class FacebookClient:
 
             if not response or not isinstance(response, dict):
                 logging.warning("Empty or invalid response for batch ID fetch.")
-                return iter([])
+                return None
 
             fb_graph_node = self._get_fb_graph_node(False, row_config)
             for item_id, item_data in response.items():
@@ -239,7 +239,7 @@ class FacebookClient:
                 return None
             else:
                 logging.error(f"Batch request failed with a non-token error: {error_text}")
-                return iter([])
+                return None
 
     def _filter_accounts_for_query(self, accounts: list, row_config) -> list:
         """Filter accounts based on query IDs and Instagram query type."""
