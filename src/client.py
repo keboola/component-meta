@@ -184,12 +184,13 @@ class FacebookClient:
             if parsed_result:
                 yield parsed_result
 
-    def _attempt_batch_processing(self, accounts: list, row_config) -> Iterator[dict] | None:
+    def _attempt_batch_processing(self, accounts: list, row_config) -> list[dict] | None:
         """
         Attempt batch processing for eligible queries.
 
         Returns:
-            Iterator of results if batch processing succeeds, None if it should fall back to individual processing
+            List of results if batch processing succeeds, None if it should fall back to individual processing.
+            Note: This is NOT a generator - it returns a concrete list or None.
         """
         is_batchable_query = not row_config.query.path and getattr(row_config, "type", "") != "nested-query"
         is_insights_query = str(row_config.query.fields or "").startswith("insights")
@@ -218,6 +219,7 @@ class FacebookClient:
                 logging.warning("Empty or invalid response for batch ID fetch.")
                 return None
 
+            results: list[dict] = []
             fb_graph_node = self._get_fb_graph_node(False, row_config)
             for item_id, item_data in response.items():
                 if isinstance(item_data, dict) and "error" in item_data:
@@ -230,7 +232,10 @@ class FacebookClient:
                     parent_id=item_id,
                 )
                 if parsed_result:
-                    yield parsed_result
+                    results.append(parsed_result)
+
+            logging.debug(f"Batch processing produced {len(results)} results")
+            return results
 
         except HTTPError as e:
             error_text = str(e.response.text) if hasattr(e, "response") else str(e)
