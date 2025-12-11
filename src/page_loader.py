@@ -1,7 +1,7 @@
 import logging
 import time
 from datetime import datetime, timezone
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import parse_qs, urlparse
 
 from keboola.component.exceptions import UserException
@@ -26,9 +26,6 @@ MAX_INSTAGRAM_INSIGHTS_DAYS = 30
 # Instagram-specific metrics that indicate an IG insights query
 IG_INSIGHTS_METRICS = ["follower_count", "reach", "impressions", "profile_views"]
 
-# Time threshold in seconds for detecting recent timestamps (1 hour)
-ONE_HOUR_SECONDS = 3600
-
 
 class PageLoader:
     def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
@@ -52,7 +49,7 @@ class PageLoader:
         # Poll for completion
         return self.poll_async_job(report_id)
 
-    def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> str | None:
+    def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> Optional[str]:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
         endpoint_path = f"/{self.api_version}/{page_id}/insights"
 
@@ -270,7 +267,7 @@ class PageLoader:
             raise UserException(
                 f"Instagram insights queries cannot exceed {MAX_INSTAGRAM_INSIGHTS_DAYS} days. "
                 f"Your query spans {delta_days} days (from {since_str} to "
-                f"{until_str or 'today'}). Please reduce the date range to {MAX_INSTAGRAM_INSIGHTS_DAYS} days or less."
+                f"{until_str or 'today'}). Please reduce the date range to 29 days or less."
             )
 
     def load_page_from_url(self, url: str) -> dict[str, Any]:
@@ -299,7 +296,7 @@ class PageLoader:
             # This happens when Facebook returns pagination URLs pointing to "now"
             # which is invalid for insights queries. Skip these pagination requests.
             if since_ts is not None and until_ts is None:
-                one_hour_ago = now_ts - ONE_HOUR_SECONDS
+                one_hour_ago = now_ts - 3600
                 if since_ts > one_hour_ago:
                     logging.debug(
                         f"Skipping pagination: reached end of historical data (since={since_ts})"
@@ -315,7 +312,7 @@ class PageLoader:
 
                 # Only until in future -> check if since is also too recent
                 # If since is within the last hour, there's no meaningful data to fetch
-                one_hour_ago = now_ts - ONE_HOUR_SECONDS
+                one_hour_ago = now_ts - 3600
                 if since_ts is not None and since_ts > one_hour_ago:
                     logging.debug(
                         f"Skipping pagination: reached end of historical data (since={since_ts})"
@@ -356,38 +353,40 @@ class PageLoader:
             return int(s)
         return None
 
-    def _check_error_matches(
-        self, http_error: HTTPError, error_phrase: str, error_code: int | None = None, error_subcode: int | None = None
-    ) -> bool:
+    def _is_business_conversion_error(self, http_error: HTTPError) -> bool:
         """
-        Generic helper to check if an HTTP error matches specific criteria.
+        Check if the HTTP error is the "Media Posted Before Business Account Conversion" error.
 
-        Args:
-            http_error: The HTTPError to check
-            error_phrase: The phrase to search for in error messages (case-insensitive)
-            error_code: Optional error code to match
-            error_subcode: Optional error subcode to match
+        This error (code 100, subcode 2108006) occurs when requesting insights for data
+        that existed before the Instagram account was converted from personal to business.
+        V1 handles this gracefully by returning empty data instead of failing.
 
-        Returns:
-            True if the error matches the criteria, False otherwise
+        This implementation mirrors V1's approach: check for the error phrase in the response
+        body text, regardless of the specific error code/subcode structure.
         """
+        error_phrase = "media posted before business account conversion"
+
+        # 1. Try to check the response body if available
         response = getattr(http_error, "response", None)
         if response is not None:
             # Try JSON parsing first for structured error info
-            if error_code is not None and error_subcode is not None:
-                try:
-                    error_data = response.json()
-                    error_info = error_data.get("error", {})
-                    if error_info.get("code") == error_code and error_info.get("error_subcode") == error_subcode:
-                        return True
-                    # Also check error message text in JSON response
-                    error_msg = str(error_info.get("error_user_title", "")).lower()
-                    error_msg += " " + str(error_info.get("error_user_msg", "")).lower()
-                    error_msg += " " + str(error_info.get("message", "")).lower()
-                    if error_phrase in error_msg:
-                        return True
-                except Exception:
-                    pass
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+                # Check by code/subcode (strong signal)
+                if (
+                    error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                    and error_info.get("error_subcode") == BUSINESS_CONVERSION_ERROR_SUBCODE
+                ):
+                    return True
+                # Also check error message text
+                error_msg = str(error_info.get("error_user_title", "")).lower()
+                error_msg += " " + str(error_info.get("error_user_msg", "")).lower()
+                error_msg += " " + str(error_info.get("message", "")).lower()
+                if error_phrase in error_msg:
+                    return True
+            except Exception:
+                pass
 
             # Try raw response text
             try:
@@ -397,7 +396,7 @@ class PageLoader:
             except Exception:
                 pass
 
-        # Fallback: check the exception message itself
+        # 2. Fallback: check the exception message itself (like V1 does)
         try:
             exception_msg = str(http_error).lower()
             if error_phrase in exception_msg:
@@ -407,21 +406,6 @@ class PageLoader:
 
         return False
 
-    def _is_business_conversion_error(self, http_error: HTTPError) -> bool:
-        """
-        Check if the HTTP error is the "Media Posted Before Business Account Conversion" error.
-
-        This error (code 100, subcode 2108006) occurs when requesting insights for data
-        that existed before the Instagram account was converted from personal to business.
-        V1 handles this gracefully by returning empty data instead of failing.
-        """
-        return self._check_error_matches(
-            http_error,
-            "media posted before business account conversion",
-            BUSINESS_CONVERSION_ERROR_CODE,
-            BUSINESS_CONVERSION_ERROR_SUBCODE,
-        )
-
     def _is_30day_limit_error(self, http_error: HTTPError) -> bool:
         """
         Check if the HTTP error is the "30 day limit exceeded" error.
@@ -429,7 +413,25 @@ class PageLoader:
         This error occurs when the date range between since and until exceeds 30 days
         (2592000 seconds). For backwards compatibility, we handle this gracefully.
         """
-        return self._check_error_matches(http_error, "there cannot be more than 30 days")
+        error_phrase = "there cannot be more than 30 days"
+
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
 
     def _is_object_not_found_error(self, http_error: HTTPError) -> bool:
         """
@@ -439,12 +441,37 @@ class PageLoader:
         has been deleted, or the token doesn't have permission to access it.
         For backwards compatibility with old configs, we handle this gracefully.
         """
-        return self._check_error_matches(
-            http_error,
-            "does not exist, cannot be loaded due to missing permissions",
-            BUSINESS_CONVERSION_ERROR_CODE,
-            OBJECT_NOT_FOUND_ERROR_SUBCODE,
-        )
+        error_phrase = "does not exist, cannot be loaded due to missing permissions"
+
+        response = getattr(http_error, "response", None)
+        if response is not None:
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+                # Check by code/subcode
+                if (
+                    error_info.get("code") == BUSINESS_CONVERSION_ERROR_CODE
+                    and error_info.get("error_subcode") == OBJECT_NOT_FOUND_ERROR_SUBCODE
+                ):
+                    return True
+            except Exception:
+                pass
+
+            try:
+                response_text = (response.text or "").lower()
+                if error_phrase in response_text:
+                    return True
+            except Exception:
+                pass
+
+        try:
+            exception_msg = str(http_error).lower()
+            if error_phrase in exception_msg:
+                return True
+        except Exception:
+            pass
+
+        return False
 
     def _is_recoverable_error(self, http_error: HTTPError) -> tuple[bool, str]:
         """
@@ -454,7 +481,7 @@ class PageLoader:
         if self._is_business_conversion_error(http_error):
             return True, "Media Posted Before Business Account Conversion"
         if self._is_30day_limit_error(http_error):
-            return True, "30-day limit exceeded. The date range must be 30 days or less."
+            return True, "30-day limit exceeded. Change 'since(30 days ago)' to '29 days ago' in config."
         if self._is_object_not_found_error(http_error):
             return True, "Account no longer exists or is inaccessible. Remove it or re-run Add Account."
         return False, ""

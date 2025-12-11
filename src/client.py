@@ -9,7 +9,7 @@ from keboola.http_client import HttpClient
 from requests import HTTPError
 
 from output_parser import OutputParser
-from page_loader import PageLoader, IG_INSIGHTS_METRICS
+from page_loader import PageLoader
 
 
 class AccessTokenFilter(logging.Filter):
@@ -184,74 +184,62 @@ class FacebookClient:
             if parsed_result:
                 yield parsed_result
 
-    def _attempt_batch_processing(self, accounts: list, row_config) -> list[dict] | None:
-        """
-        Attempt batch processing for eligible queries.
-
-        Returns:
-            List of results if batch processing succeeds, None if it should fall back to individual processing.
-            Note: This is NOT a generator - it returns a concrete list or None.
-        """
+    def _process_single_sync_query(self, accounts: list, row_config) -> Iterator[dict]:
+        # Determine if a query is eligible for batch processing.
         is_batchable_query = not row_config.query.path and getattr(row_config, "type", "") != "nested-query"
         is_insights_query = str(row_config.query.fields or "").startswith("insights")
 
-        if not (is_batchable_query and not is_insights_query):
-            return None
+        if is_batchable_query and not is_insights_query:
+            account_ids = (
+                [id.strip() for id in row_config.query.ids.split(",")]
+                if row_config.query.ids
+                else [acc.id for acc in accounts]
+            )
 
-        account_ids = (
-            [id.strip() for id in row_config.query.ids.split(",")]
-            if row_config.query.ids
-            else [acc.id for acc in accounts]
-        )
+            if account_ids:
+                try:
+                    logging.info(f"Attempting to batch fetch data for {len(account_ids)} IDs.")
+                    params = {
+                        "ids": ",".join(account_ids),
+                        "fields": row_config.query.fields,
+                    }
+                    response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
 
-        if not account_ids:
-            return None
+                    if not response or not isinstance(response, dict):
+                        logging.warning("Empty or invalid response for batch ID fetch.")
+                    else:
+                        fb_graph_node = self._get_fb_graph_node(False, row_config)
+                        for item_id, item_data in response.items():
+                            if isinstance(item_data, dict) and "error" in item_data:
+                                logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
+                                continue
+                            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+                            parsed_result = output_parser.parse_data(
+                                response=item_data,
+                                fb_node=fb_graph_node,
+                                parent_id=item_id,
+                            )
+                            if parsed_result:
+                                yield parsed_result
+                        return  # Batch processing successful, exit the function.
 
-        try:
-            logging.info(f"Attempting to batch fetch data for {len(account_ids)} IDs.")
-            params = {
-                "ids": ",".join(account_ids),
-                "fields": row_config.query.fields,
-            }
-            response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
+                except HTTPError as e:
+                    error_text = str(e.response.text) if hasattr(e, "response") else str(e)
+                    if "Page Access Token" in error_text:
+                        logging.debug("Batch request requires page token, falling back to individual requests.")
+                        # Let the code fall through to individual processing below.
+                    else:
+                        logging.error(f"Batch request failed with a non-token error: {error_text}")
+                        return  # A definitive failure, stop processing.
 
-            if not response or not isinstance(response, dict):
-                logging.warning("Empty or invalid response for batch ID fetch.")
-                return None
-
-            results: list[dict] = []
-            fb_graph_node = self._get_fb_graph_node(False, row_config)
-            for item_id, item_data in response.items():
-                if isinstance(item_data, dict) and "error" in item_data:
-                    logging.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
-                    continue
-                output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
-                parsed_result = output_parser.parse_data(
-                    response=item_data,
-                    fb_node=fb_graph_node,
-                    parent_id=item_id,
-                )
-                if parsed_result:
-                    results.append(parsed_result)
-
-            logging.debug(f"Batch processing produced {len(results)} results")
-            return results
-
-        except HTTPError as e:
-            error_text = str(e.response.text) if hasattr(e, "response") else str(e)
-            if "Page Access Token" in error_text:
-                logging.debug("Batch request requires page token, falling back to individual requests.")
-                return None
-            else:
-                logging.error(f"Batch request failed with a non-token error: {error_text}")
-                return None
-
-    def _filter_accounts_for_query(self, accounts: list, row_config) -> list:
-        """Filter accounts based on query IDs and Instagram query type."""
+        # If batch processing was not attempted, was skipped (insights), or failed with a token error,
+        # proceed with individual requests for all accounts.
         if ids_str := row_config.query.ids:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]
 
+        # For Instagram-specific insights queries, filter out Facebook Page entries
+        # Only process accounts that have fb_page_id set (Instagram Business Account entries)
         if self._is_instagram_insights_query(row_config):
             non_ig_accounts = [account for account in accounts if not account.fb_page_id]
             accounts = [account for account in accounts if account.fb_page_id]
@@ -263,83 +251,63 @@ class FacebookClient:
                     f"Please remove them from your config or re-run Add Account to refresh."
                 )
 
-        return accounts
-
-    def _get_tokens_for_accounts(self, accounts: list, row_config) -> tuple[dict[str, str], bool]:
-        """
-        Get appropriate tokens for accounts.
-
-        Returns:
-            Tuple of (token_map, is_page_token)
-        """
         if self._request_require_page_token(row_config):
             logging.debug("Require page token")
-            return self._get_pages_token(accounts), True
+            is_page_token = True
+            page_tokens = self._get_pages_token(accounts)
         else:
             logging.debug("Don't need page token")
-            user_token = self.oauth.data.get("access_token")
-            return {account.id: user_token for account in accounts}, False
-
-    def _process_individual_account(
-        self, page_id: str, token: str, is_page_token: bool, row_config
-    ) -> dict | None:
-        """
-        Process a single account and return parsed data.
-
-        Returns:
-            Parsed result dict or None if processing failed
-        """
-        try:
-            page_loader = PageLoader(self.client, row_config.type, self.api_version)
-            output_parser = OutputParser(page_loader, page_id, row_config)
-            fb_graph_node = self._get_fb_graph_node(is_page_token, row_config)
-
-            page_data = page_loader.load_page(row_config.query, page_id, params={"access_token": token})
-
-            if not row_config.query.path and "data" not in page_data:
-                page_content = [page_data] if page_data and "id" in page_data else []
-            else:
-                page_content = page_data.get("data", [])
-
-        except Exception as e:
-            if is_page_token and str(e).startswith("400"):
-                logging.warning(f"Page token failed with 400 error for {page_id}, falling back to user token")
-                try:
-                    page_loader = PageLoader(self.client, row_config.type, self.api_version)
-                    output_parser = OutputParser(page_loader, page_id, row_config)
-                    fb_graph_node = self._get_fb_graph_node(False, row_config)
-                    page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
-
-                    if not row_config.query.path and "data" not in page_data:
-                        page_content = [page_data] if page_data and "id" in page_data else []
-                    else:
-                        page_content = page_data.get("data", [])
-                except Exception as user_token_error:
-                    logging.error(f"User token also failed for {page_id}: {str(user_token_error)}")
-                    return None
-            else:
-                logging.error(f"Failed to load data for {page_id}: {str(e)}")
-                return None
-
-        if not page_content:
-            return None
-
-        return output_parser.parse_data(page_data, fb_graph_node, page_id)
-
-    def _process_single_sync_query(self, accounts: list, row_config) -> Iterator[dict]:
-        """Process a single sync query with batch or individual requests."""
-        batch_results = self._attempt_batch_processing(accounts, row_config)
-        if batch_results is not None:
-            yield from batch_results
-            return
-
-        accounts = self._filter_accounts_for_query(accounts, row_config)
-        page_tokens, is_page_token = self._get_tokens_for_accounts(accounts, row_config)
+            is_page_token = False
+            page_tokens = {account.id: self.oauth.data.get("access_token") for account in accounts}
 
         for page_id, token in page_tokens.items():
-            result = self._process_individual_account(str(page_id), token, is_page_token, row_config)
-            if result:
-                yield result
+            page_id = str(page_id)
+
+            try:
+                # Create new client with page token
+                # Use the shared client and pass token in params
+                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                output_parser = OutputParser(page_loader, page_id, row_config)
+
+                # Construct Facebook Graph node path
+                fb_graph_node = self._get_fb_graph_node(is_page_token, row_config)
+
+                # Load data from Facebook API
+                page_data = page_loader.load_page(row_config.query, page_id, params={"access_token": token})
+                # For page queries without path, the response is the page object itself, not wrapped in "data"
+                if not row_config.query.path and "data" not in page_data:
+                    page_content = [page_data] if page_data and "id" in page_data else []
+                else:
+                    page_content = page_data.get("data", [])
+
+            except Exception as e:
+                if is_page_token and str(e).startswith("400"):
+                    logging.warning(f"Page token failed with 400 error for {page_id}, falling back to user token")
+                    try:
+                        # Fallback to user token
+                        page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                        output_parser = OutputParser(page_loader, page_id, row_config)
+                        fb_graph_node = self._get_fb_graph_node(False, row_config)
+                        page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
+                        # For page queries without path, the response is the page object itself, not wrapped in "data"
+                        if not row_config.query.path and "data" not in page_data:
+                            page_content = [page_data] if page_data and "id" in page_data else []
+                        else:
+                            page_content = page_data.get("data", [])
+                    except Exception as user_token_error:
+                        logging.error(f"User token also failed for {page_id}: {str(user_token_error)}")
+                        continue
+
+                else:
+                    logging.error(f"Failed to load data for {page_id}: {str(e)}")
+                    continue
+
+            if not page_content:
+                continue
+
+            res = output_parser.parse_data(page_data, fb_graph_node, page_id)
+            if res:
+                yield res
 
     def get_accounts(self, url_path: str, fields: str | None) -> list[dict[str, Any]]:
         params = {}
@@ -452,7 +420,9 @@ class FacebookClient:
 
         # Check if this is an insights query without a path (account-level insights)
         if not query_config.path and fields.startswith("insights"):
-            return any(metric in fields for metric in IG_INSIGHTS_METRICS)
+            # Check for Instagram-specific metrics
+            ig_metrics = ["follower_count", "reach", "impressions", "profile_views"]
+            return any(metric in fields for metric in ig_metrics)
 
         return False
 
