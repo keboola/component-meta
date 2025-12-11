@@ -226,7 +226,7 @@ class FacebookClient:
                 except HTTPError as e:
                     error_text = str(e.response.text) if hasattr(e, "response") else str(e)
                     if "Page Access Token" in error_text:
-                        logging.info("Batch request requires page token, falling back to individual requests.")
+                        logging.debug("Batch request requires page token, falling back to individual requests.")
                         # Let the code fall through to individual processing below.
                     else:
                         logging.error(f"Batch request failed with a non-token error: {error_text}")
@@ -252,11 +252,11 @@ class FacebookClient:
                 )
 
         if self._request_require_page_token(row_config):
-            logging.info("Require page token")
+            logging.debug("Require page token")
             is_page_token = True
             page_tokens = self._get_pages_token(accounts)
         else:
-            logging.info("Don't need page token")
+            logging.debug("Don't need page token")
             is_page_token = False
             page_tokens = {account.id: self.oauth.data.get("access_token") for account in accounts}
 
