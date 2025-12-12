@@ -355,20 +355,16 @@ class OutputParser:
         ]
         if extended:
             # Include names and metric fields for action breakdown queries
+            # Only include fields that already existed in V2 async tables (per SUPPORT-14107)
+            # to maintain backwards compatibility with existing customer tables
             fields += [
                 "account_name",
                 "campaign_name",
                 "ad_name",
-                "adset_name",
                 "impressions",
                 "clicks",
                 "spend",
                 "reach",
-                "frequency",
-                "cpc",
-                "cpm",
-                "cpp",
-                "ctr",
             ]
 
         for field in fields:
