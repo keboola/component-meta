@@ -394,14 +394,20 @@ class FacebookClient:
 
             # Assign the correct token to each account
             for account in accounts:
-                if account.fb_page_id:
-                    # Account has fb_page_id - look up page token using the Facebook Page ID
-                    page_tokens[account.id] = page_token_map.get(
-                        account.fb_page_id, self.oauth.data.get("access_token")
-                    )
+                # Determine the lookup key for page token:
+                # - For Instagram Business Accounts: use fb_page_id (linked Facebook Page)
+                # - For Facebook Pages: use account.id (which IS the page ID)
+                lookup_id = account.fb_page_id or account.id
+                page_token = page_token_map.get(lookup_id)
+                if page_token:
+                    page_tokens[account.id] = page_token
                 else:
-                    # Account without fb_page_id (e.g., Instagram Business Accounts)
-                    # Use user token directly - no page token lookup needed
+                    # No page token found - fall back to user token
+                    # This may fail for endpoints requiring page tokens (e.g., /feed)
+                    logger.debug(
+                        f"No page token found for account {account.id} "
+                        f"(lookup_id={lookup_id}), using user token"
+                    )
                     page_tokens[account.id] = self.oauth.data.get("access_token")
 
         except Exception as e:
