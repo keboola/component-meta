@@ -254,15 +254,17 @@ class FacebookClient:
 
         # For Instagram-specific insights queries, filter out Facebook Page entries
         # Only process accounts that have fb_page_id set (Instagram Business Account entries)
-        if self._is_instagram_insights_query(row_config):
+        # IMPORTANT: Skip this filtering for Facebook Ads accounts (act_* IDs) - they use
+        # the same metrics (reach, impressions) but are not Instagram accounts
+        has_ads_accounts = any(acc.id.startswith("act_") for acc in accounts)
+        if self._is_instagram_insights_query(row_config) and not has_ads_accounts:
             non_ig_accounts = [account for account in accounts if not account.fb_page_id]
             accounts = [account for account in accounts if account.fb_page_id]
             if non_ig_accounts:
                 non_ig_ids = [acc.id for acc in non_ig_accounts]
                 logger.warning(
-                    f"Skipping {len(non_ig_accounts)} Facebook Page account(s) for Instagram insights query: "
-                    f"{', '.join(non_ig_ids)}. These are Facebook Pages, not Instagram Business Accounts. "
-                    f"Please remove them from your config or re-run Add Account to refresh."
+                    f"Skipping {len(non_ig_accounts)} account(s) without fb_page_id for Instagram insights query: "
+                    f"{', '.join(non_ig_ids)}. Please remove them from your config or re-run Add Account to refresh."
                 )
 
         if self._request_require_page_token(row_config):
