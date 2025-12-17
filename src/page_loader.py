@@ -194,6 +194,12 @@ class PageLoader:
                 fields_list_part = fields.split("{")[1].split("}")[0]
                 field_names = [f.strip() for f in fields_list_part.split(",") if f.strip()]
                 if field_names:
+                    # Ensure structural fields are always included for backwards compatibility
+                    # These fields were previously returned by default when no explicit fields list was set
+                    structural_fields = ["account_id"]
+                    for sf in structural_fields:
+                        if sf not in field_names:
+                            field_names.append(sf)
                     params["fields"] = ",".join(field_names)
 
         else:
