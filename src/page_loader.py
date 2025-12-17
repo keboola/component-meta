@@ -187,9 +187,46 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
+            # Extract 'level' from the 'fields' string (e.g., "insights.level(ad)")
+            if ".level(" in fields:
+                level_part = fields.split(".level(")[1].split(")")[0]
+                params["level"] = level_part.strip()
+
+            # Extract 'action_breakdowns' from the 'fields' string (e.g., "insights.action_breakdowns(action_type)")
+            if ".action_breakdowns(" in fields:
+                action_breakdowns_part = fields.split(".action_breakdowns(")[1].split(")")[0]
+                params["action_breakdowns"] = action_breakdowns_part.strip()
+
+            # Extract 'date_preset' from the 'fields' string (e.g., "insights.date_preset(last_3d)")
+            if ".date_preset(" in fields:
+                date_preset_part = fields.split(".date_preset(")[1].split(")")[0]
+                params["date_preset"] = date_preset_part.strip()
+
+            # Extract 'time_increment' from the 'fields' string (e.g., "insights.time_increment(1)")
+            if ".time_increment(" in fields:
+                time_increment_part = fields.split(".time_increment(")[1].split(")")[0]
+                params["time_increment"] = time_increment_part.strip()
+
+            # Extract 'breakdowns' from the 'fields' string (e.g., "insights.breakdowns(country)")
+            if ".breakdowns(" in fields:
+                breakdowns_part = fields.split(".breakdowns(")[1].split(")")[0]
+                params["breakdowns"] = breakdowns_part.strip()
+
+            # Extract fields list from curly braces (e.g., "{ad_id,ad_name,campaign_id,...}")
+            if "{" in fields and "}" in fields:
+                fields_list_part = fields.split("{")[1].split("}")[0]
+                field_names = [f.strip() for f in fields_list_part.split(",") if f.strip()]
+                if field_names:
+                    # Ensure structural fields are always included for backwards compatibility
+                    # These fields were previously returned by default when no explicit fields list was set
+                    structural_fields = ["account_id"]
+                    for sf in structural_fields:
+                        if sf not in field_names:
+                            field_names.append(sf)
+                    params["fields"] = ",".join(field_names)
+
             # Validate 30-day limit for Instagram insights queries
             self._validate_ig_insights_date_range(params, fields)
-
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
