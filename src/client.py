@@ -293,7 +293,10 @@ class FacebookClient:
                 page_content = self._extract_page_content(row_config.query.path, page_data)
 
             except Exception as e:
-                if is_page_token and str(e).startswith("400"):
+                user_token = self.oauth.data.get("access_token")
+                # Only retry with user token if we actually had a different page token
+                # If token == user_token, we already tried with user token, no point retrying
+                if is_page_token and str(e).startswith("400") and token != user_token:
                     logger.warning(f"Page token failed with 400 error for {page_id}, falling back to user token")
                     try:
                         # Fallback to user token
@@ -377,20 +380,31 @@ class FacebookClient:
             return self.page_tokens
 
         page_tokens = {}
+        # Track which accounts have no page token (for warning)
+        accounts_without_page_token = []
 
         try:
-            # Request page tokens from the API
-            response = self.client.get(
-                endpoint_path=f"/{self.api_version}/me/accounts",
-                params=self._with_token({"fields": "id,access_token"}),
-            )
+            # Request page tokens from the API with pagination
+            # (users with many pages may have tokens spread across multiple pages)
+            page_token_map = {}
+            endpoint_path = f"/{self.api_version}/me/accounts"
+            params = self._with_token({"fields": "id,access_token", "limit": "100"})
 
-            # Build a map of page_id to access_token if data is available
-            page_token_map = {
-                page["id"]: page["access_token"]
-                for page in response.get("data", [])
-                if "id" in page and "access_token" in page
-            }
+            while endpoint_path:
+                response = self.client.get(endpoint_path=endpoint_path, params=params)
+
+                if not response:
+                    break
+
+                # Accumulate tokens from this page of results
+                for page in response.get("data", []):
+                    if "id" in page and "access_token" in page:
+                        page_token_map[page["id"]] = page["access_token"]
+
+                # Get next page URL if available
+                endpoint_path = response.get("paging", {}).get("next")
+                # Clear params for subsequent requests (next URL includes all params)
+                params = {}
 
             # Assign the correct token to each account
             for account in accounts:
@@ -402,13 +416,19 @@ class FacebookClient:
                 if page_token:
                     page_tokens[account.id] = page_token
                 else:
-                    # No page token found - fall back to user token
-                    # This may fail for endpoints requiring page tokens (e.g., /feed)
-                    logger.debug(
-                        f"No page token found for account {account.id} "
-                        f"(lookup_id={lookup_id}), using user token"
-                    )
+                    # No page token found - track for warning but still set user token
+                    accounts_without_page_token.append(account.id)
                     page_tokens[account.id] = self.oauth.data.get("access_token")
+
+            # Log a single warning for all accounts without page tokens (reduces log spam)
+            if accounts_without_page_token:
+                logger.warning(
+                    f"No page token found for {len(accounts_without_page_token)} account(s): "
+                    f"{', '.join(accounts_without_page_token[:5])}"
+                    f"{'...' if len(accounts_without_page_token) > 5 else ''}. "
+                    f"These may fail for endpoints requiring page tokens (e.g., /feed). "
+                    f"Ensure the connected Facebook user has admin access to these pages."
+                )
 
         except Exception as e:
             logger.warning(f"Unable to get page tokens: {e}")
