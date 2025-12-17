@@ -171,6 +171,33 @@ class FacebookClient:
             except Exception as e:
                 logger.error(f"Failed to process async job result for report_id: {report_id}: {e}")
 
+    def _handle_batch_request(self, account_ids: list[str], row_config) -> Iterator[dict]:
+        """
+        Executes and parses a batch request for a list of account IDs.
+        Yields parsed data for each item in the response.
+        Raises HTTPError on failure so the caller can handle fallbacks.
+        """
+        logger.info(f"Batch fetching object details for IDs: {','.join(account_ids)}")
+        params = {"ids": ",".join(account_ids), "fields": row_config.query.fields}
+
+        # Raises HTTPError on failure
+        response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
+
+        if not response or not isinstance(response, dict):
+            logger.warning("Empty or invalid response for batch ID fetch.")
+            return
+
+        fb_graph_node = self._get_fb_graph_node(False, row_config)
+        for item_id, item_data in response.items():
+            if isinstance(item_data, dict) and "error" in item_data:
+                logger.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
+                continue
+
+            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+            parsed_result = output_parser.parse_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
+            if parsed_result:
+                yield parsed_result
+
     def _process_single_sync_query(self, accounts: list[Account], row_config: QueryRow) -> Iterator[dict[str, Any]]:
         # Determine if a query is eligible for batch processing.
         is_batchable_query = not row_config.query.path and getattr(row_config, "type", "") != "nested-query"
@@ -449,4 +476,13 @@ class FacebookClient:
             return base_node
 
         # Add path as first level nesting
-        return f"{base_node}_{query_config.path}"
+        node_path = f"{base_node}_{query_config.path}"
+
+        # Handle additional nesting based on fields
+        field_parts = []
+
+        # Add any nested fields to the path
+        for field in field_parts:
+            node_path = f"{node_path}_{field}"
+
+        return node_path
