@@ -1,0 +1,39 @@
+{
+  "parameters": {
+    "api-version": "v23.0",
+    "accounts": {
+      "17841411832225810": {
+        "id": "17841411832225810",
+        "name": "Test Instagram Account",
+        "category": "Community",
+        "fb_page_id": "123456789"
+      }
+    },
+    "queries": [
+      {
+        "id": 1,
+        "name": "ig_insights_short_range",
+        "type": "nested-query",
+        "run-by-id": false,
+        "disabled": false,
+        "query": {
+          "path": "",
+          "fields": "insights.metric(follower_count,profile_views){value,end_time}",
+          "ids": "",
+          "limit": "25",
+          "since": "2024-01-01",
+          "until": "2024-01-15"
+        }
+      }
+    ]
+  },
+  "authorization": {
+    "oauth_api": {
+      "credentials": {
+        "#data": "{\"access_token\": \"test-token\"}",
+        "appKey": "test-app-key",
+        "#appSecret": "test-app-secret"
+      }
+    }
+  }
+}
