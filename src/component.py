@@ -90,7 +90,11 @@ class Component(ComponentBase):
         params = self.configuration.parameters
         params["accounts"] = params.get("accounts") or {}
         self.config = Configuration(**params)
-        self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
+        self.client: FacebookClient = FacebookClient(
+            self.configuration.oauth_credentials,
+            self.config.api_version,
+            component_id=self.environment_variables.component_id,
+        )
         self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:

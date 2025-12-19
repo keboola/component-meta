@@ -53,9 +53,10 @@ for name in logging.root.manager.loggerDict:
 
 
 class FacebookClient:
-    def __init__(self, oauth: OauthCredentials, api_version: str):
+    def __init__(self, oauth: OauthCredentials, api_version: str, component_id: str | None = None):
         self.oauth = oauth
         self.api_version = api_version
+        self.component_id = component_id
         self.page_tokens = None  # Cache for page tokens
 
         if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
@@ -137,7 +138,7 @@ class FacebookClient:
             page_id = str(page_id)
             try:
                 # Use the shared client and pass token in params
-                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                page_loader = PageLoader(self.client, row_config.type, self.api_version, self.component_id)
                 report_id = page_loader.start_async_insights_job(
                     row_config.query, page_id, params=self._with_token({}, token)
                 )
@@ -252,12 +253,10 @@ class FacebookClient:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]
 
-        # For Instagram-specific insights queries, filter out Facebook Page entries
+        # For Instagram component only: filter out Facebook Page entries from IG insights queries
         # Only process accounts that have fb_page_id set (Instagram Business Account entries)
-        # IMPORTANT: Skip this filtering for Facebook Ads accounts (act_* IDs) - they use
-        # the same metrics (reach, impressions) but are not Instagram accounts
-        has_ads_accounts = any(acc.id.startswith("act_") for acc in accounts)
-        if self._is_instagram_insights_query(row_config) and not has_ads_accounts:
+        # This guard ensures we don't accidentally filter accounts in Facebook Ads/Pages components
+        if self._is_instagram_component() and self._is_instagram_insights_query(row_config):
             non_ig_accounts = [account for account in accounts if not account.fb_page_id]
             accounts = [account for account in accounts if account.fb_page_id]
             if non_ig_accounts:
@@ -282,7 +281,7 @@ class FacebookClient:
             try:
                 # Create new client with page token
                 # Use the shared client and pass token in params
-                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                page_loader = PageLoader(self.client, row_config.type, self.api_version, self.component_id)
                 output_parser = OutputParser(page_loader, page_id, row_config)
 
                 # Construct Facebook Graph node path
@@ -300,7 +299,7 @@ class FacebookClient:
                     logger.warning(f"Page token failed with 400 error for {page_id}, falling back to user token")
                     try:
                         # Fallback to user token
-                        page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                        page_loader = PageLoader(self.client, row_config.type, self.api_version, self.component_id)
                         output_parser = OutputParser(page_loader, page_id, row_config)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
@@ -439,6 +438,16 @@ class FacebookClient:
         # Cache the tokens for future use
         self.page_tokens = page_tokens
         return page_tokens
+
+    def _is_instagram_component(self) -> bool:
+        """
+        Determine if we are running as the Instagram extractor component.
+
+        This is used to safely scope Instagram-specific logic (like account filtering,
+        30-day validation, and graceful error handling) to only the Instagram component,
+        preventing regressions in Facebook Ads and Facebook Pages components.
+        """
+        return (self.component_id or "").startswith("keboola.ex-instagram")
 
     def _is_instagram_insights_query(self, row_config) -> bool:
         """

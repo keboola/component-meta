@@ -29,10 +29,23 @@ IG_INSIGHTS_METRICS = ["follower_count", "reach", "impressions", "profile_views"
 
 
 class PageLoader:
-    def __init__(self, client: HttpClient, query_type: str, api_version: str = "v20.0"):
+    def __init__(
+        self, client: HttpClient, query_type: str, api_version: str = "v20.0", component_id: str | None = None
+    ):
         self.client = client
         self.query_type = query_type
         self.api_version = api_version
+        self.component_id = component_id
+
+    def _is_instagram_component(self) -> bool:
+        """
+        Determine if we are running as the Instagram extractor component.
+
+        This is used to safely scope Instagram-specific logic (like 30-day validation
+        and graceful error handling) to only the Instagram component, preventing
+        regressions in Facebook Ads and Facebook Pages components.
+        """
+        return (self.component_id or "").startswith("keboola.ex-instagram")
 
     def load_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
         if self.query_type == "async-insights-query":
@@ -136,10 +149,12 @@ class PageLoader:
 
         except HTTPError as e:
             # Check for recoverable errors - return empty data instead of failing
-            is_recoverable, error_type = self._is_recoverable_error(e)
-            if is_recoverable:
-                logging.warning(f"Skipping account: {error_type}")
-                return {"data": []}
+            # Only for Instagram component to avoid masking real errors in Ads/Pages
+            if self._is_instagram_component():
+                is_recoverable, error_type = self._is_recoverable_error(e)
+                if is_recoverable:
+                    logging.warning(f"Skipping account: {error_type}")
+                    return {"data": []}
 
             logging.error(f"HTTP error while loading page data: {e}")
             # Log the full error response for debugging
@@ -279,6 +294,10 @@ class PageLoader:
         Raises:
             UserException: If the date range exceeds 30 days for an IG insights query
         """
+        # Only validate for Instagram component to avoid breaking Facebook Ads/Pages
+        # which may use similar metrics (reach, impressions) but don't have the 30-day limit
+        if not self._is_instagram_component():
+            return
         # Only validate if this is an Instagram insights query (contains IG-specific metrics)
         if not any(metric in fields for metric in IG_INSIGHTS_METRICS):
             return
@@ -372,10 +391,12 @@ class PageLoader:
 
         except HTTPError as e:
             # Check for recoverable errors - return empty data instead of failing
-            is_recoverable, error_type = self._is_recoverable_error(e)
-            if is_recoverable:
-                logging.warning(f"Skipping account: {error_type}")
-                return {"data": []}
+            # Only for Instagram component to avoid masking real errors in Ads/Pages
+            if self._is_instagram_component():
+                is_recoverable, error_type = self._is_recoverable_error(e)
+                if is_recoverable:
+                    logging.warning(f"Skipping account: {error_type}")
+                    return {"data": []}
 
             status_code = getattr(getattr(e, "response", None), "status_code", None)
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
