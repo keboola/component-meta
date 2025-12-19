@@ -55,10 +55,15 @@ class OutputParser:
     def _is_action_breakdown_query(self) -> bool:
         """
         Check if this is an action breakdown query (action_reaction or action_type).
-        Handles both string parameters (query string format) and dict parameters.
+        Handles string parameters, dict parameters, and DSL-style fields.
         """
         query = self.row_config.query
         parameters = getattr(query, "parameters", None)
+        fields = str(getattr(query, "fields", "") or "")
+
+        # Check DSL-style fields (e.g., "insights.action_breakdowns(action_type)")
+        if ".action_breakdowns(action_type)" in fields or ".action_breakdowns(action_reaction)" in fields:
+            return True
 
         if not parameters:
             return False
