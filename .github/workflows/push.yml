@@ -140,6 +140,9 @@ jobs:
       - build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Run KBC test jobs for Facebook Pages
         if: env.KBC_TEST_CONFIGS_PAGES != '' && env.KBC_STORAGE_TOKEN != ''
         uses: keboola/action-run-configs-parallel@master
@@ -150,6 +153,17 @@ jobs:
           tag: ${{ needs.push_event_info.outputs.app_image_tag }}
           configs: ${{ env.KBC_TEST_CONFIGS_PAGES }}
 
+      - name: Validate test outputs - Facebook Pages
+        if: env.KBC_TEST_CONFIGS_PAGES != '' && env.KBC_STORAGE_TOKEN != ''
+        run: |
+          chmod +x scripts/validate_test_outputs.sh
+          scripts/validate_test_outputs.sh
+        env:
+          KBC_HOST: ${{ env.KBC_HOST }}
+          KBC_STORAGE_TOKEN: ${{ secrets.KBC_STORAGE_TOKEN }}
+          COMPONENT_ID: ${{ env.KBC_DEVELOPERPORTAL_APP }}
+          CONFIG_IDS: ${{ env.KBC_TEST_CONFIGS_PAGES }}
+
   tests-kbc-ads:
     name: Run KBC Tests - Facebook Ads
     needs:
@@ -157,6 +171,9 @@ jobs:
       - build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Run KBC test jobs for Facebook Ads
         if: env.KBC_TEST_CONFIGS_ADS != '' && env.KBC_STORAGE_TOKEN != ''
         uses: keboola/action-run-configs-parallel@master
@@ -167,6 +184,17 @@ jobs:
           tag: ${{ needs.push_event_info.outputs.app_image_tag }}
           configs: ${{ env.KBC_TEST_CONFIGS_ADS }}
 
+      - name: Validate test outputs - Facebook Ads
+        if: env.KBC_TEST_CONFIGS_ADS != '' && env.KBC_STORAGE_TOKEN != ''
+        run: |
+          chmod +x scripts/validate_test_outputs.sh
+          scripts/validate_test_outputs.sh
+        env:
+          KBC_HOST: ${{ env.KBC_HOST }}
+          KBC_STORAGE_TOKEN: ${{ secrets.KBC_STORAGE_TOKEN }}
+          COMPONENT_ID: ${{ env.KBC_DEVELOPERPORTAL_APP_ADS }}
+          CONFIG_IDS: ${{ env.KBC_TEST_CONFIGS_ADS }}
+
   tests-kbc-instagram:
     name: Run KBC Tests - Instagram
     needs:
@@ -174,6 +202,9 @@ jobs:
       - build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Run KBC test jobs for Instagram
         if: env.KBC_TEST_CONFIGS_INSTAGRAM != '' && env.KBC_STORAGE_TOKEN != ''
         uses: keboola/action-run-configs-parallel@master
@@ -183,6 +214,17 @@ jobs:
           componentId: ${{ env.KBC_DEVELOPERPORTAL_APP_INSTAGRAM }}
           tag: ${{ needs.push_event_info.outputs.app_image_tag }}
           configs: ${{ env.KBC_TEST_CONFIGS_INSTAGRAM }}
+
+      - name: Validate test outputs - Instagram
+        if: env.KBC_TEST_CONFIGS_INSTAGRAM != '' && env.KBC_STORAGE_TOKEN != ''
+        run: |
+          chmod +x scripts/validate_test_outputs.sh
+          scripts/validate_test_outputs.sh
+        env:
+          KBC_HOST: ${{ env.KBC_HOST }}
+          KBC_STORAGE_TOKEN: ${{ secrets.KBC_STORAGE_TOKEN }}
+          COMPONENT_ID: ${{ env.KBC_DEVELOPERPORTAL_APP_INSTAGRAM }}
+          CONFIG_IDS: ${{ env.KBC_TEST_CONFIGS_INSTAGRAM }}
 
   push:
     name: Docker Image Push
