@@ -2,6 +2,7 @@ import json
 import logging
 from typing import Any, Optional
 from collections.abc import Iterator
+from urllib.parse import parse_qs
 
 
 class OutputParser:
@@ -50,6 +51,69 @@ class OutputParser:
         self.page_loader = page_loader
         self.page_id = page_id
         self.row_config = row_config
+
+    def _is_action_breakdown_query(self) -> bool:
+        """
+        Check if this is an action breakdown query (action_reaction or action_type).
+        Handles both string parameters (query string format) and dict parameters.
+        Also checks DSL-style fields string for .action_breakdowns() syntax.
+        """
+        query = self.row_config.query
+        parameters = getattr(query, "parameters", None)
+        fields = str(getattr(query, "fields", "") or "")
+
+        # Check DSL-style fields string (e.g., "insights.action_breakdowns(action_type)")
+        if ".action_breakdowns(action_type)" in fields or ".action_breakdowns(action_reaction)" in fields:
+            return True
+
+        if not parameters:
+            return False
+
+        # Handle string parameters (query string format)
+        if isinstance(parameters, str):
+            try:
+                parsed = parse_qs(parameters)
+                action_breakdowns = parsed.get("action_breakdowns", [])
+                return any(v in ["action_type", "action_reaction"] for v in action_breakdowns)
+            except Exception:
+                # Fallback to substring match if parsing fails
+                return ("action_breakdowns=action_type" in parameters
+                        or "action_breakdowns=action_reaction" in parameters)
+
+        # Handle dict parameters
+        if isinstance(parameters, dict):
+            action_breakdowns = parameters.get("action_breakdowns", "")
+            return action_breakdowns in ["action_type", "action_reaction"]
+
+        return False
+
+    def _has_action_reaction_breakdown(self) -> bool:
+        """Check if this query uses action_reaction breakdown specifically."""
+        query = self.row_config.query
+        parameters = getattr(query, "parameters", None)
+        fields = str(getattr(query, "fields", "") or "")
+
+        # Check DSL-style fields string
+        if ".action_breakdowns(action_reaction)" in fields:
+            return True
+
+        if not parameters:
+            return False
+
+        # Handle string parameters
+        if isinstance(parameters, str):
+            try:
+                parsed = parse_qs(parameters)
+                action_breakdowns = parsed.get("action_breakdowns", [])
+                return "action_reaction" in action_breakdowns
+            except Exception:
+                return "action_breakdowns=action_reaction" in parameters
+
+        # Handle dict parameters
+        if isinstance(parameters, dict):
+            return parameters.get("action_breakdowns") == "action_reaction"
+
+        return False
 
     def parse_data(
         self,
@@ -117,10 +181,7 @@ class OutputParser:
         full_row_data = {**base_row, **processed_data["regular_fields"]}
 
         # Check if this is an action breakdown query (action_reaction or action_type)
-        is_action_breakdown_query = hasattr(self.row_config.query, "parameters") and (
-            "action_breakdowns=action_reaction" in str(self.row_config.query.parameters)
-            or "action_breakdowns=action_type" in str(self.row_config.query.parameters)
-        )
+        is_action_breakdown_query = self._is_action_breakdown_query()
 
         # For action breakdown queries, only create main row if there are no action stats to process
         # Otherwise, actions become the main rows
@@ -303,13 +364,7 @@ class OutputParser:
         result: dict[str, list[dict[str, Any]]],
     ) -> None:
         """Process action stats as separate tables with _insights suffix or flatten for breakdowns."""
-        is_action_breakdown = hasattr(self.row_config.query, "parameters") and any(
-            b in str(self.row_config.query.parameters)
-            for b in [
-                "action_breakdowns=action_reaction",
-                "action_breakdowns=action_type",
-            ]
-        )
+        is_action_breakdown = self._is_action_breakdown_query()
 
         for stats_field_name, stats_data in action_stats.items():
             if not isinstance(stats_data, list):
@@ -347,7 +402,18 @@ class OutputParser:
             "publisher_platform",
         ]
         if extended:
-            fields += ["account_name", "campaign_name"]
+            # Include names and metric fields for action breakdown queries
+            # These fields were missing in V2 output causing empty columns (SUPPORT-14107)
+            fields += [
+                "account_name",
+                "campaign_name",
+                "ad_name",
+                "adset_name",
+                "impressions",
+                "clicks",
+                "spend",
+                "reach",
+            ]
 
         for field in fields:
             if field in original_row:
@@ -373,7 +439,7 @@ class OutputParser:
             }
         )
 
-        if is_action_breakdown and "action_breakdowns=action_reaction" in str(self.row_config.query.parameters):
+        if is_action_breakdown and self._has_action_reaction_breakdown():
             action_reaction = action.get("action_reaction", original_row.get("action_reaction", ""))
             action_row["action_reaction"] = action_reaction
 
