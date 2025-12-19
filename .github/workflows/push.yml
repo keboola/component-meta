@@ -14,9 +14,13 @@ env:
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # recommended for pushing to ECR
   KBC_DEVELOPERPORTAL_PASSWORD: ${{ secrets.KBC_DEVELOPERPORTAL_PASSWORD }}
 
-  # (Optional) Test KBC project: https://connection.keboola.com/admin/projects/0000
-  KBC_TEST_PROJECT_CONFIGS: "" # space separated list of config ids
+  # (Optional) Test KBC project: https://connection.us-east4.gcp.keboola.com/admin/projects/5011
+  KBC_HOST: "connection.us-east4.gcp.keboola.com"
   KBC_STORAGE_TOKEN: ${{ secrets.KBC_STORAGE_TOKEN }} # required for running KBC tests
+  # Test config IDs for each component (space separated)
+  KBC_TEST_CONFIGS_PAGES: "01kcvn68g3rdjptrq41ptqmpc0 01kcvnnek849kfhkq54mssbfkc 01kcvnner2z8zf65wgfvmx3cvs"
+  KBC_TEST_CONFIGS_ADS: "01kcvn18nf0qvqg1k2fcn4fp07 01kcvnfaxd91fhxnbnct8pw1z4 01kcvng1qssj8y1xg1kaq6e659 01kcvngeykxf0rmhbn3t9pkrsb"
+  KBC_TEST_CONFIGS_INSTAGRAM: "01kcvn8fv4gvth3p042jytt75e 01kcvnpfh00r9mv87c085gyg8v 01kcvnpftb09kh7m53gsz5a8tq"
 
 jobs:
   push_event_info:
@@ -129,26 +133,56 @@ jobs:
           echo "Running unit-tests..."
           docker run ${{ env.KBC_DEVELOPERPORTAL_APP }}:latest python -m unittest discover
 
-  tests-kbc:
-    name: Run KBC Tests
+  tests-kbc-pages:
+    name: Run KBC Tests - Facebook Pages
     needs:
       - push_event_info
       - build
     runs-on: ubuntu-latest
     steps:
-      - name: Set up environment variables
-        run: |
-          echo "KBC_TEST_PROJECT_CONFIGS=${KBC_TEST_PROJECT_CONFIGS}" >> $GITHUB_ENV
-          echo "KBC_STORAGE_TOKEN=${{ secrets.KBC_STORAGE_TOKEN }}" >> $GITHUB_ENV
-
-      - name: Run KBC test jobs
-        if: env.KBC_TEST_PROJECT_CONFIGS != '' && env.KBC_STORAGE_TOKEN != ''
+      - name: Run KBC test jobs for Facebook Pages
+        if: env.KBC_TEST_CONFIGS_PAGES != '' && env.KBC_STORAGE_TOKEN != ''
         uses: keboola/action-run-configs-parallel@master
         with:
+          host: ${{ env.KBC_HOST }}
           token: ${{ secrets.KBC_STORAGE_TOKEN }}
           componentId: ${{ env.KBC_DEVELOPERPORTAL_APP }}
           tag: ${{ needs.push_event_info.outputs.app_image_tag }}
-          configs: ${{ env.KBC_TEST_PROJECT_CONFIGS }}
+          configs: ${{ env.KBC_TEST_CONFIGS_PAGES }}
+
+  tests-kbc-ads:
+    name: Run KBC Tests - Facebook Ads
+    needs:
+      - push_event_info
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run KBC test jobs for Facebook Ads
+        if: env.KBC_TEST_CONFIGS_ADS != '' && env.KBC_STORAGE_TOKEN != ''
+        uses: keboola/action-run-configs-parallel@master
+        with:
+          host: ${{ env.KBC_HOST }}
+          token: ${{ secrets.KBC_STORAGE_TOKEN }}
+          componentId: ${{ env.KBC_DEVELOPERPORTAL_APP_ADS }}
+          tag: ${{ needs.push_event_info.outputs.app_image_tag }}
+          configs: ${{ env.KBC_TEST_CONFIGS_ADS }}
+
+  tests-kbc-instagram:
+    name: Run KBC Tests - Instagram
+    needs:
+      - push_event_info
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run KBC test jobs for Instagram
+        if: env.KBC_TEST_CONFIGS_INSTAGRAM != '' && env.KBC_STORAGE_TOKEN != ''
+        uses: keboola/action-run-configs-parallel@master
+        with:
+          host: ${{ env.KBC_HOST }}
+          token: ${{ secrets.KBC_STORAGE_TOKEN }}
+          componentId: ${{ env.KBC_DEVELOPERPORTAL_APP_INSTAGRAM }}
+          tag: ${{ needs.push_event_info.outputs.app_image_tag }}
+          configs: ${{ env.KBC_TEST_CONFIGS_INSTAGRAM }}
 
   push:
     name: Docker Image Push
@@ -156,7 +190,7 @@ jobs:
     needs:
       - push_event_info
       - tests
-      - tests-kbc
+      - tests-kbc-pages
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
@@ -196,7 +230,7 @@ jobs:
     needs:
       - push_event_info
       - tests
-      - tests-kbc
+      - tests-kbc-ads
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
@@ -235,7 +269,7 @@ jobs:
     needs:
       - push_event_info
       - tests
-      - tests-kbc
+      - tests-kbc-instagram
     env:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
