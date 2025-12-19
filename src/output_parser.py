@@ -392,32 +392,31 @@ class OutputParser:
                 self._add_row(result, table_name, action_row)
 
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
-        fields = [
-            "account_id",
-            "ad_id",
-            "adset_id",
-            "campaign_id",
-            "date_start",
-            "date_stop",
-            "publisher_platform",
-        ]
+        """
+        Copy fields from original_row to base_row.
+        Following Clojure approach: when extended=True, copy ALL scalar fields.
+        """
         if extended:
-            # Include names and metric fields for action breakdown queries
-            # These fields were missing in V2 output causing empty columns (SUPPORT-14107)
-            fields += [
-                "account_name",
-                "campaign_name",
-                "ad_name",
-                "adset_name",
-                "impressions",
-                "clicks",
-                "spend",
-                "reach",
+            # Clojure approach: copy all scalar fields from original_row
+            # This automatically includes any field that Facebook API returns
+            for key, value in original_row.items():
+                # Skip complex types (lists, dicts) - those are handled separately
+                if not isinstance(value, (list, dict)):
+                    base_row[key] = value
+        else:
+            # Basic fields for non-action-breakdown queries
+            fields = [
+                "account_id",
+                "ad_id",
+                "adset_id",
+                "campaign_id",
+                "date_start",
+                "date_stop",
+                "publisher_platform",
             ]
-
-        for field in fields:
-            if field in original_row:
-                base_row[field] = original_row[field]
+            for field in fields:
+                if field in original_row:
+                    base_row[field] = original_row[field]
 
     def _populate_action_row(
         self,
