@@ -164,6 +164,33 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
+            # Extract 'level' (e.g., "insights.level(ad)")
+            if ".level(" in fields:
+                level_part = fields.split(".level(")[1].split(")")[0]
+                params["level"] = level_part.strip()
+
+            # Extract 'action_breakdowns' (e.g., "insights.action_breakdowns(action_type)")
+            if ".action_breakdowns(" in fields:
+                breakdown_part = fields.split(".action_breakdowns(")[1].split(")")[0]
+                params["action_breakdowns"] = breakdown_part.strip()
+
+            # Extract 'date_preset' (e.g., "insights.date_preset(last_3d)")
+            if ".date_preset(" in fields:
+                preset_part = fields.split(".date_preset(")[1].split(")")[0]
+                params["date_preset"] = preset_part.strip()
+
+            # Extract 'time_increment' (e.g., "insights.time_increment(1)")
+            if ".time_increment(" in fields:
+                increment_part = fields.split(".time_increment(")[1].split(")")[0]
+                params["time_increment"] = increment_part.strip()
+
+            # Extract explicit fields list (e.g., "insights{ad_id,ad_name,clicks}")
+            if "{" in fields and "}" in fields:
+                fields_part = fields.split("{")[1].split("}")[0]
+                explicit_fields = [f.strip() for f in fields_part.split(",") if f.strip()]
+                if explicit_fields:
+                    params["fields"] = ",".join(explicit_fields)
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
