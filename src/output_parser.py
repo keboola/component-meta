@@ -56,15 +56,9 @@ class OutputParser:
         """
         Check if this is an action breakdown query (action_reaction or action_type).
         Handles both string parameters (query string format) and dict parameters.
-        Also checks DSL-style fields string for .action_breakdowns() syntax.
         """
         query = self.row_config.query
         parameters = getattr(query, "parameters", None)
-        fields = str(getattr(query, "fields", "") or "")
-
-        # Check DSL-style fields string (e.g., "insights.action_breakdowns(action_type)")
-        if ".action_breakdowns(action_type)" in fields or ".action_breakdowns(action_reaction)" in fields:
-            return True
 
         if not parameters:
             return False
@@ -84,34 +78,6 @@ class OutputParser:
         if isinstance(parameters, dict):
             action_breakdowns = parameters.get("action_breakdowns", "")
             return action_breakdowns in ["action_type", "action_reaction"]
-
-        return False
-
-    def _has_action_reaction_breakdown(self) -> bool:
-        """Check if this query uses action_reaction breakdown specifically."""
-        query = self.row_config.query
-        parameters = getattr(query, "parameters", None)
-        fields = str(getattr(query, "fields", "") or "")
-
-        # Check DSL-style fields string
-        if ".action_breakdowns(action_reaction)" in fields:
-            return True
-
-        if not parameters:
-            return False
-
-        # Handle string parameters
-        if isinstance(parameters, str):
-            try:
-                parsed = parse_qs(parameters)
-                action_breakdowns = parsed.get("action_breakdowns", [])
-                return "action_reaction" in action_breakdowns
-            except Exception:
-                return "action_breakdowns=action_reaction" in parameters
-
-        # Handle dict parameters
-        if isinstance(parameters, dict):
-            return parameters.get("action_breakdowns") == "action_reaction"
 
         return False
 
@@ -438,12 +404,9 @@ class OutputParser:
             }
         )
 
-        if is_action_breakdown and self._has_action_reaction_breakdown():
-            action_reaction = action.get("action_reaction", original_row.get("action_reaction", ""))
-            action_row["action_reaction"] = action_reaction
-
+        # Copy all other fields from action (Clojure approach - just include what's in data)
         for key, value in action.items():
-            if key not in ["action_type", "value", "action_reaction"]:
+            if key not in ["action_type", "value"]:
                 action_row[key] = value
 
     def _get_action_stats_table_name(self, stats_field_name: str) -> str:
