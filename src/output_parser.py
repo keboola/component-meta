@@ -179,11 +179,16 @@ class OutputParser:
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
-        return {
+        base_row = {
             "ex_account_id": self.page_id,
             "fb_graph_node": fb_graph_node,
             "parent_id": parent_id,
         }
+        # For Ads accounts, derive account_id from page_id (like Clojure does)
+        # Facebook API doesn't return account_id when explicit fields are specified
+        if self.page_id and self.page_id.startswith("act_"):
+            base_row["account_id"] = self.page_id[4:]  # Strip "act_" prefix
+        return base_row
 
     def _process_fields(self, row: dict[str, Any]) -> dict[str, Any]:
         """Process all fields in a row and categorize them."""
