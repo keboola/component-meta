@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -165,27 +166,32 @@ class PageLoader:
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
         if not query_config.path and fields.startswith("insights"):
-            # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
-            if ".metric(" in fields:
-                metric_part = fields.split(".metric(")[1].split(")")[0]
-                metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
-                if metrics:
-                    params["metric"] = ",".join(metrics)
+            # Generic extraction of all .X(Y) patterns from DSL
+            # This automatically handles any DSL parameter without needing individual handlers
+            dsl_pattern = re.compile(r'\.(\w+)\(([^)]+)\)', re.DOTALL)
+            for match in dsl_pattern.finditer(fields):
+                param_name = match.group(1)
+                param_value = match.group(2).strip()
 
-            # Extract 'period' from the 'fields' string (e.g., "insights.period(day)")
-            if ".period(" in fields:
-                period_part = fields.split(".period(")[1].split(")")[0]
-                params["period"] = period_part.strip()
+                # Special handling for date params - need conversion
+                if param_name in ('since', 'until'):
+                    params[param_name] = get_past_date(param_value).strftime("%Y-%m-%d")
+                # Special handling for metric - comma-separated list normalization
+                elif param_name == 'metric':
+                    metrics = [m.strip() for m in param_value.replace("\n", "").split(",") if m.strip()]
+                    if metrics:
+                        params[param_name] = ",".join(metrics)
+                else:
+                    # All other params (level, action_breakdowns, date_preset, period, etc.)
+                    # pass through directly - no special handling needed
+                    params[param_name] = param_value
 
-            # Extract and convert 'since' from the 'fields' string (e.g., "insights.since(90 days ago)")
-            if ".since(" in fields:
-                since_part = fields.split(".since(")[1].split(")")[0]
-                params["since"] = get_past_date(since_part.strip()).strftime("%Y-%m-%d")
-
-            # Extract and convert 'until' from the 'fields' string (e.g., "insights.until(2 days ago)")
-            if ".until(" in fields:
-                until_part = fields.split(".until(")[1].split(")")[0]
-                params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
+            # Extract explicit fields list (e.g., "insights{ad_id,ad_name,clicks}")
+            fields_match = re.search(r'\{([^}]+)\}', fields)
+            if fields_match:
+                explicit_fields = [f.strip() for f in fields_match.group(1).split(",") if f.strip()]
+                if explicit_fields:
+                    params["fields"] = ",".join(explicit_fields)
 
             # Extract 'level' from the 'fields' string (e.g., "insights.level(ad)")
             if ".level(" in fields:

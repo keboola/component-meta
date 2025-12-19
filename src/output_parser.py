@@ -2,6 +2,7 @@ import json
 import logging
 from typing import Any, Optional
 from collections.abc import Iterator
+from urllib.parse import parse_qs
 
 
 class OutputParser:
@@ -50,6 +51,40 @@ class OutputParser:
         self.page_loader = page_loader
         self.page_id = page_id
         self.row_config = row_config
+
+    def _is_action_breakdown_query(self) -> bool:
+        """
+        Check if this is an action breakdown query (action_reaction or action_type).
+        Handles string parameters, dict parameters, and DSL-style fields.
+        """
+        query = self.row_config.query
+        parameters = getattr(query, "parameters", None)
+        fields = str(getattr(query, "fields", "") or "")
+
+        # Check DSL-style fields (e.g., "insights.action_breakdowns(action_type)")
+        if ".action_breakdowns(action_type)" in fields or ".action_breakdowns(action_reaction)" in fields:
+            return True
+
+        if not parameters:
+            return False
+
+        # Handle string parameters (query string format)
+        if isinstance(parameters, str):
+            try:
+                parsed = parse_qs(parameters)
+                action_breakdowns = parsed.get("action_breakdowns", [])
+                return any(v in ["action_type", "action_reaction"] for v in action_breakdowns)
+            except Exception:
+                # Fallback to substring match if parsing fails
+                return ("action_breakdowns=action_type" in parameters
+                        or "action_breakdowns=action_reaction" in parameters)
+
+        # Handle dict parameters
+        if isinstance(parameters, dict):
+            action_breakdowns = parameters.get("action_breakdowns", "")
+            return action_breakdowns in ["action_type", "action_reaction"]
+
+        return False
 
     def parse_data(
         self,
@@ -117,15 +152,7 @@ class OutputParser:
         full_row_data = {**base_row, **processed_data["regular_fields"]}
 
         # Check if this is an action breakdown query (action_reaction or action_type)
-        # Check both parameters and fields string (for DSL-style queries like insights.action_breakdowns(action_type))
-        params_str = str(getattr(self.row_config.query, "parameters", "") or "")
-        fields_str = str(getattr(self.row_config.query, "fields", "") or "")
-        is_action_breakdown_query = (
-            "action_breakdowns=action_reaction" in params_str
-            or "action_breakdowns=action_type" in params_str
-            or ".action_breakdowns(action_reaction)" in fields_str
-            or ".action_breakdowns(action_type)" in fields_str
-        )
+        is_action_breakdown_query = self._is_action_breakdown_query()
 
         # For action breakdown queries, only create main row if there are no action stats to process
         # Otherwise, actions become the main rows
@@ -152,11 +179,16 @@ class OutputParser:
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
-        return {
+        base_row = {
             "ex_account_id": self.page_id,
             "fb_graph_node": fb_graph_node,
             "parent_id": parent_id,
         }
+        # For Ads accounts, derive account_id from page_id (like Clojure does)
+        # Facebook API doesn't return account_id when explicit fields are specified
+        if self.page_id and self.page_id.startswith("act_"):
+            base_row["account_id"] = self.page_id[4:]  # Strip "act_" prefix
+        return base_row
 
     def _process_fields(self, row: dict[str, Any]) -> dict[str, Any]:
         """Process all fields in a row and categorize them."""
@@ -308,15 +340,7 @@ class OutputParser:
         result: dict[str, list[dict[str, Any]]],
     ) -> None:
         """Process action stats as separate tables with _insights suffix or flatten for breakdowns."""
-        # Check both parameters and fields string (for DSL-style queries)
-        params_str = str(getattr(self.row_config.query, "parameters", "") or "")
-        fields_str = str(getattr(self.row_config.query, "fields", "") or "")
-        is_action_breakdown = (
-            "action_breakdowns=action_reaction" in params_str
-            or "action_breakdowns=action_type" in params_str
-            or ".action_breakdowns(action_reaction)" in fields_str
-            or ".action_breakdowns(action_type)" in fields_str
-        )
+        is_action_breakdown = self._is_action_breakdown_query()
 
         for stats_field_name, stats_data in action_stats.items():
             if not isinstance(stats_data, list):
@@ -344,32 +368,31 @@ class OutputParser:
                 self._add_row(result, table_name, action_row)
 
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
-        fields = [
-            "account_id",
-            "ad_id",
-            "adset_id",
-            "campaign_id",
-            "date_start",
-            "date_stop",
-            "publisher_platform",
-        ]
+        """
+        Copy fields from original_row to base_row.
+        Following Clojure approach: when extended=True, copy ALL scalar fields.
+        """
         if extended:
-            # Include names and metric fields for action breakdown queries
-            # Only include fields that already existed in V2 async tables (per SUPPORT-14107)
-            # to maintain backwards compatibility with existing customer tables
-            fields += [
-                "account_name",
-                "campaign_name",
-                "ad_name",
-                "impressions",
-                "clicks",
-                "spend",
-                "reach",
+            # Clojure approach: copy all scalar fields from original_row
+            # This automatically includes any field that Facebook API returns
+            for key, value in original_row.items():
+                # Skip complex types (lists, dicts) - those are handled separately
+                if not isinstance(value, (list, dict)):
+                    base_row[key] = value
+        else:
+            # Basic fields for non-action-breakdown queries
+            fields = [
+                "account_id",
+                "ad_id",
+                "adset_id",
+                "campaign_id",
+                "date_start",
+                "date_stop",
+                "publisher_platform",
             ]
-
-        for field in fields:
-            if field in original_row:
-                base_row[field] = original_row[field]
+            for field in fields:
+                if field in original_row:
+                    base_row[field] = original_row[field]
 
     def _populate_action_row(
         self,
@@ -391,19 +414,9 @@ class OutputParser:
             }
         )
 
-        # Check both parameters and fields string for action_reaction breakdown
-        params_str = str(getattr(self.row_config.query, "parameters", "") or "")
-        fields_str = str(getattr(self.row_config.query, "fields", "") or "")
-        has_action_reaction = (
-            "action_breakdowns=action_reaction" in params_str
-            or ".action_breakdowns(action_reaction)" in fields_str
-        )
-        if is_action_breakdown and has_action_reaction:
-            action_reaction = action.get("action_reaction", original_row.get("action_reaction", ""))
-            action_row["action_reaction"] = action_reaction
-
+        # Copy all other fields from action (Clojure approach - just include what's in data)
         for key, value in action.items():
-            if key not in ["action_type", "value", "action_reaction"]:
+            if key not in ["action_type", "value"]:
                 action_row[key] = value
 
     def _get_action_stats_table_name(self, stats_field_name: str) -> str:
