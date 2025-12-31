@@ -55,9 +55,23 @@ class FacebookClient:
         self.api_version = api_version
         self.page_tokens = None  # Cache for page tokens
 
-        if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
+        # Validate OAuth credentials are present
+        if not self.oauth or not self.oauth.data:
+            raise UserException(
+                "Missing OAuth credentials. Please authorize the component with your Facebook account "
+                "in the component configuration."
+            )
+
+        if self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
             logging.info("Direct insert token is used for authentication.")
             self.oauth.data["access_token"] = self.oauth.data["token"]
+
+        # Validate that we have an access token
+        if not self.oauth.data.get("access_token"):
+            raise UserException(
+                "Missing access token in OAuth credentials. Please re-authorize the component "
+                "with your Facebook account in the component configuration."
+            )
 
         self.client = HttpClient(
             base_url="https://graph.facebook.com",
