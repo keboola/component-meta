@@ -51,11 +51,16 @@ for name in logging.root.manager.loggerDict:
 
 class FacebookClient:
     def __init__(self, oauth: OauthCredentials, api_version: str):
+        if not oauth or not oauth.data:
+            raise UserException(
+                "Missing OAuth credentials. Please authorize the component in the Keboola Connection UI."
+            )
+
         self.oauth = oauth
         self.api_version = api_version
         self.page_tokens = None  # Cache for page tokens
 
-        if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
+        if self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
             logging.info("Direct insert token is used for authentication.")
             self.oauth.data["access_token"] = self.oauth.data["token"]
 

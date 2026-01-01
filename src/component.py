@@ -90,7 +90,19 @@ class Component(ComponentBase):
         params = self.configuration.parameters
         params["accounts"] = params.get("accounts") or {}
         self.config = Configuration(**params)
-        self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
+
+        oauth = self.configuration.oauth_credentials
+        if not oauth or not oauth.data:
+            raise UserException(
+                "Missing OAuth credentials. Please authorize the component in the Keboola Connection UI."
+            )
+        if not oauth.data.get("access_token") and not oauth.data.get("token"):
+            raise UserException(
+                "Missing access token in OAuth credentials. Please re-authorize the component in the Keboola "
+                "Connection UI."
+            )
+
+        self.client: FacebookClient = FacebookClient(oauth, self.config.api_version)
         self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:
