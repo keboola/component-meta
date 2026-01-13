@@ -1,0 +1,1377 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:00:43 GMT"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "x-fb-trace-id": [
+                        "FRoXy+/ObMf"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=11, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=195, ullat=0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "X-FB-Debug": [
+                        "4xXwEG3IdNtBHaPwzjON+F7K1nHW0GgT96uLcIYW6xKlq4jjV48ggU+SjC+ue5QjBgcLC9fYgRAZhjTdn0G7uw=="
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "x-fb-request-id": [
+                        "AAIxqK5JCSV5pdqFX25DBG8"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:00:44 GMT"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "x-fb-trace-id": [
+                        "D4+Xb0bAzM+"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=12, rtx=0, c=10, mss=1380, tbw=4570, tp=-1, tpl=-1, uplat=387, ullat=0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "X-FB-Debug": [
+                        "65oGfQIxe7N7b8uprY33clrfNTaXUXTwFjRogbnMfqxUJk9aM4nN+lM7HGUc/8zLpo/HMRUWbX6hydgl1oCKiw=="
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "x-fb-request-id": [
+                        "Az4S2LcS9PQwPYsgXfpI7lN"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:00:44 GMT"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "x-fb-trace-id": [
+                        "FxmYbGTaFqe"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=12, rtx=0, c=10, mss=1380, tbw=4570, tp=-1, tpl=-1, uplat=270, ullat=0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "X-FB-Debug": [
+                        "n3vJB5ULofaTsiE1YW0WUArEhpxekUJwTqobSD+BsTrCAA+8FV2UWRH6K8eSDRURlf39HRtUAhbFPtaHrppWrw=="
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "x-fb-request-id": [
+                        "AKbQ_7ST42Op3y1JBDbcBks"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:00:44 GMT"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "x-fb-trace-id": [
+                        "EUpbEnTBjfV"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=12, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=273, ullat=0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "X-FB-Debug": [
+                        "2PQhlI/f9JXOTCpy75ibMpxDC1XmZcRlQ6KX48RMQh4eRKjIb+O3x2C06DWX3yid0OMyHk9HhD5HLHa1LLx+Cw=="
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "x-fb-request-id": [
+                        "AfhJ_eP8SNbmCPxTKjjiKSK"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:00:45 GMT"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "x-fb-trace-id": [
+                        "D3/Y9queSE+"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=10, rtx=0, c=10, mss=1380, tbw=4570, tp=-1, tpl=-1, uplat=230, ullat=0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "X-FB-Debug": [
+                        "0rxOCkul6loXdAN3YAoD5VqyRj2pkf0muHF9uwD7OJj8CUUqIW0IfOWfWgNeufBCeYWOLNjjox6GOyJZjMheFw=="
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "x-fb-request-id": [
+                        "AnJ3FwbwHYzIFTuNSjfOw79"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:01:51 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "x-fb-trace-id": [
+                        "D8fnyX6aLNx"
+                    ],
+                    "X-FB-Debug": [
+                        "5S15ZAxY19S8gxvFUN8ktkxQMVYf0PExCFD3FIE1HdTc1za8foNaAolveGaU70Ts40wDn2qoN+7QOiFvgIIayw=="
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=11, rtx=0, c=10, mss=1380, tbw=4568, tp=-1, tpl=-1, uplat=219, ullat=0"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "x-fb-request-id": [
+                        "AxrsDpfoHmPUfIcZ6PHOS4K"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:01:51 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "x-fb-trace-id": [
+                        "BtFYbek7yJS"
+                    ],
+                    "X-FB-Debug": [
+                        "CszqqwTLQMFQjnZdQjg/hpk31+N43XTgdWRjqFM1QozkjpGiij1buoCmhF3r0GMhpsl0cFjoVzYZWZZuSp5JUA=="
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=10, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=265, ullat=0"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "x-fb-request-id": [
+                        "AFSsi8dyhCpMFKYA07hYUAo"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:01:51 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "x-fb-trace-id": [
+                        "DSXKEZrqf3h"
+                    ],
+                    "X-FB-Debug": [
+                        "W65F/ultTH1bo72XZbV6KpZkvnGmpTgknKK6f4YBYhq6T+B7bqvu7ppzB48a95jbJkyABQzbhBTw1oXhNuXx2A=="
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=11, rtx=0, c=10, mss=1380, tbw=4568, tp=-1, tpl=-1, uplat=216, ullat=0"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "x-fb-request-id": [
+                        "AcfUlMFf34IWf8uqYGStnbT"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:01:52 GMT"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "x-fb-trace-id": [
+                        "EjiOxz/khnv"
+                    ],
+                    "X-FB-Debug": [
+                        "0Au3Hti+kUW9N5tsqMvmnQZybbt9uKzCzZ43Es/84vGEH2DeVmrSJkZye21f40BbU6FMlsLFBjbk3tLbj40zAw=="
+                    ],
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=12, rtx=0, c=10, mss=1380, tbw=4570, tp=-1, tpl=-1, uplat=205, ullat=0"
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031925777"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "x-fb-request-id": [
+                        "Ar3DBXcLnE2k42IRY8DlT7J"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-fb-request-id": [
+                        "A738_RoH_oWvnW4qCuFcvEE"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=11, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=231, ullat=0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031928053"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:48:18 GMT"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "x-fb-trace-id": [
+                        "HTq515PjTZC"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "X-FB-Debug": [
+                        "IVblTqpKKpuf1cNFPdKu9SiFeghdrdDaDkW5l1IaSU7nl0W8CQsu/67MGmmgSM0r73fBTWn8EtSkLdiV2QL0gg=="
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-fb-request-id": [
+                        "AUf1qA6KToHTnJtyL1qHTSr"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=12, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=239, ullat=0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031928053"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:48:18 GMT"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "x-fb-trace-id": [
+                        "A1AS8o8sqWR"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "X-FB-Debug": [
+                        "0sWzxNN3k97z2p6lpYn/KMtnS3vMF7IVt7h2MsosTv9cEHHP3Mc+IpEsbc2dN1IhGNe7P9DuHNl8eyCnMjouYg=="
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-fb-request-id": [
+                        "A66qf1lOzHVdFswnnVj284O"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=11, rtx=0, c=10, mss=1380, tbw=4568, tp=-1, tpl=-1, uplat=225, ullat=0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031928053"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:48:18 GMT"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "x-fb-trace-id": [
+                        "BN+qg/ujUpn"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "X-FB-Debug": [
+                        "Xo3dNdjF66bDHvMK+YrKb/x7P2UQ4uWTcMnD0LNccrQzg2rH0MabDo6k8oL7gGSGdWX8O1beLneiugYPQpszOQ=="
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-fb-request-id": [
+                        "ATI9IMPqmfJm8itXggOsK2u"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=11, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=317, ullat=0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031928053"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:48:19 GMT"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "x-fb-trace-id": [
+                        "HZHVuWm4VF6"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "X-FB-Debug": [
+                        "RvvhHTkkyMK+q/mhH44wSSr8UA3WmwJHEyQ77iJV3gEZkB4kLSlt0SXUv0683GvFQIAHA84Fz0OC4Q555G9iGg=="
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v20.0/act_186649832776475?access_token=token&limit=25",
+                "body": null,
+                "headers": {
+                    "User-Agent": [
+                        "python-requests/2.32.5"
+                    ],
+                    "Accept-Encoding": [
+                        "gzip, deflate"
+                    ],
+                    "Accept": [
+                        "*/*"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Cache-Control": [
+                        "private, no-cache, no-store, must-revalidate"
+                    ],
+                    "Connection": [
+                        "keep-alive"
+                    ],
+                    "x-fb-request-id": [
+                        "A_ZLG7B1Ev5ZF7F2rrZ2X5y"
+                    ],
+                    "x-ad-api-version-warning": [
+                        "The call has been auto-upgraded to v22.0 as v20.0 has been deprecated."
+                    ],
+                    "Content-Length": [
+                        "59"
+                    ],
+                    "Pragma": [
+                        "no-cache"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "Vary": [
+                        "Origin"
+                    ],
+                    "x-business-use-case-usage": [
+                        "{\"186649832776475\":[{\"type\":\"ads_management\",\"call_count\":1,\"total_cputime\":1,\"total_time\":1,\"estimated_time_to_regain_access\":0,\"ads_api_access_tier\":\"standard_access\"}]}"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "X-FB-Connection-Quality": [
+                        "EXCELLENT; q=0.9, rtt=12, rtx=0, c=10, mss=1380, tbw=4569, tp=-1, tpl=-1, uplat=207, ullat=0"
+                    ],
+                    "Alt-Svc": [
+                        "h3=\":443\"; ma=86400"
+                    ],
+                    "x-fb-rev": [
+                        "1031928053"
+                    ],
+                    "Date": [
+                        "Tue, 13 Jan 2026 14:48:19 GMT"
+                    ],
+                    "x-fb-aed": [
+                        "705"
+                    ],
+                    "x-fb-trace-id": [
+                        "H7BCkrthP/6"
+                    ],
+                    "Access-Control-Allow-Origin": [
+                        "*"
+                    ],
+                    "X-FB-Debug": [
+                        "UYGZ8zM6c/JrgDrWpiEvvc5BVRiKtDN3gecqXdMPg2Y69fFG5PD5gqzgqD4QRIqoZsYccvdY0Qo3JsCQyi5lYg=="
+                    ],
+                    "Expires": [
+                        "Sat, 01 Jan 2000 00:00:00 GMT"
+                    ],
+                    "ETag": [
+                        "\"6229dd696924ba1a55087e1a0e76ae6e29cac2e1\""
+                    ],
+                    "Strict-Transport-Security": [
+                        "max-age=15552000; preload"
+                    ]
+                },
+                "body": {
+                    "string": "{\"account_id\": \"186649832776475\", \"id\": \"act_186649832776475\"}"
+                }
+            }
+        }
+    ]
+}

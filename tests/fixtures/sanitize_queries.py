@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Sanitize queries.csv by replacing customer-specific IDs with test IDs.
+Sanitize queries.csv by replacing customer-specific IDs with test IDs and sampling representative queries.
 
 This script:
 1. Reads queries.csv
 2. Replaces account IDs and page/media IDs based on component type
 3. Maps all legacy component names to their V2 equivalents
-4. Outputs ALL sanitized queries to queries_sanitized.csv
+4. Samples queries based on structural features (async vs nested, breakdowns, filtering, etc.)
+5. Outputs sampled sanitized queries to queries_sanitized.csv
 """
 
 import csv
@@ -106,26 +107,51 @@ def sanitize_query_json(query_obj: Dict[str, Any], category: str, ads_accounts: 
             quote = m.group(2)
             content = m.group(3)
             suffix = m.group(4)
-            
-            # If it's a number, leave it
             if content.strip().isdigit():
                 return m.group(0)
-            
-            # If it's a known non-sensitive keyword, leave it
-            # But "contain" etc are usually the operator, not the value.
-            # The value is what we want to sanitize.
             return f'{prefix}{quote}campaign_placeholder{suffix}'
 
-        # Pattern: value, followed by optional spaces/colons, then quotes (possibly escaped), 
-        # then content, then closing quotes.
-        # We handle double quotes and potentially multiple levels of escaping in JSON
-        # This regex matches value: "something" or value: \"something\" or value: \\\"something\\\"
         text = re.sub(r'(value\s*[:=]\s*)((?:\\+)?[\"\'])([^\\\"\']+?)((?:\\+)?[\"\'])', replacer, text)
         return text
 
     query_str = sanitize_filter_values(query_str)
     
     return json.loads(query_str)
+
+
+def get_sampling_fingerprint(row):
+    """Create a structural fingerprint for sampling."""
+    comp_id = row['kbc_component_id']
+    query_type = row['query_type']
+    query = json.loads(row['query_json'])
+    
+    # Handle flat vs nested structure for feature detection
+    if 'query' in query and isinstance(query['query'], dict):
+        params = query['query']
+    else:
+        params = query
+        
+    path = params.get('path', '')
+    level = params.get('level', '')
+    
+    all_content = str(query).lower()
+    features = {
+        'breakdowns': 'breakdown' in all_content,
+        'filtering': 'filtering' in all_content or 'filter' in all_content,
+        'action_breakdowns': 'action_breakdown' in all_content,
+        'attribution': 'attribution' in all_content,
+        'time_increment': 'time_increment' in all_content,
+        'summary': 'summary' in all_content,
+        'nested': 'insights' in all_content and ('{' in all_content or '.' in all_content),
+        'async': 'async' in query_type.lower(),
+        'split_by_day': 'split-query-time-range-by-day' in all_content,
+        'stop_empty': 'stop-on-empty-response' in all_content,
+        'time_pagination': 'time-based-pagination' in all_content
+    }
+    
+    active_features = tuple(sorted([k for k, v in features.items() if v]))
+    
+    return (comp_id, query_type, path, level, active_features)
 
 
 def main():
@@ -152,7 +178,6 @@ def main():
     
     print(f"Using ads accounts for replacement: {ads_accounts}")
     
-    # Mapping to map ALL components to V2 equivalents
     ID_MAPPING = {
         "Facebook Ads": "Facebook Ads V2",
         "Facebook Pages": "Facebook Pages V2",
@@ -161,50 +186,57 @@ def main():
 
     def get_category(comp_id: str) -> str:
         comp_id_lower = comp_id.lower()
-        if 'instagram' in comp_id_lower:
-            return 'instagram'
-        if 'pages' in comp_id_lower:
-            return 'pages'
+        if 'instagram' in comp_id_lower: return 'instagram'
+        if 'pages' in comp_id_lower: return 'pages'
         return 'ads'
     
-    sanitized_count = 0
-    with open(input_file, 'r', encoding='utf-8') as f_in, \
-         open(output_file, 'w', encoding='utf-8', newline='') as f_out:
-        
+    groups = {}
+    row_count = 0
+    with open(input_file, 'r', encoding='utf-8') as f_in:
         reader = csv.DictReader(f_in)
+        for row in reader:
+            row_count += 1
+            original_comp_id = row.get('kbc_component_id', 'Facebook Ads')
+            row['kbc_component_id'] = ID_MAPPING.get(original_comp_id, original_comp_id)
+            
+            fingerprint = get_sampling_fingerprint(row)
+            if fingerprint not in groups:
+                groups[fingerprint] = []
+            groups[fingerprint].append(row)
+
+    # Sampling: Take 2 examples per structural category
+    SAMPLES_PER_CATEGORY = 2
+    sampled_rows = []
+    for fp in sorted(groups.keys(), key=lambda x: str(x)):
+        # Optionally random sample, or just take first N for determinism
+        sampled_rows.extend(groups[fp][:SAMPLES_PER_CATEGORY])
+
+    print(f"Sampled {len(sampled_rows)} queries from {len(groups)} structural categories.")
+    
+    sanitized_count = 0
+    with open(output_file, 'w', encoding='utf-8', newline='') as f_out:
         writer = csv.writer(f_out)
-        
-        # Write header
         writer.writerow(['kbc_component_id', 'query_type', 'query_json'])
         
-        for row in reader:
-            original_comp_id = row.get('kbc_component_id', 'Facebook Ads')
-            # Map everything to V2
-            comp_id = ID_MAPPING.get(original_comp_id, original_comp_id)
-
+        for row in sampled_rows:
+            comp_id = row['kbc_component_id']
             category = get_category(comp_id)
             query_type = row.get('query_type', 'nested-query')
             query_json_str = row.get('query_json', '')
             
-            if not query_json_str:
-                continue
+            if not query_json_str: continue
             
             try:
                 query_obj = json.loads(query_json_str)
                 sanitized = sanitize_query_json(query_obj, category, ads_accounts)
                 
-                writer.writerow([
-                    comp_id,
-                    query_type,
-                    json.dumps(sanitized)
-                ])
+                writer.writerow([comp_id, query_type, json.dumps(sanitized)])
                 sanitized_count += 1
-                
             except json.JSONDecodeError:
                 continue
 
     print(f"\nSanitization complete!")
-    print(f"Processed {sanitized_count} queries.")
+    print(f"Processed {sanitized_count} sampled queries.")
     print(f"Output written to: {output_file}")
 
 
