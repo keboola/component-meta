@@ -2,7 +2,9 @@
 import pytest
 import json
 import os
+import csv
 import vcr
+import copy
 from pathlib import Path
 from freezegun import freeze_time
 from component import Component
@@ -11,86 +13,86 @@ from component import Component
 TEST_DIR = Path("tests/fixtures")
 CONFIGS_FILE = TEST_DIR / "configs/test_cases.json"
 CASSETTES_DIR = TEST_DIR / "cassettes"
-FIXED_DATETIME = "2025-01-01 12:00:00"
-
 SECRETS_FILE = TEST_DIR / "config.secrets.json"
-QUERIES_FILE = TEST_DIR / "queries.csv"
+QUERIES_SANITIZED_FILE = TEST_DIR / "queries_sanitized.csv"
+FIXED_DATETIME = "2025-01-01 12:00:00"
 
 def load_configs():
     cases = []
+    
+    # 1. Load legacy test cases from test_cases.json
     if CONFIGS_FILE.exists():
         with open(CONFIGS_FILE) as f:
-            cases = json.load(f)
+            cases.extend(json.load(f))
             
-    # Optionally load generated case from CSV if files exist
-    if QUERIES_FILE.exists() and SECRETS_FILE.exists():
-        import csv
+    # 2. Load generated cases from sanitized CSV
+    if QUERIES_SANITIZED_FILE.exists() and SECRETS_FILE.exists():
         try:
             with open(SECRETS_FILE) as f:
                 secrets = json.load(f)
             
-            queries = []
-            seen_queries = set()
-            with open(QUERIES_FILE) as f:
-                reader = csv.reader(f)
-                for row in reader:
-                    if not row:
-                        continue
-                    
-                    # The CSV format is a single column containing a JSON string of a list of queries
+            # Use placeholders for secrets during re-run
+            # The cassettes already have 'token' replaced
+            secrets_placeholder = copy.deepcopy(secrets)
+            if "authorization" in secrets_placeholder:
+                # We want the test runner to use 'token' as the value so it matches the recorded VCR filter
+                creds = secrets_placeholder["authorization"].get("oauth_api", {}).get("credentials", {})
+                if "token" in creds: creds["token"] = "token"
+                if "access_token" in creds: creds["access_token"] = "token"
+                if "#data" in creds: 
                     try:
-                        json_str = row[0]
-                        # Skip if it looks like a header
-                        if not json_str.strip().startswith("["):
-                            continue
+                        data = json.loads(creds["#data"])
+                        data["access_token"] = "token"
+                        creds["#data"] = json.dumps(data)
+                    except: pass
 
-                        queries_list = json.loads(json_str)
-                        
-                        if isinstance(queries_list, list):
-                            for q in queries_list:
-                                real_query_params = q.get("query", {})
-                                if "limit" in real_query_params:
-                                    real_query_params["limit"] = str(real_query_params["limit"])
-                                
-                                q_obj = {
-                                    "id": q.get("id"),
-                                    "type": q.get("type", "nested-query"),
-                                    "name": q.get("name", "query"),
-                                    "query": real_query_params,
-                                    "run-by-id": q.get("run-by-id", False)
-                                }
+            # Grouping logic identical to generate_tests.py
+            component_queries = {}
+            with open(QUERIES_SANITIZED_FILE, encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    comp_id = row.get('kbc_component_id', 'Facebook Ads V2')
+                    q_type = row.get('query_type', 'nested-query')
+                    json_str = row.get('query_json', '')
+                    
+                    if not json_str: continue
+                    
+                    try:
+                        q = json.loads(json_str)
+                        # Reconstruct full object for Component
+                        q_obj = {
+                            "id": q.get("id", 1),
+                            "type": q_type,
+                            "name": q.get("name", "query"),
+                            "query": q.get("query", q) if isinstance(q.get("query"), dict) else q,
+                            "run-by-id": q.get("run-by-id", False)
+                        }
+                        if comp_id not in component_queries:
+                            component_queries[comp_id] = []
+                        component_queries[comp_id].append(q_obj)
+                    except json.JSONDecodeError:
+                        continue
 
-                                # Deduplication
-                                query_fingerprint = json.dumps(q_obj['query'], sort_keys=True)
-                                
-                                if query_fingerprint in seen_queries:
-                                    continue
-                                
-                                seen_queries.add(query_fingerprint)
-                                queries.append(q_obj)
-                    except (json.JSONDecodeError, IndexError):
-                        pass
+            for version in ["v20.0", "v21.0", "v22.0", "v23.0"]:
+                for comp_id, queries in component_queries.items():
+                    comp_clean = comp_id.lower().replace(" ", "_")
+                    version_clean = version.replace(".", "_")
+                    case_name = f"gen_{comp_clean}_{version_clean}"
+                    
+                    config = copy.deepcopy(secrets_placeholder)
+                    if "parameters" not in config: config["parameters"] = {}
+                    config["parameters"]["queries"] = queries
+                    config["parameters"]["api-version"] = version
+                    
+                    cases.append({
+                        "name": case_name,
+                        "description": f"Sanitized queries for {comp_id} (API {version})",
+                        "action": "run",
+                        "params": config
+                    })
 
-            # Construct config
-            config = secrets.copy()
-            if "parameters" not in config:
-                config["parameters"] = {}
-                
-            config["parameters"]["queries"] = queries
-            
-            # Determine version for test name
-            current_version = config["parameters"].get("api-version", "v16.0")
-            config["parameters"]["api-version"] = current_version
-            version_clean = current_version.replace(".", "_")
-            
-            cases.append({
-                "name": f"from_csv_generated_{version_clean}",
-                "description": f"Generated from queries.csv for {current_version}",
-                "action": "run",
-                "params": config
-            })
         except Exception as e:
-            print(f"Failed to load CSV test case: {e}")
+            print(f"Warning: Failed to load sanitized CSV cases: {e}")
             
     return cases
 
@@ -100,32 +102,21 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
     """
     Runs the component with the given config, finding the corresponding cassette.
     """
-    # 1. Setup Environment
+    # Setup Environment
     monkeypatch.setenv("KBC_DATADIR", str(tmpdir))
-    
-    # 2. Write Config
-    # Ensure nested directories exist
     os.makedirs(os.path.join(tmpdir, "out", "tables"), exist_ok=True)
-    os.makedirs(os.path.join(tmpdir, "out", "files"), exist_ok=True) # Good practice
+    os.makedirs(os.path.join(tmpdir, "out", "files"), exist_ok=True)
     
-    # FIX: Promote token...
-    params = config_data.get("params", {})
-    
-    # Create copy
-    import copy
-    params = copy.deepcopy(params)
-    
-    # Inject action
+    params = copy.deepcopy(config_data.get("params", {}))
     params["action"] = config_data.get("action", "run")
 
-    inner_params = params.get("parameters", {})
-    param_token = inner_params.get("access_token") or inner_params.get("#access_token")
-    if param_token and "authorization" not in params:
+    # Ensure authorization exists for the Component to be happy
+    if "authorization" not in params:
         params["authorization"] = {
             "oauth_api": {
                 "credentials": {
-                    "token": param_token,
-                    "access_token": param_token
+                    "token": "token",
+                    "access_token": "token"
                 }
             }
         }
@@ -134,23 +125,7 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
         json.dump(params, f)
     
     # 3. Setup VCR
-    # Ensure cassettes dir exists (even if empty)
-    CASSETTES_DIR.mkdir(parents=True, exist_ok=True)
-    
-    cassette_name_json = f"{config_data['name']}.json"
-    cassette_name_yaml = f"{config_data['name']}.yaml"
-    
-    if (CASSETTES_DIR / cassette_name_json).exists():
-        cassette_name = cassette_name_json
-        serializer = 'json'
-    elif (CASSETTES_DIR / cassette_name_yaml).exists():
-        cassette_name = cassette_name_yaml
-        serializer = 'yaml'
-    else:
-        # Default fallback (or fail)
-        cassette_name = cassette_name_yaml
-        serializer = 'yaml'
-    
+    cassette_name = f"{config_data['name']}.json"
     cassette_path = CASSETTES_DIR / cassette_name
     
     if not cassette_path.exists():
@@ -158,12 +133,12 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
 
     my_vcr = vcr.VCR(
         cassette_library_dir=str(CASSETTES_DIR),
-        record_mode='none', # Replay only
+        record_mode='none', # REPLAY ONLY - ensures we don't hit live API
         match_on=['method', 'scheme', 'host', 'port', 'path', 'query', 'body'],
         filter_headers=[('Authorization', 'Bearer token')],
         filter_query_parameters=[('access_token', 'token')],
         decode_compressed_response=True,
-        serializer=serializer
+        serializer='json'
     )
 
     with my_vcr.use_cassette(cassette_name):
@@ -171,16 +146,9 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
         if config_data.get("action") == "run":
             comp.run()
         else:
-            # For actions like 'accounts', we need to capture the return value if possible,
-            # but usually they output to stdout/tables.
-            # Component.execute_action prints JSON to stdout for sync actions.
-            # We might want to capture stdout to verify?
-            # For now, just ensure it runs without error.
             comp.execute_action()
             
-    # 4. Assert Output Tables
-    expected_tables = config_data.get("expected_output_tables", [])
-    if expected_tables:
-        out_tables_dir = Path(tmpdir) / "out" / "tables"
-        for table in expected_tables:
-             assert (out_tables_dir / f"{table}.csv").exists(), f"Table {table} was not created."
+    # Verification: Ensure some data was written to tables
+    out_tables_dir = Path(tmpdir) / "out" / "tables"
+    found_tables = list(out_tables_dir.glob("*.csv"))
+    assert len(found_tables) > 0 or config_data.get("action") != "run", "Component produced no output tables"

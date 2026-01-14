@@ -30,6 +30,24 @@ def scrub_string(string, replacements):
             string = string.replace(target, replacement)
     return string
 
+
+def scrub_headers(headers):
+    # Only keep essential headers to ensure deterministic cassettes and no environment leaks
+    whitelist = ["content-type", "content-length", "facebook-api-version"]
+    new_headers = {}
+    
+    # Use items() if available (dict-like), otherwise attempt to iterate directly
+    try:
+        source = headers.items() if hasattr(headers, 'items') else headers
+        for k, v in source:
+            if k.lower() in whitelist:
+                # VCR expects header values to be lists
+                new_headers[k] = v if isinstance(v, list) else [v]
+    except Exception:
+        return headers
+        
+    return new_headers
+
 def recursive_scrub(obj, replacements):
     if isinstance(obj, dict):
         new_obj = {}
@@ -46,35 +64,48 @@ def recursive_scrub(obj, replacements):
     return obj
 
 def before_record_response(response, replacements):
+    # Scrub headers
+    response['headers'] = scrub_headers(response.get('headers', {}))
+
     # Scrub body
     if 'body' in response and 'string' in response['body']:
         try:
             body_bytes = response['body']['string']
             if not body_bytes:
                 return response
-                
+
             body_str = body_bytes.decode('utf-8')
-            
+
             # First try parsing as JSON
             try:
                 body_json = json.loads(body_str)
                 scrubbed_json = recursive_scrub(body_json, replacements)
-                response['body']['string'] = json.dumps(scrubbed_json).encode('utf-8')
+                # Sort keys for deterministic git diffs
+                response['body']['string'] = json.dumps(scrubbed_json, sort_keys=True).encode('utf-8')
             except json.JSONDecodeError:
                 # Fallback to string replacement
                 scrubbed_str = scrub_string(body_str, replacements)
                 response['body']['string'] = scrubbed_str.encode('utf-8')
-            
+
         except Exception as e:
             logging.warning(f"Failed to scrub response body: {e}")
-            pass 
+            pass
     return response
 
 def before_record_request(request, replacements):
     request.uri = scrub_string(request.uri, replacements)
+    request.headers = scrub_headers(request.headers)
+
     if request.body:
         try:
-            request.body = scrub_string(request.body.decode('utf-8'), replacements).encode('utf-8')
+            body_str = request.body.decode('utf-8')
+            # Try to handle as JSON for sorting
+            try:
+                body_json = json.loads(body_str)
+                scrubbed_json = recursive_scrub(body_json, replacements)
+                request.body = json.dumps(scrubbed_json, sort_keys=True).encode('utf-8')
+            except json.JSONDecodeError:
+                request.body = scrub_string(body_str, replacements).encode('utf-8')
         except:
             pass
     return request
@@ -138,9 +169,10 @@ def run_from_csv(csv_path, secrets_path):
                 q = json.loads(json_str)
                 
                 # Normalize query object
-                real_query_params = q.get("query", {})
-                if "limit" in real_query_params:
+                real_query_params = q.get("query", q) if isinstance(q.get("query"), dict) else q
+                if "limit" in real_query_params and real_query_params["limit"]:
                     real_query_params["limit"] = str(real_query_params["limit"])
+
                 
                 q_obj = {
                     "id": q.get("id"),
