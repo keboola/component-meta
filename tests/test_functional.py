@@ -26,10 +26,16 @@ def load_configs():
             cases.extend(json.load(f))
             
     # 2. Load generated cases from sanitized CSV
-    if QUERIES_SANITIZED_FILE.exists() and SECRETS_FILE.exists():
+    # Replay-only CI fallback
+    effective_secrets_file = SECRETS_FILE
+    if not SECRETS_FILE.exists() and (TEST_DIR / "config.secrets.json.ci").exists():
+        effective_secrets_file = TEST_DIR / "config.secrets.json.ci"
+
+    if QUERIES_SANITIZED_FILE.exists() and effective_secrets_file.exists():
         try:
-            with open(SECRETS_FILE) as f:
+            with open(effective_secrets_file) as f:
                 secrets = json.load(f)
+
             
             # Use placeholders for secrets during re-run
             # The cassettes already have 'token' replaced
