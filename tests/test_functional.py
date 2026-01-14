@@ -79,7 +79,7 @@ def load_configs():
                     except json.JSONDecodeError:
                         continue
 
-            for version in ["v20.0", "v21.0", "v22.0", "v23.0"]:
+            for version in ["v22.0", "v23.0"]:
                 for comp_id, queries in component_queries.items():
                     comp_clean = comp_id.lower().replace(" ", "_")
                     version_clean = version.replace(".", "_")
