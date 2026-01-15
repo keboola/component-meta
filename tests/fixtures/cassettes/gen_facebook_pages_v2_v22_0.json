@@ -4,7 +4,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/me/accounts?access_token=token&fields=id%2Caccess_token",
+                "uri": "https://graph.facebook.com/v22.0/me/accounts?access_token=token&fields=id%2Caccess_token",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -19,13 +19,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "564"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
-                    ],
-                    "content-length": [
-                        "562"
                     ]
                 },
                 "body": {
@@ -36,7 +36,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_impressions%2Cpage_impressions_unique%2Cpage_impressions_paid%2Cpage_impressions_paid_unique%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions_paid_unique%2Cpage_posts_impressions_organic_unique%2Cpage_post_engagements%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_reactions_by_type_total%2Cpage_video_views%2Cpage_video_views_unique%2Cpage_views_total&since=2024-12-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_impressions%2Cpage_impressions_unique%2Cpage_impressions_paid%2Cpage_impressions_paid_unique%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions_paid_unique%2Cpage_posts_impressions_organic_unique%2Cpage_post_engagements%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_reactions_by_type_total%2Cpage_video_views%2Cpage_video_views_unique%2Cpage_views_total&since=2024-12-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -51,13 +51,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -68,7 +68,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_negative_feedback%2Cpage_consumptions_unique%2Cpage_impressions&since=2024-10-03",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_negative_feedback%2Cpage_consumptions_unique%2Cpage_impressions&since=2024-10-03",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -83,13 +83,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -100,7 +100,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -115,13 +115,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -132,7 +132,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -147,13 +147,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -164,7 +164,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=50&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_impressions&period=day&since=2024-12-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=50&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_impressions&period=day&since=2024-12-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -179,13 +179,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -196,7 +196,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_impressions%2Cpage_impressions_unique&since=2024-10-03",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_impressions%2Cpage_impressions_unique&since=2024-10-03",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -211,13 +211,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -228,7 +228,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475?access_token=token&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475?access_token=token&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -243,13 +243,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "59"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -260,7 +260,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475?access_token=token&fields=likes&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475?access_token=token&fields=likes&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -275,24 +275,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AKz-hn1kkutRc8jJCQ4JQRV\", \"message\": \"(#100) Tried accessing nonexisting field (likes) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A_bwqGzCvpYa0hOd76MYj18\", \"message\": \"(#100) Tried accessing nonexisting field (likes) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475?access_token=token&fields=likes&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475?access_token=token&fields=likes&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -307,24 +307,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Ar9Iu9LM3nW2EY2_93hOFpp\", \"message\": \"(#100) Tried accessing nonexisting field (likes) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ABMSqSFd0D8pt-UvbfH42jH\", \"message\": \"(#100) Tried accessing nonexisting field (likes) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -339,24 +339,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "179"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AxJ_80n7ViOxxKuaN6waOVW\", \"message\": \"(#100) Tried accessing nonexisting field (conversations) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A660WHBqWnZ15615kuRetku\", \"message\": \"(#100) Tried accessing nonexisting field (conversations) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -371,24 +371,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "179"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"At1pxGVDSTMHiTE5wf3edck\", \"message\": \"(#100) Tried accessing nonexisting field (conversations) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AUWbNPuqGk75R5ECoUIYNTV\", \"message\": \"(#100) Tried accessing nonexisting field (conversations) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=attachments%7Bcaption%2C+type%2C+description%7D%2Cmessage%2Ccreated_time%2Cshares&limit=25&since=2005-11-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=attachments%7Bcaption%2C+type%2C+description%7D%2Cmessage%2Ccreated_time%2Cshares&limit=25&since=2005-11-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -403,24 +403,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A7EeS54bb-wwutwVfkXHtp6\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AWU6TrYdNZakDSuDhWbx6tx\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -435,24 +435,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Aip-b_ZoFqj9ew03kiyl-Bj\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AfFgycEyGJNHQSRmrNpwjea\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -467,24 +467,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ALUvaXn4sgKagxkb6vItNtj\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A7rqbE8N_kIAMMW2es_5GKE\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -499,24 +499,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AXkY2fDYWfKuiYl8_ibT7CB\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AQXmHqwTG5SNxBTslMESckS\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -531,24 +531,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AOaNV0eyHFlPuUB2DK7VM5n\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A1gI14kz7WLoXTQT6kkQgrZ\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -563,24 +563,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Ao1pdMwUlnewyc-d-6zdvsx\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AWJoKUuMXtnMi41wV3o_0-K\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -595,24 +595,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ACEqb9BciD4v-QDDM115C4q\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AXA9OCTCUBdK8HSsJTomaDm\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -627,24 +627,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Az4Q7hl4wjxZyZ1Z-4ivFWQ\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"APEzDVynCMv4MmGVEWwZIev\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -659,24 +659,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AEi1uO_omAt63NqiQbBEAhn\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ANPjxhQxeus7F69PI7tB3VL\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -691,24 +691,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AjWIZsWGe182m6M9UOmB6El\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Ao7DNY1nw22hsgfcvJ1QHGL\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -723,24 +723,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ARyksiijgXyEhR-CfDQkkIz\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A-8yjLNj1zX2bpRhF1gGlrg\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_consumptions%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_consumptions%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -755,24 +755,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AgTD78RwaW_M_3G0_kEJtcm\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AQ-VO7yrkEpXv2PhJ1rfK00\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_consumptions%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=insights.since%28now%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_consumptions%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -787,24 +787,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AibZel_C1-0xXv3bK0PpOJY\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AmK-ydK9f4S_qQYHd7_yrsx\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -819,24 +819,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A0AY8XKR6r3F3w4wAsjWNRL\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AqqHUK61Lzul792-ZxGydId\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -851,24 +851,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AL0yKme_mBsf2GeINm3MhEk\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"As3sVUO_ZDKJWpdZPuL81fv\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -883,24 +883,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AwWhXRjFpsaKUh4sBAq-Lsk\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AQbBCXlAzRM5TWCHmZbQBaj\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -915,24 +915,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AcX13GMoZkoTWmDSQfB7sn2\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AGHEvdIaQ5UI86sklolMPwA\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -947,24 +947,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A-ct7kxeSTFhvhN1veIkFpv\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AXCkVY5eWQYKv-zqgWshFwa\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -979,24 +979,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A5P6jYDKjRGVj3Ceweq7MOK\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Ayt3yArR_k6hnboJS_FO_vi\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=reactions%7Btype%2Ctotal_count%7D&limit=100&since=2024-12-22&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=reactions%7Btype%2Ctotal_count%7D&limit=100&since=2024-12-22&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1011,24 +1011,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AwNNKEv_2L1_FoXDovWMU88\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Ao1Nry6PaCNAQVay6w-9Rbx\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=reactions%7Btype%2Ctotal_count%7D&limit=100&since=2024-12-22&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=reactions%7Btype%2Ctotal_count%7D&limit=100&since=2024-12-22&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1043,24 +1043,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"APlCTlmSSZCYywYd0yaYc8x\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ATue2uHV5YmdkCH0U_ON1Sc\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1075,24 +1075,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A7gYSkGN89w6_2jNeKhnagb\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A0KewF2mTIIQCijWt9uDfA8\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1107,24 +1107,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "170"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AoeU8zEU7S1P7yMEvVyWKPy\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ARW9DesLYcFgriaho9NtcDf\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/https%3A//graph.facebook.com/v3.3/AndrejBabis/feed?access_token=token&fields=id&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/https%3A//graph.facebook.com/v3.3/AndrejBabis/feed?access_token=token&fields=id&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1139,24 +1139,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "179"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"Aqlyj7UspTdvfSV-xjDLYho\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"ASOsOHvLzoGJxjANxuGqxWl\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1171,24 +1171,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "content-length": [
                         "312"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A7WsMqzIjwHV0VzrjfH6n8N\", \"message\": \"(#100) page_impressions, page_impressions_unique, page_views_total are not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A3nGDFqQWfk4UCKKkYw22Vz\", \"message\": \"(#100) page_impressions, page_impressions_unique, page_views_total are not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1203,24 +1203,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "content-length": [
                         "312"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A9TR8tYHDxq2zWcHhwYfrLT\", \"message\": \"(#100) page_impressions, page_impressions_unique, page_views_total are not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AA-sJJQCxekvgW206P9nXYT\", \"message\": \"(#100) page_impressions, page_impressions_unique, page_views_total are not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&fields=page_fans&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&fields=page_fans&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1235,24 +1235,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "261"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Aw8s32poQvpedYMey9RvTrq\", \"message\": \"(#100) page_fans is not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AUkRCvHvMZhs5x4sj58tSc2\", \"message\": \"(#100) page_fans is not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&fields=page_fans&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&fields=page_fans&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1267,24 +1267,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "261"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A-Z4OMO9UKhGN3KSoXa0HMM\", \"message\": \"(#100) page_fans is not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AUIFB1leC4UOVt1gmvHbL97\", \"message\": \"(#100) page_fans is not valid for fields param. please check https://developers.facebook.com/docs/marketing-api/reference/ads-insights/ for all valid values\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_impressions&period=day&since=2024-12-02&until=2024-12-30",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/insights?access_token=token&limit=25&metric=page_impressions&period=day&since=2024-12-02&until=2024-12-30",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1299,13 +1299,13 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "11"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
@@ -1316,7 +1316,7 @@
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1331,24 +1331,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "135"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AaKfqPK3aHEQs0i74IW_T7m\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AbGKtsQAVJtUvaZJ7PxKDeS\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1363,24 +1363,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "135"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AjtMAAuvI6D5th6f7mLV7eD\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"ArgEobf9DrYCbPE7pmBbv-W\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1395,24 +1395,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AhzAIwAt9KPFbeMeckB7h3v\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AN4bfEgrPLOvDaEsJ8Y7I68\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1427,24 +1427,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AQzk1xBtjsOQIyddTWeEfLW\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AaD9EvuSzNARIxkh8jEkSei\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1459,24 +1459,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AHI2DbJ8jpGKCemvJ7nHo1i\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AFgX08ZUTkYByJ3BSsQNecY\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1491,24 +1491,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Amgw71k8k0MycqE5iha4oqX\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A54BFX0fdj2XM-EvJWJViv7\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1523,24 +1523,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AMfGseE4FXTIqmdtax-XhUf\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A-PKrYa2I0nM_TugA6GzCCV\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1555,24 +1555,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AVj1lr9NVVJe-AVIBlyHPaa\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A_oDcEBuUupW_pMxKCj-uYs\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1587,24 +1587,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AroXKCILSucBIHK-Nn1JhXF\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AEoVofhKCyK129qPmL3KPZW\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1619,24 +1619,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Afr-s4M6x1_IIVH6m_XS6im\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AGorHte-rv57ojJrxaVhARk\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1651,24 +1651,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AnhjtboHu93b-jSwIHvsRwm\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A7Kwrdg9XiQ4K03SNCQGU-M\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1683,24 +1683,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AFaJ-AQWohMCTGuj2BDqyxs\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AJP-6boFlvrJL0kEbKKM1hX\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1715,24 +1715,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AEbCs1vPZrKoYKV63vM3IBl\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AKsLJxIKl-zO_UPrCUkHXpy\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1747,24 +1747,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AuflHuga0j-F4lJJSszmul8\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AiaF3D2SgBOC8fkCNvJULXE\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=id%2Cex_account_id%2Cfb_graph_node%2Ccreated_time%2Cmessage%2Cpermalink_url&limit=25&since=2024-12-27&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=id%2Cex_account_id%2Cfb_graph_node%2Ccreated_time%2Cmessage%2Cpermalink_url&limit=25&since=2024-12-27&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1779,24 +1779,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Ae-ueXO2cnUWdRsHkMCvWSf\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AZNyqONb97ky5Rbbl1FdY_i\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/posts?access_token=token&fields=id%2Cex_account_id%2Cfb_graph_node%2Ccreated_time%2Cmessage%2Cpermalink_url&limit=25&since=2024-12-27&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/posts?access_token=token&fields=id%2Cex_account_id%2Cfb_graph_node%2Ccreated_time%2Cmessage%2Cpermalink_url&limit=25&since=2024-12-27&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1811,24 +1811,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AbOo-p1WjxlPsstbOyJIsRP\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A5wWPWnNTTC811UgZBn8Phf\", \"message\": \"(#100) Tried accessing nonexisting field (posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1843,24 +1843,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "181"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AYVREOYa7-ZXVspM4IugYgy\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AhjD-QG3Gz-8SkNkwnNwQNe\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1875,24 +1875,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "181"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A4Hy6GusoAu8ncLrGRv8Aw-\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AmmzYhVNuEMlBtKhqdShgfC\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1907,24 +1907,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "181"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AupmcwGHRPd_gFoMLyHvMVG\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A_no05H_TKBwfIF0EeMWHUT\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1939,24 +1939,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "181"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AqCb9jE021E7o6cpdsrc302\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AgCSerWS_DAerw-dn01Eduv\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -1971,24 +1971,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "173"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AyH_i-gHlNJIDAYKYMI2f4j\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ADG-i8bk3oeQePKaA6ryr8Y\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2003,24 +2003,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "173"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Aj1Qs7eFou0Ocj70tsNNm66\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AN67yiyiQ6mptsaKrL9NYsj\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2035,24 +2035,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "173"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AgeQmnqq7lgAL41smj-tg2b\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A0Gr8qfIIyFGFL3HJU3VJEd\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2067,24 +2067,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "173"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Azu5hQIr8pSEaJhKBjyxia_\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Aa-s5zLhIlb3iIjcBoLygEW\", \"message\": \"(#100) Tried accessing nonexisting field (ratings) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2099,24 +2099,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AVcAkS2zNzCQieoZBVkqLZ8\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A2SElWwfQMm35GyxHGftHMO\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2131,24 +2131,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AFm56XnOh92ISWNWsdw8TZH\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A2g1z3G_Z7jBJ6saBmd-ZHb\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2163,24 +2163,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AYpBUiUmqXqIhlT5nnWK2PD\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AitzK6YMPvPZv9zQXch15zM\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2195,24 +2195,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "171"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AD04nq8WE9N0k22n_J-Iit5\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AwHY_yuqI2EgViVX4vlQSmq\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2227,24 +2227,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "177"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"ALYLyMD_Wpau6pjEZMa7FI3\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A0MBheIUOdTFn3SAyfKhws4\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2259,24 +2259,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "177"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AAhRokqk0KK4SAEGMCFzBCa\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AaLKbXoukjN2vI6zGpNFPNj\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2291,24 +2291,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "177"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"A-r7gn9turbHGhN931lg8VF\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AMxKmjNlm0Xgq-3WzIzYsBH\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2323,24 +2323,24 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "177"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AdnV34QG1fnNLpOo7EzaxiT\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Aut_gIr_BcuJUWGKSOJah7g\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         },
         {
             "request": {
                 "method": "GET",
-                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/videos?access_token=token&fields=id%2Clength%2Ccontent_category%2Ccreated_time%2Cis_crosspost_video%2Cpublished%2Ctitle&limit=25&since=2023-01-01&until=2024-12-31",
+                "uri": "https://graph.facebook.com/v22.0/act_186649832776475/videos?access_token=token&fields=id%2Clength%2Ccontent_category%2Ccreated_time%2Cis_crosspost_video%2Cpublished%2Ctitle&limit=25&since=2023-01-01&until=2024-12-31",
                 "body": null,
                 "headers": {
                     "Content-Type": [
@@ -2355,17 +2355,17 @@
                 },
                 "headers": {
                     "facebook-api-version": [
-                        "v23.0"
-                    ],
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
+                        "v22.0"
                     ],
                     "Content-Length": [
                         "172"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AyCrxbBUxFuBF_bnMtUZGUK\", \"message\": \"(#100) Tried accessing nonexisting field (videos) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AcAk9pumPCcIHQ__XBQtAwM\", \"message\": \"(#100) Tried accessing nonexisting field (videos) on node type (AdAccount)\", \"type\": \"OAuthException\"}}"
                 }
             }
         }
