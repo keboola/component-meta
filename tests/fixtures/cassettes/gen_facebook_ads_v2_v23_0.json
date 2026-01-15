@@ -1,0 +1,950 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_attribution_windows\": \"7d_click\", \"action_breakdowns\": \"action_type\", \"breakdowns\": \"product_id\", \"date_preset\": \"last_7d\", \"fields\": \"campaign_id,campaign_name,clicks,impressions,spend,actions, action_values\", \"filtering\": \"[{\\\"field\\\":\\\"action_type\\\",\\\"operator\\\":\\\"IN\\\",\\\"value\\\":[\\\"offsite_conversion.fb_pixel_purchase\\\"]}]\", \"level\": \"campaign\", \"time_increment\": \"monthly\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "685"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1197682505804824\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "297"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1400587531536776\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "297"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "35"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"866577519328768\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"breakdowns\": \"impression_device,publisher_platform\", \"date_preset\": \"last_7d\", \"fields\": \"account_name,campaign_id,campaign_name,objective,adset_id,adset_name,ad_id,ad_name,actions, attribution_setting\", \"level\": \"ad\", \"time_increment\": \"1\", \"use_account_attribution_setting\": \"true\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "619"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1579687719891898\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"breakdowns\": \"impression_device,publisher_platform\", \"date_preset\": \"last_90d\", \"fields\": \"account_name,campaign_id,campaign_name,objective,adset_id,adset_name,ad_id,ad_name,action_values, attribution_setting\", \"level\": \"ad\", \"time_increment\": \"1\", \"use_account_attribution_setting\": \"true\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "626"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "35"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"912791614503643\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_month\", \"fields\": \"ad_id,ad_name,impressions,reach,clicks,spend\", \"level\": \"ad\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "435"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1213324636884106\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_7d\", \"fields\": \"account_id,account_name,account_currency,campaign_id,campaign_name,actions,action_values\", \"filtering\": \"[{field: \\\"action_type\\\",operator:\\\"IN\\\", value: ['offsite_conversion.custom.act_186649832776475','offsite_conversion.custom.act_186649832776475']}]\", \"level\": \"campaign\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "670"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1089273029934043\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_3d\", \"fields\": \"campaign_id,actions,video_p100_watched_actions\", \"filtering\": \"[{'field':'action_type','operator':'IN','value':['video_view','video_p100_watched']}]\", \"level\": \"campaign\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "565"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1568154091569799\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_3d\", \"fields\": \"account_id,account_name,account_currency,campaign_id,campaign_name,actions,action_values\", \"filtering\": \"[{field: \\\"action_type\\\",operator:\\\"IN\\\", value: ['purchase','add_to_cart','landing_page_view']}]\", \"level\": \"campaign\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "619"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"4359994627557420\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"fields\": \"ad_id,actions,video_p100_watched_actions\", \"filtering\": \"[{'field':'action_type', 'operator':'IN', 'value':['video_view', 'video_p100_watched']}]\", \"level\": \"ad\", \"time_increment\": \"1\", \"time_range\": \"{'since':'2025-01-01','until':'2025-03-17'}\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "591"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"2329610950821811\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "297"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1190342289967905\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_destination\", \"date_preset\": \"yesterday\", \"fields\": \"ad_id,ad_name,campaign_id,campaign_name,actions\", \"level\": \"ad\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "444"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "37"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"25765160366411880\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"fields\": \"ad_id,ad_name,impressions,reach,clicks,spend\", \"level\": \"ad\", \"time_range\": \"{'since':'2024-01-01','until':'2025-03-17'}\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "467"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"2105044990280840\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"date_preset\": \"yesterday\", \"fields\": \"ad_id,ad_name,adset_name,campaign_id,campaign_name,actions\", \"level\": \"ad\", \"summary_action_breakdowns\": \"action_destination\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "463"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1174896931067697\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"date_preset\": \"yesterday\", \"fields\": \"adset_name,actions\", \"level\": \"adset\", \"summary_action_breakdowns\": \"action_destination\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "426"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1575161357700932\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_28d\", \"fields\": \"ad_id,actions\", \"level\": \"ad\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "425"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "35"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"878089348419745\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"[\\\"action_type\\\"]\", \"fields\": \"account_id,account_name,campaign_id,campaign_name,clicks,spend,reach,impressions,cpc,ctr,cpp,cpm,cost_per_inline_link_click,cost_per_unique_click,cost_per_unique_inline_link_click,frequency,inline_link_clicks,inline_link_click_ctr,objective,quality_ranking,engagement_rate_ranking,conversion_rate_ranking,website_ctr,actions,action_values,cost_per_action_type,video_p25_watched_actions,video_p50_watched_actions,video_p75_watched_actions,video_p95_watched_actions,video_p100_watched_actions,video_avg_time_watched_actions,unique_actions,unique_ctr\", \"level\": \"campaign\", \"time_increment\": \"1\", \"time_range\": \"{\\\"since\\\":\\\"2025-02-01\\\",\\\"until\\\":\\\"2025-02-29\\\"}\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "1013"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1453047746441926\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_month\", \"fields\": \"ad_id,ad_name,impressions,reach,clicks,spend\", \"level\": \"ad\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "458"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1395614312209543\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"last_3d\", \"fields\": \"campaign_id,actions\", \"level\": \"campaign\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "436"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1222106366548114\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_breakdowns\": \"action_type\", \"date_preset\": \"this_month\", \"fields\": \"campaign_id,campaign_name,impressions,reach,spend,actions\", \"level\": \"campaign\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "477"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1364937328283421\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "297"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "35"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"814310308308571\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_attribution_windows\": \"[\\\"1d_click\\\",\\\"7d_click\\\",\\\"1d_view\\\"]\", \"breakdowns\": \"user_segment_key\", \"date_preset\": \"last_month\", \"fields\": \"actions,action_values\", \"filtering\": \"[{\\\"field\\\":\\\"action_type\\\",\\\"operator\\\":\\\"IN\\\",\\\"value\\\":[\\\"purchase\\\"]}]\", \"level\": \"ad\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "597"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "37"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"25508924052125525\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_attribution_windows\": \"[\\\"1d_click\\\",\\\"7d_click\\\",\\\"1d_view\\\"]\", \"breakdowns\": \"user_segment_key\", \"date_preset\": \"last_month\", \"fields\": \"actions,action_values\", \"filtering\": \"[{\\\"field\\\":\\\"action_type\\\",\\\"operator\\\":\\\"IN\\\",\\\"value\\\":[\\\"purchase\\\"]}]\", \"level\": \"ad\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "597"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"2705977259764331\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"breakdowns\": \"device_platform\", \"date_preset\": \"last_28d\", \"fields\": \"adset_id,actions,action_values\", \"filtering\": \"[{'field':'action_type','operator':'EQUAL', 'value':'purchase'}]\", \"level\": \"adset\", \"time_increment\": \"1\", \"use_unified_attribution_setting\": \"true\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "566"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "37"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"25481327321520079\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"breakdowns\": \"device_platform\", \"date_preset\": \"last_28d\", \"fields\": \"adset_id,actions,action_values\", \"filtering\": \"[{'field':'action_type','operator':'EQUAL', 'value':'purchase'}]\", \"level\": \"adset\", \"time_increment\": \"1\", \"use_unified_attribution_setting\": \"true\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "566"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "35"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"885334723861430\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"action_attribution_windows\": \"['1d_click','7d_click','1d_view','7d_view']\", \"breakdowns\": \"country\", \"date_preset\": \"last_7d\", \"fields\": \"account_id,account_name,campaign_id,campaign_name,account_currency,impressions,reach,clicks,spend,actions,action_values\", \"level\": \"campaign\", \"time_increment\": \"1\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "602"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "36"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"1206259741049248\"}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "POST",
+                "uri": "https://graph.facebook.com/v23.0/act_186649832776475/insights",
+                "body": "{\"access_token\": \"token\", \"breakdowns\": \"impression_device,publisher_platform\", \"date_preset\": \"last_7d\", \"fields\": \"account_name,campaign_id,campaign_name,objective,adset_id,adset_name,ad_id,ad_name,impressions,reach,clicks,spend,conversions, attribution_setting\", \"level\": \"ad\", \"time_increment\": \"1\", \"use_account_attribution_setting\": \"true\"}",
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ],
+                    "Content-Length": [
+                        "618"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "35"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"report_run_id\": \"784542201319566\"}"
+                }
+            }
+        }
+    ]
+}
