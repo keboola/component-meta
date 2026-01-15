@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 from datetime import datetime, timezone
@@ -10,6 +11,83 @@ from keboola.utils.date import get_past_date
 from requests import HTTPError
 
 logger = logging.getLogger(__name__)
+
+# Facebook API error codes that indicate user-actionable issues
+# See: https://developers.facebook.com/docs/graph-api/guides/error-handling
+USER_ERROR_CODES = {
+    100,  # Invalid parameter - user configuration issue
+    190,  # Invalid OAuth access token - user needs to re-authenticate
+    200,  # Permission error - user needs to grant permissions
+    294,  # Managing app that does not exist - configuration issue
+}
+
+# Facebook API error subcodes that indicate user-actionable issues
+USER_ERROR_SUBCODES = {
+    1504018,  # Request timed out - user should use smaller date range or async tasks
+    1487851,  # Too many IDs - user should reduce the number of IDs
+    1487534,  # Invalid date range - user configuration issue
+}
+
+
+def parse_facebook_error(response_text: str) -> dict:
+    """
+    Parse Facebook API error response and return error details.
+    Returns empty dict if parsing fails.
+    """
+    try:
+        error_data = json.loads(response_text)
+        return error_data.get("error", {})
+    except (json.JSONDecodeError, TypeError):
+        return {}
+
+
+def is_user_actionable_error(error_info: dict) -> bool:
+    """
+    Check if the Facebook API error is user-actionable.
+    """
+    error_code = error_info.get("code")
+    error_subcode = error_info.get("error_subcode")
+
+    if error_code in USER_ERROR_CODES:
+        return True
+    if error_subcode in USER_ERROR_SUBCODES:
+        return True
+    return False
+
+
+def get_user_friendly_error_message(error_info: dict) -> str:
+    """
+    Extract user-friendly error message from Facebook API error response.
+    Prefers error_user_msg if available, falls back to message.
+    """
+    user_msg = error_info.get("error_user_msg")
+    if user_msg:
+        return user_msg
+
+    message = error_info.get("message", "Unknown Facebook API error")
+    error_user_title = error_info.get("error_user_title")
+    if error_user_title:
+        return f"{error_user_title}: {message}"
+
+    return message
+
+
+def handle_facebook_http_error(http_error: HTTPError) -> None:
+    """
+    Handle Facebook API HTTP errors and raise UserException for user-actionable errors.
+    Re-raises the original HTTPError if not user-actionable.
+    """
+    if not hasattr(http_error, "response") or http_error.response is None:
+        raise http_error
+
+    response_text = http_error.response.text
+    error_info = parse_facebook_error(response_text)
+
+    if is_user_actionable_error(error_info):
+        user_message = get_user_friendly_error_message(error_info)
+        raise UserException(f"Facebook API error: {user_message}")
+
+    raise http_error
 
 
 class PageLoader:
@@ -122,7 +200,7 @@ class PageLoader:
             logging.error(f"HTTP error while loading page data: {e}")
             if hasattr(e, "response") and e.response:
                 logging.error(f"Response text: {e.response.text}")
-            raise
+            handle_facebook_http_error(e)
 
         except Exception as e:
             logging.error(f"Failed to load page data: {e}")
@@ -239,7 +317,7 @@ class PageLoader:
             logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
             if hasattr(e, "response") and e.response is not None:
                 logging.error(f"Facebook API error response: {e.response.text}")
-            raise
+            handle_facebook_http_error(e)
 
         except Exception as e:
             logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
