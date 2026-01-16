@@ -1,4 +1,3 @@
-
 import sys
 import os
 import json
@@ -13,11 +12,12 @@ from freezegun import freeze_time
 # Add src and scripts to path (relative to this file)
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-sys.path.insert(0, str(PROJECT_ROOT / 'src'))
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from component import Component
-from lib.output_validator import SnapshotManager
+# Import after path modification - flake8: noqa
+from component import Component  # noqa: E402
+from lib.output_validator import SnapshotManager  # noqa: E402
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -30,6 +30,7 @@ FIXED_DATETIME = "2025-01-01 12:00:00"
 
 # Global snapshot manager
 snapshot_manager = None
+
 
 def scrub_string(string, replacements):
     if not string:
@@ -44,18 +45,19 @@ def scrub_headers(headers):
     # Only keep essential headers to ensure deterministic cassettes and no environment leaks
     whitelist = ["content-type", "content-length", "facebook-api-version"]
     new_headers = {}
-    
+
     # Use items() if available (dict-like), otherwise attempt to iterate directly
     try:
-        source = headers.items() if hasattr(headers, 'items') else headers
+        source = headers.items() if hasattr(headers, "items") else headers
         for k, v in source:
             if k.lower() in whitelist:
                 # VCR expects header values to be lists
                 new_headers[k] = v if isinstance(v, list) else [v]
     except Exception:
         return headers
-        
+
     return new_headers
+
 
 def recursive_scrub(obj, replacements):
     if isinstance(obj, dict):
@@ -72,34 +74,38 @@ def recursive_scrub(obj, replacements):
         return scrub_string(obj, replacements)
     return obj
 
+
 def before_record_response(response, replacements):
     # Scrub headers
-    response['headers'] = scrub_headers(response.get('headers', {}))
+    response["headers"] = scrub_headers(response.get("headers", {}))
 
     # Scrub body
-    if 'body' in response and 'string' in response['body']:
+    if "body" in response and "string" in response["body"]:
         try:
-            body_bytes = response['body']['string']
+            body_bytes = response["body"]["string"]
             if not body_bytes:
                 return response
 
-            body_str = body_bytes.decode('utf-8')
+            body_str = body_bytes.decode("utf-8")
 
             # First try parsing as JSON
             try:
                 body_json = json.loads(body_str)
                 scrubbed_json = recursive_scrub(body_json, replacements)
                 # Sort keys for deterministic git diffs
-                response['body']['string'] = json.dumps(scrubbed_json, sort_keys=True).encode('utf-8')
+                response["body"]["string"] = json.dumps(
+                    scrubbed_json, sort_keys=True
+                ).encode("utf-8")
             except json.JSONDecodeError:
                 # Fallback to string replacement
                 scrubbed_str = scrub_string(body_str, replacements)
-                response['body']['string'] = scrubbed_str.encode('utf-8')
+                response["body"]["string"] = scrubbed_str.encode("utf-8")
 
         except Exception as e:
             logging.warning(f"Failed to scrub response body: {e}")
             pass
     return response
+
 
 def before_record_request(request, replacements):
     request.uri = scrub_string(request.uri, replacements)
@@ -107,17 +113,18 @@ def before_record_request(request, replacements):
 
     if request.body:
         try:
-            body_str = request.body.decode('utf-8')
+            body_str = request.body.decode("utf-8")
             # Try to handle as JSON for sorting
             try:
                 body_json = json.loads(body_str)
                 scrubbed_json = recursive_scrub(body_json, replacements)
-                request.body = json.dumps(scrubbed_json, sort_keys=True).encode('utf-8')
+                request.body = json.dumps(scrubbed_json, sort_keys=True).encode("utf-8")
             except json.JSONDecodeError:
-                request.body = scrub_string(body_str, replacements).encode('utf-8')
-        except:
+                request.body = scrub_string(body_str, replacements).encode("utf-8")
+        except Exception:
             pass
     return request
+
 
 def inject_secrets(config, token):
     if isinstance(config, dict):
@@ -134,13 +141,14 @@ def inject_secrets(config, token):
         return [inject_secrets(i, token) for i in config]
     return config
 
+
 def run_from_csv(csv_path, secrets_path):
     # Try sanitized file first if it exists
     sanitized_path = csv_path.parent / "queries_sanitized.csv"
     if sanitized_path.exists():
         print(f"Using sanitized queries from: {sanitized_path}")
         csv_path = sanitized_path
-    
+
     if not csv_path.exists():
         print(f"CSV file not found: {csv_path}")
         return
@@ -150,62 +158,67 @@ def run_from_csv(csv_path, secrets_path):
 
     with open(secrets_path) as f:
         secrets = json.load(f)
-    
+
     # Group queries by normalized kbc_component_id
     component_queries = {}
     total_found = 0
-    
+
     # Mapping to consolidate into V2 components
     ID_MAPPING = {
         "Facebook Ads": "Facebook Ads V2",
         "Facebook Pages": "Facebook Pages V2",
-        "Instagram": "Instagram V2"
+        "Instagram": "Instagram V2",
     }
 
-    with open(csv_path, encoding='utf-8') as f:
+    with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            original_comp_id = row.get('kbc_component_id', 'Facebook Ads')
+            original_comp_id = row.get("kbc_component_id", "Facebook Ads")
             comp_id = ID_MAPPING.get(original_comp_id, original_comp_id)
-            
-            q_type = row.get('query_type', 'nested-query')
-            json_str = row.get('query_json', '')
-            
+
+            q_type = row.get("query_type", "nested-query")
+            json_str = row.get("query_json", "")
+
             if not json_str:
                 continue
 
             try:
                 q = json.loads(json_str)
-                
+
                 # Normalize query object
-                real_query_params = q.get("query", q) if isinstance(q.get("query"), dict) else q
+                real_query_params = (
+                    q.get("query", q) if isinstance(q.get("query"), dict) else q
+                )
                 if "limit" in real_query_params and real_query_params["limit"]:
                     real_query_params["limit"] = str(real_query_params["limit"])
 
-                
                 q_obj = {
                     "id": q.get("id"),
                     "type": q_type,
                     "name": q.get("name", "query"),
                     "query": real_query_params,
-                    "run-by-id": q.get("run-by-id", False)
+                    "run-by-id": q.get("run-by-id", False),
                 }
 
                 if comp_id not in component_queries:
                     component_queries[comp_id] = []
-                
+
                 component_queries[comp_id].append(q_obj)
                 total_found += 1
-                
+
             except json.JSONDecodeError:
                 continue
 
-    print(f"Total unique queries found across {len(component_queries)} components: {total_found}")
+    print(
+        f"Total unique queries found across {len(component_queries)} components: {total_found}"
+    )
 
     # Generate cassettes for both v22.0 and v23.0
     for version in ["v22.0", "v23.0"]:
         for comp_id, queries_raw in component_queries.items():
-            print(f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}")
+            print(
+                f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}"
+            )
 
             # Normalize and add technical IDs if missing
             final_queries = []
@@ -221,13 +234,15 @@ def run_from_csv(csv_path, secrets_path):
                 else:
                     # q is parameters or incomplete object
                     # Reconstruct full object
-                    final_queries.append({
-                        "id": i + 1,
-                        "name": q.get("name", f"query_{i+1}"),
-                        "type": q.get("type", "nested-query"),
-                        "query": q if "query" not in q else q["query"],
-                        "run-by-id": q.get("run-by-id", False)
-                    })
+                    final_queries.append(
+                        {
+                            "id": i + 1,
+                            "name": q.get("name", f"query_{i + 1}"),
+                            "type": q.get("type", "nested-query"),
+                            "query": q if "query" not in q else q["query"],
+                            "run-by-id": q.get("run-by-id", False),
+                        }
+                    )
 
             # Merge into secrets config
             base_config = secrets.copy()
@@ -238,7 +253,7 @@ def run_from_csv(csv_path, secrets_path):
             version_clean = version.replace(".", "_")
             case_name = f"gen_{comp_clean}_{version_clean}"
 
-            config = base_config.copy() # Deeper copy for safety
+            config = base_config.copy()  # Deeper copy for safety
             config["parameters"] = base_config["parameters"].copy()
             config["parameters"]["queries"] = final_queries
             config["parameters"]["api-version"] = version
@@ -247,7 +262,7 @@ def run_from_csv(csv_path, secrets_path):
                 "name": case_name,
                 "description": f"Generated for {comp_id} using {version}",
                 "action": "run",
-                "params": config
+                "params": config,
             }
 
             # Extract token for scrubbing
@@ -269,27 +284,25 @@ def run_from_csv(csv_path, secrets_path):
 
 def run_test_case(case, token):
     # Replacements map: Real -> Dummy
-    replacements = {
-        token: "token"
-    }
+    replacements = {token: "token"}
 
     # Ensure cassettes dir exists
     CASSETTES_DIR.mkdir(parents=True, exist_ok=True)
 
     my_vcr = vcr.VCR(
         cassette_library_dir=str(CASSETTES_DIR),
-        record_mode='new_episodes',
-        match_on=['method', 'scheme', 'host', 'port', 'path', 'query', 'body'],
-        filter_headers=[('Authorization', 'Bearer token')],
-        filter_query_parameters=[('access_token', 'token')],
+        record_mode="new_episodes",
+        match_on=["method", "scheme", "host", "port", "path", "query", "body"],
+        filter_headers=[("Authorization", "Bearer token")],
+        filter_query_parameters=[("access_token", "token")],
         before_record_response=lambda r: before_record_response(r, replacements),
         before_record_request=lambda r: before_record_request(r, replacements),
         decode_compressed_response=True,
-        serializer='json'
+        serializer="json",
     )
 
     print(f"Recording case: {case['name']}")
-    
+
     # Inject secrets into parameters for execution
     runtime_params = inject_secrets(case["params"], token)
 
@@ -299,59 +312,60 @@ def run_test_case(case, token):
     if param_token and "authorization" not in runtime_params:
         runtime_params["authorization"] = {
             "oauth_api": {
-                "credentials": {
-                    "token": param_token,
-                    "access_token": param_token
-                }
+                "credentials": {"token": param_token, "access_token": param_token}
             }
         }
-    
+
     runtime_params["action"] = case.get("action", "run")
-    
+
     # Setup temp env
     with TemporaryDirectory() as tmpdir:
         os.environ["KBC_DATADIR"] = tmpdir
         os.makedirs(os.path.join(tmpdir, "out", "tables"), exist_ok=True)
         os.makedirs(os.path.join(tmpdir, "out", "files"), exist_ok=True)
-        
+
         with open(os.path.join(tmpdir, "config.json"), "w") as f:
             json.dump(runtime_params, f)
-            
+
         with freeze_time(FIXED_DATETIME):
             cassette_name = f"{case['name']}.json"
             with my_vcr.use_cassette(cassette_name):
                 try:
                     comp = Component()
                     if case.get("action") == "run":
-                            comp.run()
+                        comp.run()
                     else:
-                            comp.execute_action()
+                        comp.execute_action()
                     print(f"Success: {case['name']}")
 
                     # Capture output snapshot if snapshot manager is enabled
-                    global snapshot_manager
                     if snapshot_manager:
-                        snapshot_manager.capture_snapshot(case['name'], tmpdir)
+                        snapshot_manager.capture_snapshot(case["name"], tmpdir)
                         print(f"  → Captured output snapshot for {case['name']}")
 
                 except BaseException as e:
                     import traceback
+
                     traceback.print_exc()
                     print(f"Error executing {case['name']}: {e}")
 
             cassette_path = CASSETTES_DIR / cassette_name
             if not cassette_path.exists():
-                    with open(cassette_path, 'w') as f:
-                        f.write('{"interactions": [], "version": 1}\n')
-                    print(f"Created empty cassette for {case['name']}")
+                with open(cassette_path, "w") as f:
+                    f.write('{"interactions": [], "version": 1}\n')
+                print(f"Created empty cassette for {case['name']}")
+
 
 def run_gen():
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--csv", action="store_true", help="Run from queries.csv")
-    parser.add_argument("--capture-outputs", action="store_true",
-                       help="Capture output snapshots for validation")
+    parser.add_argument(
+        "--capture-outputs",
+        action="store_true",
+        help="Capture output snapshots for validation",
+    )
     args = parser.parse_args()
 
     # Initialize snapshot manager if requested
@@ -380,9 +394,9 @@ def run_gen():
             if data_str:
                 data_json = json.loads(data_str)
                 token = data_json.get("access_token")
-            
+
             if not token:
-                 token = creds.get("token") or creds.get("access_token")
+                token = creds.get("token") or creds.get("access_token")
 
             if token:
                 print("Using token from config.secrets.json for legacy tests.")
@@ -390,7 +404,10 @@ def run_gen():
             print(f"Failed to load token from secrets: {e}")
 
     if not token:
-        print("WARNING: KBC_SECRET_TOKEN env var is missing and could not load from secrets. Using 'test_token'. Live requests will likely fail.")
+        print(
+            "WARNING: KBC_SECRET_TOKEN env var is missing and could not load "
+            "from secrets. Using 'test_token'. Live requests will likely fail."
+        )
         token = "test_token"
 
     if not CONFIGS_FILE.exists():
@@ -402,6 +419,7 @@ def run_gen():
 
     for case in cases:
         run_test_case(case, token)
+
 
 if __name__ == "__main__":
     run_gen()

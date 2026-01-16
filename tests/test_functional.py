@@ -1,4 +1,3 @@
-
 import pytest
 import json
 import os
@@ -22,14 +21,15 @@ FIXED_DATETIME = "2025-01-01 12:00:00"
 # Load snapshot manager once
 snapshot_manager = SnapshotManager(SNAPSHOTS_FILE)
 
+
 def load_configs():
     cases = []
-    
+
     # 1. Load legacy test cases from test_cases.json
     if CONFIGS_FILE.exists():
         with open(CONFIGS_FILE) as f:
             cases.extend(json.load(f))
-            
+
     # 2. Load generated cases from sanitized CSV
     # Replay-only CI fallback
     effective_secrets_file = SECRETS_FILE
@@ -41,33 +41,40 @@ def load_configs():
             with open(effective_secrets_file) as f:
                 secrets = json.load(f)
 
-            
             # Use placeholders for secrets during re-run
             # The cassettes already have 'token' replaced
             secrets_placeholder = copy.deepcopy(secrets)
             if "authorization" in secrets_placeholder:
                 # We want the test runner to use 'token' as the value so it matches the recorded VCR filter
-                creds = secrets_placeholder["authorization"].get("oauth_api", {}).get("credentials", {})
-                if "token" in creds: creds["token"] = "token"
-                if "access_token" in creds: creds["access_token"] = "token"
-                if "#data" in creds: 
+                creds = (
+                    secrets_placeholder["authorization"]
+                    .get("oauth_api", {})
+                    .get("credentials", {})
+                )
+                if "token" in creds:
+                    creds["token"] = "token"
+                if "access_token" in creds:
+                    creds["access_token"] = "token"
+                if "#data" in creds:
                     try:
                         data = json.loads(creds["#data"])
                         data["access_token"] = "token"
                         creds["#data"] = json.dumps(data)
-                    except: pass
+                    except:
+                        pass
 
             # Grouping logic identical to generate_tests.py
             component_queries = {}
-            with open(QUERIES_SANITIZED_FILE, encoding='utf-8') as f:
+            with open(QUERIES_SANITIZED_FILE, encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    comp_id = row.get('kbc_component_id', 'Facebook Ads V2')
-                    q_type = row.get('query_type', 'nested-query')
-                    json_str = row.get('query_json', '')
-                    
-                    if not json_str: continue
-                    
+                    comp_id = row.get("kbc_component_id", "Facebook Ads V2")
+                    q_type = row.get("query_type", "nested-query")
+                    json_str = row.get("query_json", "")
+
+                    if not json_str:
+                        continue
+
                     try:
                         q = json.loads(json_str)
                         # Reconstruct full object for Component
@@ -75,8 +82,10 @@ def load_configs():
                             "id": q.get("id", 1),
                             "type": q_type,
                             "name": q.get("name", "query"),
-                            "query": q.get("query", q) if isinstance(q.get("query"), dict) else q,
-                            "run-by-id": q.get("run-by-id", False)
+                            "query": q.get("query", q)
+                            if isinstance(q.get("query"), dict)
+                            else q,
+                            "run-by-id": q.get("run-by-id", False),
                         }
                         if comp_id not in component_queries:
                             component_queries[comp_id] = []
@@ -89,23 +98,27 @@ def load_configs():
                     comp_clean = comp_id.lower().replace(" ", "_")
                     version_clean = version.replace(".", "_")
                     case_name = f"gen_{comp_clean}_{version_clean}"
-                    
+
                     config = copy.deepcopy(secrets_placeholder)
-                    if "parameters" not in config: config["parameters"] = {}
+                    if "parameters" not in config:
+                        config["parameters"] = {}
                     config["parameters"]["queries"] = queries
                     config["parameters"]["api-version"] = version
-                    
-                    cases.append({
-                        "name": case_name,
-                        "description": f"Sanitized queries for {comp_id} (API {version})",
-                        "action": "run",
-                        "params": config
-                    })
+
+                    cases.append(
+                        {
+                            "name": case_name,
+                            "description": f"Sanitized queries for {comp_id} (API {version})",
+                            "action": "run",
+                            "params": config,
+                        }
+                    )
 
         except Exception as e:
             print(f"Warning: Failed to load sanitized CSV cases: {e}")
-            
+
     return cases
+
 
 @pytest.mark.parametrize("config_data", load_configs())
 @freeze_time(FIXED_DATETIME)
@@ -117,39 +130,36 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
     monkeypatch.setenv("KBC_DATADIR", str(tmpdir))
     os.makedirs(os.path.join(tmpdir, "out", "tables"), exist_ok=True)
     os.makedirs(os.path.join(tmpdir, "out", "files"), exist_ok=True)
-    
+
     params = copy.deepcopy(config_data.get("params", {}))
     params["action"] = config_data.get("action", "run")
 
     # Ensure authorization exists for the Component to be happy
     if "authorization" not in params:
         params["authorization"] = {
-            "oauth_api": {
-                "credentials": {
-                    "token": "token",
-                    "access_token": "token"
-                }
-            }
+            "oauth_api": {"credentials": {"token": "token", "access_token": "token"}}
         }
-    
+
     with open(tmpdir.join("config.json"), "w") as f:
         json.dump(params, f)
-    
+
     # 3. Setup VCR
     cassette_name = f"{config_data['name']}.json"
     cassette_path = CASSETTES_DIR / cassette_name
-    
+
     if not cassette_path.exists():
-        pytest.fail(f"Cassette {cassette_name} not found. Please run 'python scripts/generate_tests.py' to generate it.")
+        pytest.fail(
+            f"Cassette {cassette_name} not found. Please run 'python scripts/generate_tests.py' to generate it."
+        )
 
     my_vcr = vcr.VCR(
         cassette_library_dir=str(CASSETTES_DIR),
-        record_mode='none', # REPLAY ONLY - ensures we don't hit live API
-        match_on=['method', 'scheme', 'host', 'port', 'path', 'query', 'body'],
-        filter_headers=[('Authorization', 'Bearer token')],
-        filter_query_parameters=[('access_token', 'token')],
+        record_mode="none",  # REPLAY ONLY - ensures we don't hit live API
+        match_on=["method", "scheme", "host", "port", "path", "query", "body"],
+        filter_headers=[("Authorization", "Bearer token")],
+        filter_query_parameters=[("access_token", "token")],
         decode_compressed_response=True,
-        serializer='json'
+        serializer="json",
     )
 
     with my_vcr.use_cassette(cassette_name):
@@ -162,10 +172,12 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
     # Verification: Ensure some data was written to tables
     out_tables_dir = Path(tmpdir) / "out" / "tables"
     found_tables = list(out_tables_dir.glob("*.csv"))
-    assert len(found_tables) > 0 or config_data.get("action") != "run", "Component produced no output tables"
+    assert len(found_tables) > 0 or config_data.get("action") != "run", (
+        "Component produced no output tables"
+    )
 
     # Validate outputs against snapshot
-    test_name = config_data['name']
+    test_name = config_data["name"]
     if snapshot_manager.has_snapshot(test_name):
         validation_errors = snapshot_manager.validate_snapshot(test_name, tmpdir)
         if validation_errors:
@@ -176,13 +188,15 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
     else:
         print(f"⚠ No snapshot found for {test_name} - skipping output validation")
 
+
 # Snapshot Infrastructure Tests
+
 
 def test_snapshot_capture_and_validation(tmpdir):
     """Test capturing and validating output snapshots."""
     from lib.output_validator import OutputSnapshot
     from tempfile import TemporaryDirectory
-    
+
     # Create a temporary directory with mock component outputs
     with TemporaryDirectory() as temp:
         tmpdir = Path(temp)
@@ -193,20 +207,24 @@ def test_snapshot_capture_and_validation(tmpdir):
 
         # Create a sample CSV
         sample_csv = tables_dir / "campaigns.csv"
-        with open(sample_csv, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=['id', 'name', 'impressions'])
+        with open(sample_csv, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=["id", "name", "impressions"])
             writer.writeheader()
-            writer.writerow({'id': '123', 'name': 'Test Campaign', 'impressions': '1000'})
-            writer.writerow({'id': '456', 'name': 'Another Campaign', 'impressions': '2000'})
+            writer.writerow(
+                {"id": "123", "name": "Test Campaign", "impressions": "1000"}
+            )
+            writer.writerow(
+                {"id": "456", "name": "Another Campaign", "impressions": "2000"}
+            )
 
         # Create a sample manifest
         manifest_file = tables_dir / "campaigns.csv.manifest"
         manifest_data = {
             "incremental": True,
             "primary_key": ["id"],
-            "columns": ["id", "name", "impressions"]
+            "columns": ["id", "name", "impressions"],
         }
-        with open(manifest_file, 'w', encoding='utf-8') as f:
+        with open(manifest_file, "w", encoding="utf-8") as f:
             json.dump(manifest_data, f)
 
         # Test 1: Capture snapshot
@@ -218,7 +236,11 @@ def test_snapshot_capture_and_validation(tmpdir):
         assert "campaigns.csv" in captured["tables"]
         assert captured["tables"]["campaigns.csv"]["row_count"] == 2
         assert captured["tables"]["campaigns.csv"]["column_count"] == 3
-        assert set(captured["tables"]["campaigns.csv"]["columns"]) == {"id", "name", "impressions"}
+        assert set(captured["tables"]["campaigns.csv"]["columns"]) == {
+            "id",
+            "name",
+            "impressions",
+        }
         assert "hash" in captured["tables"]["campaigns.csv"]
         assert len(captured["tables"]["campaigns.csv"]["sample_rows"]) == 2
 
@@ -229,7 +251,9 @@ def test_snapshot_capture_and_validation(tmpdir):
 
         # Test 2: Validation passes with same data
         errors = snapshot.validate_against(captured)
-        assert errors == [], f"Validation should pass with same data, but got errors: {errors}"
+        assert errors == [], (
+            f"Validation should pass with same data, but got errors: {errors}"
+        )
 
         # Test 3: Validation detects changes
         modified_snapshot = copy.deepcopy(captured)
@@ -241,7 +265,11 @@ def test_snapshot_capture_and_validation(tmpdir):
 
         # Test 4: Validation detects column changes
         modified_snapshot = copy.deepcopy(captured)
-        modified_snapshot["tables"]["campaigns.csv"]["columns"] = ["id", "name", "clicks"]  # Wrong columns
+        modified_snapshot["tables"]["campaigns.csv"]["columns"] = [
+            "id",
+            "name",
+            "clicks",
+        ]  # Wrong columns
 
         errors = snapshot.validate_against(modified_snapshot)
         assert len(errors) > 0, "Validation should fail with different columns"
@@ -251,7 +279,7 @@ def test_snapshot_capture_and_validation(tmpdir):
 def test_snapshot_manager(tmpdir):
     """Test the SnapshotManager for saving and loading snapshots."""
     from tempfile import TemporaryDirectory
-    
+
     with TemporaryDirectory() as temp:
         tmpdir = Path(temp)
         snapshots_file = tmpdir / "snapshots.json"
@@ -267,10 +295,10 @@ def test_snapshot_manager(tmpdir):
 
         # Create sample CSV
         sample_csv = tables_dir / "test.csv"
-        with open(sample_csv, 'w', newline='', encoding='utf-8') as f:
+        with open(sample_csv, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(['id', 'value'])
-            writer.writerow(['1', '100'])
+            writer.writerow(["id", "value"])
+            writer.writerow(["1", "100"])
 
         # Capture snapshot
         manager.capture_snapshot("test_1", output_dir)

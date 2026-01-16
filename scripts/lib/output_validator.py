@@ -1,4 +1,5 @@
 """Output validation for VCR tests using snapshot testing."""
+
 import json
 import hashlib
 import csv
@@ -31,7 +32,7 @@ class OutputSnapshot:
         self.snapshot = {
             "tables": self._capture_tables(),
             "files": self._capture_files(),
-            "metadata": self._capture_metadata()
+            "metadata": self._capture_metadata(),
         }
         return self.snapshot
 
@@ -46,7 +47,7 @@ class OutputSnapshot:
         for csv_file in tables_dir.glob("*.csv"):
             # Read CSV
             try:
-                with open(csv_file, encoding='utf-8') as f:
+                with open(csv_file, encoding="utf-8") as f:
                     reader = csv.DictReader(f)
                     rows = list(reader)
 
@@ -56,24 +57,22 @@ class OutputSnapshot:
                     "column_count": len(rows[0].keys()) if rows else 0,
                     "columns": list(rows[0].keys()) if rows else [],
                     "hash": self._hash_file(csv_file),
-                    "sample_rows": rows[:3] if rows else []  # First 3 rows
+                    "sample_rows": rows[:3] if rows else [],  # First 3 rows
                 }
             except Exception as e:
-                tables[csv_file.name] = {
-                    "error": f"Failed to read CSV: {str(e)}"
-                }
+                tables[csv_file.name] = {"error": f"Failed to read CSV: {str(e)}"}
 
             # Capture manifest if exists
             manifest_file = csv_file.with_suffix(".csv.manifest")
             if manifest_file.exists():
                 try:
-                    with open(manifest_file, encoding='utf-8') as f:
+                    with open(manifest_file, encoding="utf-8") as f:
                         manifest = json.load(f)
                     tables[manifest_file.name] = {
                         "hash": self._hash_file(manifest_file),
                         "incremental": manifest.get("incremental", False),
                         "primary_key": manifest.get("primary_key", []),
-                        "columns": manifest.get("columns", [])
+                        "columns": manifest.get("columns", []),
                     }
                 except Exception as e:
                     tables[manifest_file.name] = {
@@ -94,7 +93,7 @@ class OutputSnapshot:
             if file_path.is_file():
                 files[file_path.name] = {
                     "size_bytes": file_path.stat().st_size,
-                    "hash": self._hash_file(file_path)
+                    "hash": self._hash_file(file_path),
                 }
 
         return files
@@ -103,9 +102,7 @@ class OutputSnapshot:
         """Capture run metadata."""
         # Could extract from logs, state files, etc.
         # For now, just capture basic info
-        return {
-            "test_name": self.test_name
-        }
+        return {"test_name": self.test_name}
 
     def _hash_file(self, file_path: Path) -> str:
         """
@@ -118,7 +115,7 @@ class OutputSnapshot:
             Hash string in format "sha256:hexdigest"
         """
         sha256 = hashlib.sha256()
-        with open(file_path, 'rb') as f:
+        with open(file_path, "rb") as f:
             while chunk := f.read(8192):
                 sha256.update(chunk)
         return f"sha256:{sha256.hexdigest()}"
@@ -157,7 +154,7 @@ class OutputSnapshot:
                         errors.append(
                             f"{table_name}: Row count mismatch "
                             f"(expected ~{expected_rows}, got {actual_rows}, "
-                            f"variance {variance*100:.1f}%)"
+                            f"variance {variance * 100:.1f}%)"
                         )
 
             # Check columns match
@@ -193,10 +190,7 @@ class OutputSnapshot:
             # Hash validation
             if "hash" in expected_meta:
                 if actual_meta.get("hash") != expected_meta["hash"]:
-                    errors.append(
-                        f"{file_name}: Content changed "
-                        f"(hash mismatch)"
-                    )
+                    errors.append(f"{file_name}: Content changed (hash mismatch)")
 
         return errors
 
@@ -217,14 +211,14 @@ class SnapshotManager:
     def _load_snapshots(self) -> Dict[str, Any]:
         """Load existing snapshots from file."""
         if self.snapshots_file.exists():
-            with open(self.snapshots_file, encoding='utf-8') as f:
+            with open(self.snapshots_file, encoding="utf-8") as f:
                 return json.load(f)
         return {}
 
     def save(self):
         """Save snapshots to file."""
         self.snapshots_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.snapshots_file, 'w', encoding='utf-8') as f:
+        with open(self.snapshots_file, "w", encoding="utf-8") as f:
             json.dump(self.snapshots, f, indent=2, sort_keys=True)
         print(f"Saved snapshots to {self.snapshots_file}")
 
