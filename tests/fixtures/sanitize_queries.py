@@ -74,32 +74,116 @@ def get_replacement_id(category: str, original_id: str, ads_accounts: List[str])
         return account['id']
 
 
+def determine_required_id_type(query_obj: Dict[str, Any], component_category: str) -> str:
+    """
+    Determine the required ID type based on the query structure and endpoint.
+
+    Returns: 'ads', 'instagram', or 'pages'
+    """
+    # Page-specific endpoints that require Page IDs
+    PAGE_ENDPOINTS = [
+        'feed', 'posts', 'published_posts', 'ratings',
+        'video', 'video_reels', 'likes', 'conversations'
+    ]
+
+    # Instagram-specific endpoints that require Instagram Business Account IDs
+    INSTAGRAM_ENDPOINTS = [
+        'stories', 'media'
+    ]
+
+    # Instagram-specific fields that require Instagram Business Account IDs
+    INSTAGRAM_FIELDS = ['biography', 'followers_count', 'username', 'media_count']
+
+    # Extract query parameters from nested or flat structure
+    if 'query' in query_obj and isinstance(query_obj['query'], dict):
+        params = query_obj['query']
+    else:
+        params = query_obj
+
+    # Check the path field
+    path = params.get('path', '').lower()
+
+    # Check if this is an async-insights-query (always needs Ad Account ID)
+    query_type = query_obj.get('type', '')
+    if query_type == 'async-insights-query':
+        return 'ads'
+
+    # Check if path matches page-specific endpoints
+    if path in PAGE_ENDPOINTS:
+        return 'pages'
+
+    # Check if path matches instagram-specific endpoints
+    if path in INSTAGRAM_ENDPOINTS:
+        return 'instagram'
+
+    # Check fields for Instagram-specific indicators
+    fields = str(params.get('fields', '')).lower()
+    if any(field in fields for field in INSTAGRAM_FIELDS):
+        return 'instagram'
+
+    # Check parameters string for endpoint indicators
+    parameters = str(params.get('parameters', '')).lower()
+    if any(endpoint in parameters for endpoint in PAGE_ENDPOINTS):
+        return 'pages'
+    if any(endpoint in parameters for endpoint in INSTAGRAM_ENDPOINTS):
+        return 'instagram'
+
+    # Check the entire query string for endpoint clues
+    query_str = json.dumps(query_obj).lower()
+
+    # If we find page-specific paths in the query string
+    for endpoint in PAGE_ENDPOINTS:
+        if f'/{endpoint}' in query_str or f'"{endpoint}"' in query_str:
+            return 'pages'
+
+    # If we find instagram-specific paths in the query string
+    for endpoint in INSTAGRAM_ENDPOINTS:
+        if f'/{endpoint}' in query_str or f'"{endpoint}"' in query_str:
+            return 'instagram'
+
+    # Default to component category
+    return component_category
+
+
 def sanitize_query_json(query_obj: Dict[str, Any], category: str, ads_accounts: List[str]) -> Dict[str, Any]:
     """
     Sanitize a query object by replacing customer-specific IDs and filter values.
+
+    Now endpoint-aware: determines the required ID type based on the query structure
+    (page endpoints need Page IDs, Instagram endpoints need Instagram IDs, etc.)
     """
+    # Determine what type of ID this query actually needs based on its endpoint
+    required_id_type = determine_required_id_type(query_obj, category)
+
     query_str = json.dumps(query_obj)
-    
+
     # Replace Facebook Ad Account IDs (act_XXXXXXXXXX)
+    # These should stay as ads accounts if the query needs ads, otherwise convert to appropriate type
     act_pattern = r'act_\d+'
     act_matches = re.findall(act_pattern, query_str)
     for match in set(act_matches):
-        replacement = get_replacement_id('ads', match, ads_accounts)
+        # If this query needs ads IDs, keep as ads account
+        # Otherwise, replace with the appropriate ID type
+        replacement = get_replacement_id(required_id_type, match, ads_accounts)
         query_str = query_str.replace(match, replacement)
-    
+
     # Replace numeric IDs (10-18 digits) - matches page/media/adset/campaign IDs
     id_pattern = r'\b\d{10,18}\b'
     id_matches = re.findall(id_pattern, query_str)
     for match in set(id_matches):
         # Specific handling for Instagram IDs if they start with 17841
         if match.startswith('17841'):
-            replacement = get_replacement_id('instagram', match, ads_accounts)
+            # Keep as Instagram ID if query needs it, otherwise use required type
+            if required_id_type == 'instagram':
+                replacement = get_replacement_id('instagram', match, ads_accounts)
+            else:
+                replacement = get_replacement_id(required_id_type, match, ads_accounts)
             query_str = query_str.replace(match, replacement)
         else:
-            # General replacement based on component category
-            replacement = get_replacement_id(category, match, ads_accounts)
+            # Use the endpoint-aware ID type instead of just component category
+            replacement = get_replacement_id(required_id_type, match, ads_accounts)
             query_str = query_str.replace(match, replacement)
-    
+
     # Sanitize filtering values (campaign names etc in filters)
     def sanitize_filter_values(text):
         def replacer(m):
@@ -115,7 +199,7 @@ def sanitize_query_json(query_obj: Dict[str, Any], category: str, ads_accounts: 
         return text
 
     query_str = sanitize_filter_values(query_str)
-    
+
     return json.loads(query_str)
 
 
