@@ -8,6 +8,7 @@ import copy
 from pathlib import Path
 from freezegun import freeze_time
 from component import Component
+from output_validator import SnapshotManager
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -15,7 +16,11 @@ CONFIGS_FILE = TEST_DIR / "configs/test_cases.json"
 CASSETTES_DIR = TEST_DIR / "cassettes"
 SECRETS_FILE = TEST_DIR / "config.secrets.json"
 QUERIES_SANITIZED_FILE = TEST_DIR / "queries_sanitized.csv"
+SNAPSHOTS_FILE = TEST_DIR / "output_snapshots.json"
 FIXED_DATETIME = "2025-01-01 12:00:00"
+
+# Load snapshot manager once
+snapshot_manager = SnapshotManager(SNAPSHOTS_FILE)
 
 def load_configs():
     cases = []
@@ -153,8 +158,20 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
             comp.run()
         else:
             comp.execute_action()
-            
+
     # Verification: Ensure some data was written to tables
     out_tables_dir = Path(tmpdir) / "out" / "tables"
     found_tables = list(out_tables_dir.glob("*.csv"))
     assert len(found_tables) > 0 or config_data.get("action") != "run", "Component produced no output tables"
+
+    # Validate outputs against snapshot
+    test_name = config_data['name']
+    if snapshot_manager.has_snapshot(test_name):
+        validation_errors = snapshot_manager.validate_snapshot(test_name, tmpdir)
+        if validation_errors:
+            error_msg = f"Output validation failed for {test_name}:\n"
+            error_msg += "\n".join(f"  - {error}" for error in validation_errors)
+            pytest.fail(error_msg)
+        print(f"✓ Output validation passed for {test_name}")
+    else:
+        print(f"⚠ No snapshot found for {test_name} - skipping output validation")

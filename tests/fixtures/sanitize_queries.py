@@ -63,11 +63,14 @@ def get_replacement_id(category: str, original_id: str, ads_accounts: List[str])
         # Use ads account from config or default placeholder
         return random.choice(ads_accounts) if ads_accounts else "act_186649832776475"
     elif category == 'instagram':
-        # Use instagram account
-        account = random.choice(list(INSTAGRAM_ACCOUNTS.values()))
-        if 'instagram_business_account' in account:
+        # Use instagram business account - filter to only accounts with instagram_business_account
+        ig_accounts = [acc for acc in INSTAGRAM_ACCOUNTS.values()
+                      if 'instagram_business_account' in acc]
+        if ig_accounts:
+            account = random.choice(ig_accounts)
             return account['instagram_business_account']['id']
-        return account['id']
+        # Fallback if no IG accounts found
+        return "17841403584244541"
     else:  # pages
         # Use page account
         account = random.choice(list(PAGE_ACCOUNTS.values()))
@@ -83,16 +86,31 @@ def determine_required_id_type(query_obj: Dict[str, Any], component_category: st
     # Page-specific endpoints that require Page IDs
     PAGE_ENDPOINTS = [
         'feed', 'posts', 'published_posts', 'ratings',
-        'video', 'video_reels', 'likes', 'conversations'
+        'video', 'video_reels', 'likes', 'conversations',
+        'tagged', 'albums', 'events', 'live_videos'
     ]
 
     # Instagram-specific endpoints that require Instagram Business Account IDs
     INSTAGRAM_ENDPOINTS = [
-        'stories', 'media'
+        'stories', 'media', 'recently_searched_hashtags',
+        'available_catalogs', 'catalog_product_search'
     ]
 
     # Instagram-specific fields that require Instagram Business Account IDs
-    INSTAGRAM_FIELDS = ['biography', 'followers_count', 'username', 'media_count']
+    INSTAGRAM_FIELDS = [
+        'biography', 'followers_count', 'username', 'media_count',
+        'profile_picture_url', 'ig_id', 'media_product_type',
+        'caption', 'comments_count', 'like_count', 'media_type',
+        'follower_demographics', 'engaged_audience_demographics',
+        'accounts_engaged', 'total_interactions', 'impressions', 'reach',
+        'saved', 'shares', 'profile_views'
+    ]
+
+    # Page-specific fields that require Page IDs
+    PAGE_FIELDS = [
+        'fan_count', 'talking_about_count', 'were_here_count',
+        'checkins', 'page_token', 'access_token'
+    ]
 
     # Extract query parameters from nested or flat structure
     if 'query' in query_obj and isinstance(query_obj['query'], dict):
@@ -121,6 +139,10 @@ def determine_required_id_type(query_obj: Dict[str, Any], component_category: st
     if any(field in fields for field in INSTAGRAM_FIELDS):
         return 'instagram'
 
+    # Check fields for Page-specific indicators
+    if any(field in fields for field in PAGE_FIELDS):
+        return 'pages'
+
     # Check parameters string for endpoint indicators
     parameters = str(params.get('parameters', '')).lower()
     if any(endpoint in parameters for endpoint in PAGE_ENDPOINTS):
@@ -140,6 +162,20 @@ def determine_required_id_type(query_obj: Dict[str, Any], component_category: st
     for endpoint in INSTAGRAM_ENDPOINTS:
         if f'/{endpoint}' in query_str or f'"{endpoint}"' in query_str:
             return 'instagram'
+
+    # Look for insights patterns with nested syntax
+    if 'insights' in query_str:
+        # Check for page-specific insights patterns
+        for endpoint in PAGE_ENDPOINTS:
+            if endpoint in query_str:
+                return 'pages'
+        # Check for instagram-specific insights patterns
+        for endpoint in INSTAGRAM_ENDPOINTS:
+            if endpoint in query_str:
+                return 'instagram'
+        # Insights without specific endpoint indicators default to ads
+        if 'action_type' in query_str or 'breakdown' in query_str or 'action_breakdown' in query_str:
+            return 'ads'
 
     # Default to component category
     return component_category
@@ -200,7 +236,24 @@ def sanitize_query_json(query_obj: Dict[str, Any], category: str, ads_accounts: 
 
     query_str = sanitize_filter_values(query_str)
 
-    return json.loads(query_str)
+    # Parse back to JSON to fill empty ids fields
+    result = json.loads(query_str)
+
+    # Fill empty ids field with appropriate ID type if this is a query that needs one
+    # Check both flat structure and nested query structure
+    if 'query' in result and isinstance(result['query'], dict):
+        params = result['query']
+    else:
+        params = result
+
+    # If ids field exists and is empty, fill it with the appropriate ID type
+    # This is critical: empty IDs cause the component to default to AdAccount IDs,
+    # which breaks queries for Page and Instagram endpoints
+    if 'ids' in params and not params['ids']:
+        # Fill with appropriate ID type based on the endpoint
+        params['ids'] = get_replacement_id(required_id_type, "", ads_accounts)
+
+    return result
 
 
 def get_sampling_fingerprint(row):
@@ -282,45 +335,109 @@ def main():
             row_count += 1
             original_comp_id = row.get('kbc_component_id', 'Facebook Ads')
             row['kbc_component_id'] = ID_MAPPING.get(original_comp_id, original_comp_id)
-            
+
             fingerprint = get_sampling_fingerprint(row)
             if fingerprint not in groups:
                 groups[fingerprint] = []
             groups[fingerprint].append(row)
 
-    # Sampling: Take 2 examples per structural category
-    SAMPLES_PER_CATEGORY = 2
+    # Smart sampling: Take 3 examples per category (2 working + 1 failing if possible)
+    SAMPLES_PER_CATEGORY = 3
     sampled_rows = []
+
     for fp in sorted(groups.keys(), key=lambda x: str(x)):
-        # Optionally random sample, or just take first N for determinism
-        sampled_rows.extend(groups[fp][:SAMPLES_PER_CATEGORY])
+        category_rows = groups[fp]
+
+        # Separate working vs failing queries
+        working = []
+        failing = []
+
+        for row in category_rows:
+            has_any_failure = (
+                row.get('has_failure_last_3_days') == 'true' or
+                row.get('has_failure_last_15_days') == 'true' or
+                row.get('has_failure_last_30_days') == 'true' or
+                row.get('has_failure_last_90_days') == 'true'
+            )
+
+            if has_any_failure:
+                failing.append(row)
+            else:
+                working.append(row)
+
+        # Prioritize: 2 working + 1 failing
+        selected = []
+        selected.extend(working[:2])  # Take up to 2 working
+        if len(selected) < SAMPLES_PER_CATEGORY:
+            selected.extend(failing[:SAMPLES_PER_CATEGORY - len(selected)])  # Fill remaining with failing
+
+        sampled_rows.extend(selected)
 
     print(f"Sampled {len(sampled_rows)} queries from {len(groups)} structural categories.")
-    
+
     sanitized_count = 0
     with open(output_file, 'w', encoding='utf-8', newline='') as f_out:
         writer = csv.writer(f_out)
-        writer.writerow(['kbc_component_id', 'query_type', 'query_json'])
+        # Add metadata columns
+        writer.writerow([
+            'kbc_component_id',
+            'query_type',
+            'query_json',
+            'production_working',
+            'has_failure_last_3_days',
+            'has_failure_last_15_days',
+            'has_failure_last_30_days',
+            'has_failure_last_90_days'
+        ])
         
         for row in sampled_rows:
             comp_id = row['kbc_component_id']
             category = get_category(comp_id)
             query_type = row.get('query_type', 'nested-query')
             query_json_str = row.get('query_json', '')
-            
+
             if not query_json_str: continue
-            
+
+            # Determine production status
+            has_any_failure = (
+                row.get('has_failure_last_3_days') == 'true' or
+                row.get('has_failure_last_15_days') == 'true' or
+                row.get('has_failure_last_30_days') == 'true' or
+                row.get('has_failure_last_90_days') == 'true'
+            )
+            production_working = 'false' if has_any_failure else 'true'
+
             try:
                 query_obj = json.loads(query_json_str)
                 sanitized = sanitize_query_json(query_obj, category, ads_accounts)
-                
-                writer.writerow([comp_id, query_type, json.dumps(sanitized)])
+
+                writer.writerow([
+                    comp_id,
+                    query_type,
+                    json.dumps(sanitized),
+                    production_working,
+                    row.get('has_failure_last_3_days', 'false'),
+                    row.get('has_failure_last_15_days', 'false'),
+                    row.get('has_failure_last_30_days', 'false'),
+                    row.get('has_failure_last_90_days', 'false')
+                ])
                 sanitized_count += 1
             except json.JSONDecodeError:
                 continue
 
+    # Calculate statistics
+    total_working = sum(1 for row in sampled_rows if not (
+        row.get('has_failure_last_3_days') == 'true' or
+        row.get('has_failure_last_15_days') == 'true' or
+        row.get('has_failure_last_30_days') == 'true' or
+        row.get('has_failure_last_90_days') == 'true'
+    ))
+    total_failing = len(sampled_rows) - total_working
+
     print(f"\nSanitization complete!")
-    print(f"Processed {sanitized_count} sampled queries.")
+    print(f"Processed {sanitized_count} sampled queries from {len(groups)} structural categories.")
+    print(f"  - Working in production: {total_working} ({100*total_working/len(sampled_rows):.1f}%)")
+    print(f"  - Failing in production: {total_failing} ({100*total_failing/len(sampled_rows):.1f}%)")
     print(f"Output written to: {output_file}")
 
 

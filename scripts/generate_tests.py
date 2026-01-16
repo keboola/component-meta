@@ -14,13 +14,21 @@ from freezegun import freeze_time
 sys.path.append(os.path.join(os.getcwd(), 'src'))
 from component import Component
 
+# Add tests to path for output_validator
+sys.path.append(os.path.join(os.getcwd(), 'tests'))
+from output_validator import SnapshotManager
+
 # Constants
 TEST_DIR = Path("tests/fixtures")
 CONFIGS_FILE = TEST_DIR / "configs/test_cases.json"
 CASSETTES_DIR = TEST_DIR / "cassettes"
 SECRETS_FILE = TEST_DIR / "config.secrets.json"
 QUERIES_FILE = TEST_DIR / "queries.csv"
+SNAPSHOTS_FILE = TEST_DIR / "output_snapshots.json"
 FIXED_DATETIME = "2025-01-01 12:00:00"
+
+# Global snapshot manager
+snapshot_manager = None
 
 def scrub_string(string, replacements):
     if not string:
@@ -193,70 +201,69 @@ def run_from_csv(csv_path, secrets_path):
 
     print(f"Total unique queries found across {len(component_queries)} components: {total_found}")
 
-    for comp_id, queries_raw in component_queries.items():
-        print(f"Generating test for component: {comp_id} ({len(queries_raw)} queries)")
-        
-        # Normalize and add technical IDs if missing
-        final_queries = []
-        for i, q in enumerate(queries_raw):
-            # Check if q is already a full object or just parameters
-            if "query" in q and isinstance(q["query"], dict) and "id" in q:
-                # Likely already full object, just ensure id is int
-                try:
-                    q["id"] = int(q["id"])
-                except (TypeError, ValueError):
-                    q["id"] = i + 1
-                final_queries.append(q)
-            else:
-                # q is parameters or incomplete object
-                # Reconstruct full object
-                final_queries.append({
-                    "id": i + 1,
-                    "name": q.get("name", f"query_{i+1}"),
-                    "type": q.get("type", "nested-query"),
-                    "query": q if "query" not in q else q["query"],
-                    "run-by-id": q.get("run-by-id", False)
-                })
+    # Generate cassettes for both v22.0 and v23.0
+    for version in ["v22.0", "v23.0"]:
+        for comp_id, queries_raw in component_queries.items():
+            print(f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}")
 
-        # Merge into secrets config
-        base_config = secrets.copy()
-        if "parameters" not in base_config:
-            base_config["parameters"] = {}
-        
-        current_version = base_config["parameters"].get("api-version", "v20.0")
-        
-        comp_clean = comp_id.lower().replace(" ", "_")
-        version_clean = current_version.replace(".", "_")
-        case_name = f"gen_{comp_clean}_{version_clean}"
-        
-        config = base_config.copy() # Deeper copy for safety
-        config["parameters"] = base_config["parameters"].copy()
-        config["parameters"]["queries"] = final_queries
-        # Some components might need specific parameters based on comp_id
-        # but for now we'll keep it simple
-        
-        case = {
-            "name": case_name,
-            "description": f"Generated for {comp_id} using {current_version}",
-            "action": "run",
-            "params": config
-        }
+            # Normalize and add technical IDs if missing
+            final_queries = []
+            for i, q in enumerate(queries_raw):
+                # Check if q is already a full object or just parameters
+                if "query" in q and isinstance(q["query"], dict) and "id" in q:
+                    # Likely already full object, just ensure id is int
+                    try:
+                        q["id"] = int(q["id"])
+                    except (TypeError, ValueError):
+                        q["id"] = i + 1
+                    final_queries.append(q)
+                else:
+                    # q is parameters or incomplete object
+                    # Reconstruct full object
+                    final_queries.append({
+                        "id": i + 1,
+                        "name": q.get("name", f"query_{i+1}"),
+                        "type": q.get("type", "nested-query"),
+                        "query": q if "query" not in q else q["query"],
+                        "run-by-id": q.get("run-by-id", False)
+                    })
 
-        # Extract token for scrubbing
-        token = "token"
-        try:
-            auth = config.get("authorization", {})
-            creds = auth.get("oauth_api", {}).get("credentials", {})
-            data_str = creds.get("#data")
-            if data_str:
-                data_json = json.loads(data_str)
-                token = data_json.get("access_token", "token")
-            else:
-                token = creds.get("token") or creds.get("access_token") or "token"
-        except Exception:
-            pass
+            # Merge into secrets config
+            base_config = secrets.copy()
+            if "parameters" not in base_config:
+                base_config["parameters"] = {}
 
-        run_test_case(case, token)
+            comp_clean = comp_id.lower().replace(" ", "_")
+            version_clean = version.replace(".", "_")
+            case_name = f"gen_{comp_clean}_{version_clean}"
+
+            config = base_config.copy() # Deeper copy for safety
+            config["parameters"] = base_config["parameters"].copy()
+            config["parameters"]["queries"] = final_queries
+            config["parameters"]["api-version"] = version
+
+            case = {
+                "name": case_name,
+                "description": f"Generated for {comp_id} using {version}",
+                "action": "run",
+                "params": config
+            }
+
+            # Extract token for scrubbing
+            token = "token"
+            try:
+                auth = config.get("authorization", {})
+                creds = auth.get("oauth_api", {}).get("credentials", {})
+                data_str = creds.get("#data")
+                if data_str:
+                    data_json = json.loads(data_str)
+                    token = data_json.get("access_token", "token")
+                else:
+                    token = creds.get("token") or creds.get("access_token") or "token"
+            except Exception:
+                pass
+
+            run_test_case(case, token)
 
 
 def run_test_case(case, token):
@@ -281,7 +288,7 @@ def run_test_case(case, token):
     )
 
     print(f"Recording case: {case['name']}")
-    
+
     # Inject secrets into parameters for execution
     runtime_params = inject_secrets(case["params"], token)
 
@@ -297,18 +304,22 @@ def run_test_case(case, token):
                 }
             }
         }
-    
+
     runtime_params["action"] = case.get("action", "run")
-    
+
+    # Track execution status
+    execution_success = False
+    error_message = None
+
     # Setup temp env
     with TemporaryDirectory() as tmpdir:
         os.environ["KBC_DATADIR"] = tmpdir
         os.makedirs(os.path.join(tmpdir, "out", "tables"), exist_ok=True)
         os.makedirs(os.path.join(tmpdir, "out", "files"), exist_ok=True)
-        
+
         with open(os.path.join(tmpdir, "config.json"), "w") as f:
             json.dump(runtime_params, f)
-            
+
         with freeze_time(FIXED_DATETIME):
             cassette_name = f"{case['name']}.json"
             with my_vcr.use_cassette(cassette_name):
@@ -318,27 +329,76 @@ def run_test_case(case, token):
                             comp.run()
                     else:
                             comp.execute_action()
-                    print(f"Success: {case['name']}")
+                    execution_success = True
+
+                    # Capture output snapshot if snapshot manager is enabled
+                    global snapshot_manager
+                    if snapshot_manager:
+                        snapshot_manager.capture_snapshot(case['name'], tmpdir)
+
                 except BaseException as e:
                     import traceback
                     traceback.print_exc()
-                    print(f"Error executing {case['name']}: {e}")
-            
+                    error_message = str(e)
+                    execution_success = False
+
+            # Validate cassette after recording
             cassette_path = CASSETTES_DIR / cassette_name
+
+            # Create empty cassette if none was created
             if not cassette_path.exists():
                     with open(cassette_path, 'w') as f:
                         f.write('{"interactions": [], "version": 1}\n')
-                    print(f"Created empty cassette for {case['name']}")
+
+            # Load and analyze cassette
+            with open(cassette_path) as f:
+                cassette_data = json.load(f)
+
+            interaction_count = len(cassette_data.get('interactions', []))
+            expected_queries = len(case['params'].get('parameters', {}).get('queries', []))
+
+            # Report status based on execution and cassette completeness
+            if execution_success:
+                if interaction_count == 0:
+                    print(f"⚠️  WARNING: {case['name']} - Execution succeeded but NO interactions recorded!")
+                    print(f"   Expected {expected_queries} queries, got 0 interactions")
+                elif interaction_count < expected_queries * 0.5:  # Less than 50% coverage
+                    coverage_pct = round(100 * interaction_count / expected_queries, 1) if expected_queries else 0
+                    print(f"⚠️  WARNING: {case['name']} - Incomplete cassette ({coverage_pct}% coverage)")
+                    print(f"   Expected ~{expected_queries} queries, recorded {interaction_count} interactions")
+                else:
+                    coverage_pct = round(100 * interaction_count / expected_queries, 1) if expected_queries else 0
+                    print(f"✓ Success: {case['name']} - {interaction_count} interactions ({coverage_pct}% coverage)")
+
+                if snapshot_manager:
+                    print(f"  → Captured output snapshot")
+            else:
+                print(f"✗ FAILED: {case['name']}: {error_message}")
+                if interaction_count > 0:
+                    print(f"   Partial cassette recorded: {interaction_count} interactions before failure")
+                else:
+                    print(f"   No interactions recorded")
 
 def run_gen():
     logging.basicConfig(level=logging.INFO)
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--csv", action="store_true", help="Run from queries.csv")
+    parser.add_argument("--capture-outputs", action="store_true",
+                       help="Capture output snapshots for validation")
     args = parser.parse_args()
+
+    # Initialize snapshot manager if requested
+    global snapshot_manager
+    if args.capture_outputs:
+        snapshot_manager = SnapshotManager(SNAPSHOTS_FILE)
+        print(f"Output snapshot capture enabled → {SNAPSHOTS_FILE}")
 
     if args.csv:
         run_from_csv(QUERIES_FILE, SECRETS_FILE)
+        # Save snapshots after all tests
+        if snapshot_manager:
+            snapshot_manager.save()
         return
 
     # Legacy/Default mode: read from test_cases.json
