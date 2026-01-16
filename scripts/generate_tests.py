@@ -9,15 +9,15 @@ from tempfile import TemporaryDirectory
 import vcr
 from freezegun import freeze_time
 
-# Add src and scripts to path (relative to this file)
+# Add src and tests to path (relative to this file)
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
-sys.path.insert(0, str(SCRIPT_DIR))
+sys.path.insert(0, str(PROJECT_ROOT / "tests"))
 
 # Import after path modification - flake8: noqa
 from component import Component  # noqa: E402
-from lib.output_validator import SnapshotManager  # noqa: E402
+from output_validator import SnapshotManager  # noqa: E402
 
 # Constants
 TEST_DIR = Path("tests/fixtures")

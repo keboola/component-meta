@@ -7,7 +7,7 @@ import copy
 from pathlib import Path
 from freezegun import freeze_time
 from component import Component
-from lib.output_validator import SnapshotManager
+from output_validator import SnapshotManager
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -194,7 +194,7 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
 
 def test_snapshot_capture_and_validation(tmpdir):
     """Test capturing and validating output snapshots."""
-    from lib.output_validator import OutputSnapshot
+    from output_validator import OutputSnapshot
     from tempfile import TemporaryDirectory
 
     # Create a temporary directory with mock component outputs
