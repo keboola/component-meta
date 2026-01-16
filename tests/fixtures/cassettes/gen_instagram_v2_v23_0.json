@@ -18,14 +18,14 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "facebook-api-version": [
-                        "v23.0"
-                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
                     "content-length": [
-                        "560"
+                        "566"
+                    ],
+                    "facebook-api-version": [
+                        "v23.0"
                     ]
                 },
                 "body": {

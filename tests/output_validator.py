@@ -56,7 +56,7 @@ class OutputSnapshot:
                     "row_count": len(rows),
                     "column_count": len(rows[0].keys()) if rows else 0,
                     "columns": list(rows[0].keys()) if rows else [],
-                    "hash": self._hash_file(csv_file),
+                    "hash": self._hash_csv_content(csv_file),
                     "sample_rows": rows[:3] if rows else [],  # First 3 rows
                 }
             except Exception as e:
@@ -119,6 +119,51 @@ class OutputSnapshot:
             while chunk := f.read(8192):
                 sha256.update(chunk)
         return f"sha256:{sha256.hexdigest()}"
+
+    def _hash_csv_content(self, file_path: Path) -> str:
+        """
+        Calculate SHA256 hash of CSV content in a row-order-independent way.
+        Sorts rows by all columns to ensure deterministic output regardless of
+        async processing order.
+
+        Args:
+            file_path: Path to CSV file
+
+        Returns:
+            Hash string in format "sha256:hexdigest"
+        """
+        try:
+            with open(file_path, encoding="utf-8", newline="") as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+
+                if not rows:
+                    # Empty file - just hash empty content
+                    return f"sha256:{hashlib.sha256(b'').hexdigest()}"
+
+                # Get columns in sorted order for deterministic hashing
+                columns = sorted(rows[0].keys())
+
+                # Sort rows by all column values to ensure deterministic order
+                # This makes the hash independent of async processing order
+                sorted_rows = sorted(rows, key=lambda row: tuple(row.get(col, "") for col in columns))
+
+                # Create deterministic string representation
+                sha256 = hashlib.sha256()
+
+                # Hash the header
+                header_line = ",".join(columns) + "\n"
+                sha256.update(header_line.encode("utf-8"))
+
+                # Hash each sorted row
+                for row in sorted_rows:
+                    row_line = ",".join(row.get(col, "") for col in columns) + "\n"
+                    sha256.update(row_line.encode("utf-8"))
+
+                return f"sha256:{sha256.hexdigest()}"
+        except Exception as e:
+            # Fall back to regular file hash if CSV parsing fails
+            return self._hash_file(file_path)
 
     def validate_against(self, expected: Dict[str, Any]) -> List[str]:
         """

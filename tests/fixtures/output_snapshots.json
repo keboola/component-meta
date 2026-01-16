@@ -14,7 +14,7 @@
           "business_name",
           "currency"
         ],
-        "hash": "sha256:7649c4ee4ec4a4e8fb91a7544a237df8d31a335730a1f2d8f17c0a5d49bb00b4",
+        "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
         "sample_rows": [
           {
@@ -43,7 +43,7 @@
           "parent_id",
           "account_id"
         ],
-        "hash": "sha256:dfcb596d57d6c64e6908f7b5040a6bd3cb2e10363a22ee110863b44cb1325bd7",
+        "hash": "sha256:93dfffab43eeb325b60592ac1bcb4f7ccf152d4869a34f29d533865591d1391d",
         "row_count": 1,
         "sample_rows": [
           {
@@ -74,14 +74,14 @@
           "parent_id",
           "account_id",
           "url_tags",
-          "name",
           "title",
           "body",
+          "name",
           "thumbnail_url",
           "instagram_permalink_url",
           "image_url"
         ],
-        "hash": "sha256:e17c2f13fecf163a10a2fa4bf20564b915713d4513d1c4e8ca16c4308ccd0b80",
+        "hash": "sha256:1ec9ef2bbc57ade689d6cd6e148c470294704512c5c583f20b7711d33c431db0",
         "row_count": 633,
         "sample_rows": [
           {
@@ -90,11 +90,11 @@
             "ex_account_id": "act_186649832776475",
             "fb_graph_node": "page_adcreatives",
             "id": "23845266635330593",
-            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/557746949_32322862540632303_3567079879081127885_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=HJW3lwnfcnAQ7kNvwFd8C2p&_nc_oc=Adn9Inq4mgLLzsCcgm6YBQoQVrIgHpLv1ye71XTgARWUu5CxdQ3aV3DzL-60rKDWVDs&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=4StK-J0wM3yy8xFCTgd8iw&_nc_tpa=Q5bMBQExJQETXWT2f9nA7Np_KfKp60jby6jdZSdt388a13zE4Go1F9BBwm7UJxYF4YN5ex8sSme3ZNgV&oh=00_AfqKK4DXbT52aE3Rea7yOpgxahki7fIO998y7u9-3KOsEA&oe=69703203",
+            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/557746949_32322862540632303_3567079879081127885_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=HJW3lwnfcnAQ7kNvwFd8C2p&_nc_oc=Adn9Inq4mgLLzsCcgm6YBQoQVrIgHpLv1ye71XTgARWUu5CxdQ3aV3DzL-60rKDWVDs&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=T4un1SUM7iudhkuWGxL_cg&_nc_tpa=Q5bMBQFvMN6PtdOZI41BmM7aIXZcI-yI-1L05ge4mlp_YX0nQh-RRAHpm4cZNDvENzlZDnEs69qPuIcn&oh=00_AfoGjCgx7gesa5-C2NL4eMtQq-AiYwExmrmro9CkIz0hLQ&oe=69703203",
             "instagram_permalink_url": "https://www.instagram.com/p/CCtUJMHDmTG/",
             "name": "Why Keboola? 2020-07-16-af9c69180dc488ea7a0217414b17e06c",
             "parent_id": "act_186649832776475",
-            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/13229930730316400365?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLoegZJmrZlDuqgGcs6zdJ9v538TuETRbNAJVzzyP2AiKc-u_Eh9muOaMqN0e2acXeCzaV5b4wNDktIT1ey1e0RDG0AzvuYaoEvlGYLUwwmvVq-ysznijCeGIuSviB-EKiHw6p7HVXfmZSv6MM8uVEw&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=4StK-J0wM3yy8xFCTgd8iw&_nc_oc=AdmEJjHj0Gg9p59uMVoOkArMv_gbKZx4lp0NqZWwryblIG-zZ-fvOfOOH5-DsfYdcu0&ccb=13-1&oh=06_Q3-7AftpCnjJo4vQA3fJK-ecZvZgWjfjkNAEcuyNar9OzZEc&oe=696C3D2D&_nc_sid=58080a",
+            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/13229930730316400365?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLoegZJmrZlDuqgGcs6zdJ9v538TuETRbNAJVzzyP2AiKc-u_Eh9muOaMqN0e2acXeCzaV5b4wNDktIT1ey1e0RDG0AzvuYaoEvlGYLUwwmvVq-ysznijCeGIuSviB-EKiHw6p7HVXfmZSv6MM8uVEw&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=T4un1SUM7iudhkuWGxL_cg&_nc_oc=AdmEJjHj0Gg9p59uMVoOkArMv_gbKZx4lp0NqZWwryblIG-zZ-fvOfOOH5-DsfYdcu0&ccb=13-1&oh=06_Q3-7AT_ZsrGrcBPZ3qR8UZnopbvKj7QyCj_-QVzWca0QgPY1&oe=696C3D2D&_nc_sid=58080a",
             "title": "",
             "url_tags": ""
           },
@@ -104,11 +104,11 @@
             "ex_account_id": "act_186649832776475",
             "fb_graph_node": "page_adcreatives",
             "id": "23845266612650593",
-            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552402364_25442896255312118_1426147007094532458_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=LamJaKuCY_IQ7kNvwEOa5b0&_nc_oc=AdnRYKWFmNi56b1BJO0JqkWGuGgRixJphxV7JbVNEuzbkaKzVu0__zY5mpd9GNFZKvA&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=4StK-J0wM3yy8xFCTgd8iw&_nc_tpa=Q5bMBQEIPs6hTm0fdZ8qVcb1wzViuBRKbAJA9B-LSj5KuZvefpztAzaviA8QJ48GzpIDdHVRjsPLJFEH&oh=00_AfppVmo4IqAKc1QS4M0-rqoh3zwdgXFIN_gDkobsqY4RPA&oe=697039CE",
+            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552402364_25442896255312118_1426147007094532458_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=LamJaKuCY_IQ7kNvwEOa5b0&_nc_oc=AdnRYKWFmNi56b1BJO0JqkWGuGgRixJphxV7JbVNEuzbkaKzVu0__zY5mpd9GNFZKvA&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=T4un1SUM7iudhkuWGxL_cg&_nc_tpa=Q5bMBQE87xTAHMBsZ3mM-wfh56Rb5uNm2IoJfBEDu4AOWKGv1c-ljHmBiTS1uPmtApunaSYCyy2fYBsm&oh=00_Afq1xIhzu4TYXBzEP9njPZ7-brGzjKnTu0LJOtMtwRR_Bw&oe=697039CE",
             "instagram_permalink_url": "https://www.instagram.com/p/CCtTEcNjGNg/",
             "name": "Why Keboola? 2020-07-16-c804ff230d96807274e8b8dc63c8b29b",
             "parent_id": "act_186649832776475",
-            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/15862294670868911156?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJg-pP2r4NhZWnyWNf66rfp5aNIZfNZjkUCs4npk4_iyoeL58NaDkszrb46UqQ3Deoniqr3zeCjQYNov2WU0OVbJrtSB3pHJHZDDVWRE4KyGTfkn6BbvvGj2r1b-uw0WNJzwMVszf8zZEDdfK2P4ibe&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=4StK-J0wM3yy8xFCTgd8iw&_nc_oc=AdkkhX1bS-d7yZ8PCwJjLWYHLhocH8FgVB_w9cBGRZTNfQEVMmYvtlUHQ7OrK8lCD-Y&ccb=13-1&oh=06_Q3-7AW8Fo-_tuuCy30QV3kKbNMWFaKbGIrPZQpTfL4Gn19Qx&oe=696C20DA&_nc_sid=58080a",
+            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/15862294670868911156?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJg-pP2r4NhZWnyWNf66rfp5aNIZfNZjkUCs4npk4_iyoeL58NaDkszrb46UqQ3Deoniqr3zeCjQYNov2WU0OVbJrtSB3pHJHZDDVWRE4KyGTfkn6BbvvGj2r1b-uw0WNJzwMVszf8zZEDdfK2P4ibe&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=T4un1SUM7iudhkuWGxL_cg&_nc_oc=AdkkhX1bS-d7yZ8PCwJjLWYHLhocH8FgVB_w9cBGRZTNfQEVMmYvtlUHQ7OrK8lCD-Y&ccb=13-1&oh=06_Q3-7AThTAjJcxOhilAML3wjY48XfXbSYcJBmNmYs2ftJXUG9&oe=696C20DA&_nc_sid=58080a",
             "title": "",
             "url_tags": ""
           },
@@ -118,11 +118,11 @@
             "ex_account_id": "act_186649832776475",
             "fb_graph_node": "page_adcreatives",
             "id": "23845266470450593",
-            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552358775_24472752139047901_2880658930549533413_n.png?stp=dst-jpg_tt6&_nc_cat=105&ccb=1-7&_nc_sid=890911&_nc_ohc=UYZV01l-7VQQ7kNvwESmqIs&_nc_oc=AdnK2kGN4wBjbzWg0DdAfScVmfI5XtQQ26lVsntramY0JRWlIUqYa3kF0e4iE7XJoKo&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=4StK-J0wM3yy8xFCTgd8iw&_nc_tpa=Q5bMBQEEziIXfVQV5HVG3Hp7Jtsw8bq3kKBlnMtdwhkMLj-Cs5voP5B794T74wxINNJzU43us4GYG99e&oh=00_Afr9D1OQ4BnQmGLxfcYXmyvwy89YhhoNwkUPwuMn6YplNg&oe=69703233",
+            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552358775_24472752139047901_2880658930549533413_n.png?stp=dst-jpg_tt6&_nc_cat=105&ccb=1-7&_nc_sid=890911&_nc_ohc=UYZV01l-7VQQ7kNvwESmqIs&_nc_oc=AdnK2kGN4wBjbzWg0DdAfScVmfI5XtQQ26lVsntramY0JRWlIUqYa3kF0e4iE7XJoKo&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=T4un1SUM7iudhkuWGxL_cg&_nc_tpa=Q5bMBQFAhJBkANmnKquC1H_xeO-6wtvtbMLb1jC30fZdRljgY6Ypal5rXYgYXWOt_H7ecSksKnpF4piu&oh=00_AfoUXH1kSIUZ8CsEo5r2EJdnto05aMIXp7qMXAn_ukfk_Q&oe=69703233",
             "instagram_permalink_url": "https://www.instagram.com/p/CCtQhcYDCie/",
             "name": "How to be 10x more productive than the average data scientist 2020-07-16-f07164c6566cdf228faf15a2b1e3970b",
             "parent_id": "act_186649832776475",
-            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/8637475566065347148?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLcljjuiZz2dVMTcjH_XN7drsz2zWeFXy4xSaY1AOUZp58PcesgHRv-gmrNhM0I6RLr4JXB-lceGlRtF9daMfDii0cfkjKCwGfW62o0JOP2oPKJx-z__-Ahrz4PtbfY4rjwTRkO-zpJ1FB4dJ81NDf0&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=4StK-J0wM3yy8xFCTgd8iw&_nc_oc=AdlD3p76DcaxgGMjtlP0anx1OcyH8R_LjC3R3vM3hk2aiD68dKK5iOiZFT1l8Jg5OnE&ccb=13-1&oh=06_Q3-7Ab8DWgA8RCE7hGPFX85ZNNNrbOs2rCHAVZnX42Bfh3hx&oe=696C4AC8&_nc_sid=58080a",
+            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/8637475566065347148?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLcljjuiZz2dVMTcjH_XN7drsz2zWeFXy4xSaY1AOUZp58PcesgHRv-gmrNhM0I6RLr4JXB-lceGlRtF9daMfDii0cfkjKCwGfW62o0JOP2oPKJx-z__-Ahrz4PtbfY4rjwTRkO-zpJ1FB4dJ81NDf0&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=T4un1SUM7iudhkuWGxL_cg&_nc_oc=AdlD3p76DcaxgGMjtlP0anx1OcyH8R_LjC3R3vM3hk2aiD68dKK5iOiZFT1l8Jg5OnE&ccb=13-1&oh=06_Q3-7Afmjx2xdiJ1UH59aCeG7dIb4WtxjobdodI4J0_23TzEH&oe=696C4AC8&_nc_sid=58080a",
             "title": "",
             "url_tags": ""
           }
@@ -147,14 +147,14 @@
           "parent_id",
           "name",
           "adset_id",
+          "effective_status",
+          "status",
+          "account_id",
           "created_time",
           "campaign_id",
-          "status",
-          "effective_status",
-          "account_id",
           "creative_id"
         ],
-        "hash": "sha256:70bbe8a3c8fdffaea867906a87880862679eb438c53c8c7164c6c3337e8012b3",
+        "hash": "sha256:cf2577cd3b1a06dac628d0cd1dbf01fc491245a7b02eb92b710764786245a1f9",
         "row_count": 219,
         "sample_rows": [
           {
@@ -230,7 +230,7 @@
           "lifetime_imps",
           "name"
         ],
-        "hash": "sha256:87861cf1c311641afcc2fbb19bb6b4245b94257086cdd67f0f469d75c2577956",
+        "hash": "sha256:2ebd034b74505e8147f7fc0ccb8936956b41d340bc3335f1ab93816ac8585d01",
         "row_count": 145,
         "sample_rows": [
           {
@@ -320,7 +320,7 @@
           "status",
           "primary_attribution"
         ],
-        "hash": "sha256:2f099e532c2085a127318621bc721912b9f884b33acf375d9838ec3ae4f8622f",
+        "hash": "sha256:fb27be460b16bebdccab4a131e9e037b8afe9e7369d1828f144ce03d8d78e20e",
         "row_count": 96,
         "sample_rows": [
           {
@@ -410,7 +410,7 @@
           "date_stop",
           "spend"
         ],
-        "hash": "sha256:4c6563fcfe7ee364bb48620dd361bf40b6f5c2b0c7e670c41d8e768e45619b3c",
+        "hash": "sha256:a782f642762817a73d86c796e38c7bb1de6e98580b7a8b5390481d06e3c8e771",
         "row_count": 548,
         "sample_rows": [
           {
@@ -473,7 +473,7 @@
           "business_name",
           "currency"
         ],
-        "hash": "sha256:7649c4ee4ec4a4e8fb91a7544a237df8d31a335730a1f2d8f17c0a5d49bb00b4",
+        "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
         "sample_rows": [
           {
@@ -502,7 +502,7 @@
           "parent_id",
           "account_id"
         ],
-        "hash": "sha256:dfcb596d57d6c64e6908f7b5040a6bd3cb2e10363a22ee110863b44cb1325bd7",
+        "hash": "sha256:93dfffab43eeb325b60592ac1bcb4f7ccf152d4869a34f29d533865591d1391d",
         "row_count": 1,
         "sample_rows": [
           {
@@ -533,14 +533,14 @@
           "parent_id",
           "account_id",
           "url_tags",
-          "name",
           "title",
           "body",
+          "name",
           "thumbnail_url",
           "instagram_permalink_url",
           "image_url"
         ],
-        "hash": "sha256:f010552360cbed775d15889a6de83a3cc74efe633a3ce9682582814d1dd6d348",
+        "hash": "sha256:9c87ec6fd5eea3cc99fab78f23467a5b41c9cee40d6131964bbbe61281b420f1",
         "row_count": 633,
         "sample_rows": [
           {
@@ -549,11 +549,11 @@
             "ex_account_id": "act_186649832776475",
             "fb_graph_node": "page_adcreatives",
             "id": "23845266635330593",
-            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/557746949_32322862540632303_3567079879081127885_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=HJW3lwnfcnAQ7kNvwFd8C2p&_nc_oc=Adn9Inq4mgLLzsCcgm6YBQoQVrIgHpLv1ye71XTgARWUu5CxdQ3aV3DzL-60rKDWVDs&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=TTv7vARQ5ScPv7Yg_TNlhw&_nc_tpa=Q5bMBQE8R_YV0TURopWXQHPX6e7uEBEV0FS2-ttm-cWVYU4h3pbPhVX4LBe8dTvUVNHmkuEwHsIev1p4&oh=00_Afo6aK2lpaqfdeiDtPY7G2DKqF-a-T_rBdk5yNKlOaK7ag&oe=69703203",
+            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/557746949_32322862540632303_3567079879081127885_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=HJW3lwnfcnAQ7kNvwFd8C2p&_nc_oc=Adn9Inq4mgLLzsCcgm6YBQoQVrIgHpLv1ye71XTgARWUu5CxdQ3aV3DzL-60rKDWVDs&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=oH_WUUW8K9KbJ0P1G-zzoA&_nc_tpa=Q5bMBQHL-KSAvu-H_kSB9aq6ikLmGExrKPx_omq25dNvNLO4tycFhQaS968xHgMkzqFPULasSwFNw2x3&oh=00_AfpKwbNTPQaqgBeLtySmoOOQERic4uF76qIMI2wdC15vjg&oe=69703203",
             "instagram_permalink_url": "https://www.instagram.com/p/CCtUJMHDmTG/",
             "name": "Why Keboola? 2020-07-16-af9c69180dc488ea7a0217414b17e06c",
             "parent_id": "act_186649832776475",
-            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/13229930730316400365?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLoegZJmrZlDuqgGcs6zdJ9v538TuETRbNAJVzzyP2AiKc-u_Eh9muOaMqN0e2acXeCzaV5b4wNDktIT1ey1e0RDG0AzvuYaoEvlGYLUwwmvVq-ysznijCeGIuSviB-EKiHw6p7HVXfmZSv6MM8uVEw&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=TTv7vARQ5ScPv7Yg_TNlhw&_nc_oc=AdmEJjHj0Gg9p59uMVoOkArMv_gbKZx4lp0NqZWwryblIG-zZ-fvOfOOH5-DsfYdcu0&ccb=13-1&oh=06_Q3-7AW_sx9t1rggiUt1jqRIHCSGpSQYMtD9o2aSw7sKHlN9J&oe=696C3D2D&_nc_sid=58080a",
+            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/13229930730316400365?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLoegZJmrZlDuqgGcs6zdJ9v538TuETRbNAJVzzyP2AiKc-u_Eh9muOaMqN0e2acXeCzaV5b4wNDktIT1ey1e0RDG0AzvuYaoEvlGYLUwwmvVq-ysznijCeGIuSviB-EKiHw6p7HVXfmZSv6MM8uVEw&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=oH_WUUW8K9KbJ0P1G-zzoA&_nc_oc=AdmEJjHj0Gg9p59uMVoOkArMv_gbKZx4lp0NqZWwryblIG-zZ-fvOfOOH5-DsfYdcu0&ccb=13-1&oh=06_Q3-7AUEFIKPndJcuPpPqmvJOOI8dzfdMR_O-9mBhxxWt_AI9&oe=696C3D2D&_nc_sid=58080a",
             "title": "",
             "url_tags": ""
           },
@@ -563,11 +563,11 @@
             "ex_account_id": "act_186649832776475",
             "fb_graph_node": "page_adcreatives",
             "id": "23845266612650593",
-            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552402364_25442896255312118_1426147007094532458_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=LamJaKuCY_IQ7kNvwEOa5b0&_nc_oc=AdnRYKWFmNi56b1BJO0JqkWGuGgRixJphxV7JbVNEuzbkaKzVu0__zY5mpd9GNFZKvA&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=TTv7vARQ5ScPv7Yg_TNlhw&_nc_tpa=Q5bMBQFGryZdAIr5_dxYD4YDIffhov2XfpYG0ecbQ5BxaBAAsFU94NXUmMfknkNkXq3I4RJHYoWQwFUN&oh=00_AfpK_ILFhj3sXcu5X2g6GFqeLFSOOhNA4BCJoY32YPDnXg&oe=697039CE",
+            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552402364_25442896255312118_1426147007094532458_n.png?stp=dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=890911&_nc_ohc=LamJaKuCY_IQ7kNvwEOa5b0&_nc_oc=AdnRYKWFmNi56b1BJO0JqkWGuGgRixJphxV7JbVNEuzbkaKzVu0__zY5mpd9GNFZKvA&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=oH_WUUW8K9KbJ0P1G-zzoA&_nc_tpa=Q5bMBQE59i5NpOpF9mY9psIUpYLbMm2bJ3UJzxhQAqRZ2iLtLMuVkzA0W9n13RajYwU9yX0ldqxydzOF&oh=00_AfqUPLlrQMlrY2vWlh_TuUOeqgf7n_r9m6Zk7yep-Ifd6Q&oe=697039CE",
             "instagram_permalink_url": "https://www.instagram.com/p/CCtTEcNjGNg/",
             "name": "Why Keboola? 2020-07-16-c804ff230d96807274e8b8dc63c8b29b",
             "parent_id": "act_186649832776475",
-            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/15862294670868911156?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJg-pP2r4NhZWnyWNf66rfp5aNIZfNZjkUCs4npk4_iyoeL58NaDkszrb46UqQ3Deoniqr3zeCjQYNov2WU0OVbJrtSB3pHJHZDDVWRE4KyGTfkn6BbvvGj2r1b-uw0WNJzwMVszf8zZEDdfK2P4ibe&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=TTv7vARQ5ScPv7Yg_TNlhw&_nc_oc=AdkkhX1bS-d7yZ8PCwJjLWYHLhocH8FgVB_w9cBGRZTNfQEVMmYvtlUHQ7OrK8lCD-Y&ccb=13-1&oh=06_Q3-7AZ_y81-brF9IwuAqaVSGBg-4Q2tGyn1WLphA8SY0bvfK&oe=696C20DA&_nc_sid=58080a",
+            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/15862294670868911156?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJg-pP2r4NhZWnyWNf66rfp5aNIZfNZjkUCs4npk4_iyoeL58NaDkszrb46UqQ3Deoniqr3zeCjQYNov2WU0OVbJrtSB3pHJHZDDVWRE4KyGTfkn6BbvvGj2r1b-uw0WNJzwMVszf8zZEDdfK2P4ibe&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=oH_WUUW8K9KbJ0P1G-zzoA&_nc_oc=AdkkhX1bS-d7yZ8PCwJjLWYHLhocH8FgVB_w9cBGRZTNfQEVMmYvtlUHQ7OrK8lCD-Y&ccb=13-1&oh=06_Q3-7Ab-FEUM1e2jNn_xp5AVWWN3g8cAI0X__9uM1ru9soIBV&oe=696C20DA&_nc_sid=58080a",
             "title": "",
             "url_tags": ""
           },
@@ -577,11 +577,11 @@
             "ex_account_id": "act_186649832776475",
             "fb_graph_node": "page_adcreatives",
             "id": "23845266470450593",
-            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552358775_24472752139047901_2880658930549533413_n.png?stp=dst-jpg_tt6&_nc_cat=105&ccb=1-7&_nc_sid=890911&_nc_ohc=UYZV01l-7VQQ7kNvwESmqIs&_nc_oc=AdnK2kGN4wBjbzWg0DdAfScVmfI5XtQQ26lVsntramY0JRWlIUqYa3kF0e4iE7XJoKo&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=TTv7vARQ5ScPv7Yg_TNlhw&_nc_tpa=Q5bMBQH3dkKrhKT7Z7YojmQGJ_N4w_V3LDOxyfzpmKD5mTbnJExzRUEWdqzRGQwPKBjx3ksIyvBhXUth&oh=00_AfrTZ_DTGBfCgfqekjtjxRuBKkFsGWuUXiLDx-P-P2ZgMw&oe=69703233",
+            "image_url": "https://scontent.fprg1-1.fna.fbcdn.net/v/t45.1600-4/552358775_24472752139047901_2880658930549533413_n.png?stp=dst-jpg_tt6&_nc_cat=105&ccb=1-7&_nc_sid=890911&_nc_ohc=UYZV01l-7VQQ7kNvwESmqIs&_nc_oc=AdnK2kGN4wBjbzWg0DdAfScVmfI5XtQQ26lVsntramY0JRWlIUqYa3kF0e4iE7XJoKo&_nc_zt=1&_nc_ht=scontent.fprg1-1.fna&edm=ALjApogEAAAA&_nc_gid=oH_WUUW8K9KbJ0P1G-zzoA&_nc_tpa=Q5bMBQF5SwjeZN2f4Lx3hDOb045zHSbzW7SGmi8Ii0Vwd4ywCWQkpSmHLfc1_5e73L4oL81YXhG1dwE5&oh=00_AfrGdf2pXE1ARAcDnH6Kh_QKqu6IXbZdPHnS3x0P2bapmQ&oe=69703233",
             "instagram_permalink_url": "https://www.instagram.com/p/CCtQhcYDCie/",
             "name": "How to be 10x more productive than the average data scientist 2020-07-16-f07164c6566cdf228faf15a2b1e3970b",
             "parent_id": "act_186649832776475",
-            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/8637475566065347148?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLcljjuiZz2dVMTcjH_XN7drsz2zWeFXy4xSaY1AOUZp58PcesgHRv-gmrNhM0I6RLr4JXB-lceGlRtF9daMfDii0cfkjKCwGfW62o0JOP2oPKJx-z__-Ahrz4PtbfY4rjwTRkO-zpJ1FB4dJ81NDf0&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=TTv7vARQ5ScPv7Yg_TNlhw&_nc_oc=AdlD3p76DcaxgGMjtlP0anx1OcyH8R_LjC3R3vM3hk2aiD68dKK5iOiZFT1l8Jg5OnE&ccb=13-1&oh=06_Q3-7ARZ0jkwD5rm1I7TPV2VvSWyYoGgVJEtoRLJg9K508tmn&oe=696C4AC8&_nc_sid=58080a",
+            "thumbnail_url": "https://external.fprg1-1.fna.fbcdn.net/emg1/v/t13/8637475566065347148?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLcljjuiZz2dVMTcjH_XN7drsz2zWeFXy4xSaY1AOUZp58PcesgHRv-gmrNhM0I6RLr4JXB-lceGlRtF9daMfDii0cfkjKCwGfW62o0JOP2oPKJx-z__-Ahrz4PtbfY4rjwTRkO-zpJ1FB4dJ81NDf0&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ALjApogEAAAA&_nc_gid=oH_WUUW8K9KbJ0P1G-zzoA&_nc_oc=AdlD3p76DcaxgGMjtlP0anx1OcyH8R_LjC3R3vM3hk2aiD68dKK5iOiZFT1l8Jg5OnE&ccb=13-1&oh=06_Q3-7AZtIIfy9v31ACbf5186o7wTOAHVNauadcDLhJNAYlLHc&oe=696C4AC8&_nc_sid=58080a",
             "title": "",
             "url_tags": ""
           }
@@ -606,14 +606,14 @@
           "parent_id",
           "name",
           "adset_id",
+          "effective_status",
+          "status",
+          "account_id",
           "created_time",
           "campaign_id",
-          "status",
-          "effective_status",
-          "account_id",
           "creative_id"
         ],
-        "hash": "sha256:70bbe8a3c8fdffaea867906a87880862679eb438c53c8c7164c6c3337e8012b3",
+        "hash": "sha256:cf2577cd3b1a06dac628d0cd1dbf01fc491245a7b02eb92b710764786245a1f9",
         "row_count": 219,
         "sample_rows": [
           {
@@ -689,7 +689,7 @@
           "lifetime_imps",
           "name"
         ],
-        "hash": "sha256:87861cf1c311641afcc2fbb19bb6b4245b94257086cdd67f0f469d75c2577956",
+        "hash": "sha256:2ebd034b74505e8147f7fc0ccb8936956b41d340bc3335f1ab93816ac8585d01",
         "row_count": 145,
         "sample_rows": [
           {
@@ -779,7 +779,7 @@
           "status",
           "primary_attribution"
         ],
-        "hash": "sha256:2f099e532c2085a127318621bc721912b9f884b33acf375d9838ec3ae4f8622f",
+        "hash": "sha256:fb27be460b16bebdccab4a131e9e037b8afe9e7369d1828f144ce03d8d78e20e",
         "row_count": 96,
         "sample_rows": [
           {
@@ -869,7 +869,7 @@
           "date_stop",
           "spend"
         ],
-        "hash": "sha256:4c6563fcfe7ee364bb48620dd361bf40b6f5c2b0c7e670c41d8e768e45619b3c",
+        "hash": "sha256:a782f642762817a73d86c796e38c7bb1de6e98580b7a8b5390481d06e3c8e771",
         "row_count": 548,
         "sample_rows": [
           {
@@ -932,7 +932,7 @@
           "business_name",
           "currency"
         ],
-        "hash": "sha256:7649c4ee4ec4a4e8fb91a7544a237df8d31a335730a1f2d8f17c0a5d49bb00b4",
+        "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
         "sample_rows": [
           {
@@ -969,7 +969,7 @@
           "business_name",
           "currency"
         ],
-        "hash": "sha256:7649c4ee4ec4a4e8fb91a7544a237df8d31a335730a1f2d8f17c0a5d49bb00b4",
+        "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
         "sample_rows": [
           {
@@ -1006,7 +1006,7 @@
           "business_name",
           "currency"
         ],
-        "hash": "sha256:7649c4ee4ec4a4e8fb91a7544a237df8d31a335730a1f2d8f17c0a5d49bb00b4",
+        "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
         "sample_rows": [
           {
@@ -1043,7 +1043,7 @@
           "business_name",
           "currency"
         ],
-        "hash": "sha256:7649c4ee4ec4a4e8fb91a7544a237df8d31a335730a1f2d8f17c0a5d49bb00b4",
+        "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
         "sample_rows": [
           {
