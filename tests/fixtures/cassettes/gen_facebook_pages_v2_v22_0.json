@@ -18,14 +18,14 @@
                     "message": "OK"
                 },
                 "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
-                    "Content-Length": [
-                        "391"
-                    ],
-                    "facebook-api-version": [
-                        "v22.0"
+                    "content-length": [
+                        "568"
                     ]
                 },
                 "body": {
@@ -50,18 +50,18 @@
                     "message": "Bad Request"
                 },
                 "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
                     ],
                     "Content-Length": [
                         "179"
-                    ],
-                    "facebook-api-version": [
-                        "v22.0"
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AB4cIs2B4nYODklIXbde6Rj\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AfpQA0EXZWr8d9vdekHHHpY\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
                 }
             }
         }
