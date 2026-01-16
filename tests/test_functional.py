@@ -8,7 +8,7 @@ import copy
 from pathlib import Path
 from freezegun import freeze_time
 from component import Component
-from output_validator import SnapshotManager
+from lib.output_validator import SnapshotManager
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -175,3 +175,119 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
         print(f"✓ Output validation passed for {test_name}")
     else:
         print(f"⚠ No snapshot found for {test_name} - skipping output validation")
+
+# Snapshot Infrastructure Tests
+
+def test_snapshot_capture_and_validation(tmpdir):
+    """Test capturing and validating output snapshots."""
+    from lib.output_validator import OutputSnapshot
+    from tempfile import TemporaryDirectory
+    
+    # Create a temporary directory with mock component outputs
+    with TemporaryDirectory() as temp:
+        tmpdir = Path(temp)
+
+        # Create output structure
+        tables_dir = tmpdir / "out" / "tables"
+        tables_dir.mkdir(parents=True)
+
+        # Create a sample CSV
+        sample_csv = tables_dir / "campaigns.csv"
+        with open(sample_csv, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=['id', 'name', 'impressions'])
+            writer.writeheader()
+            writer.writerow({'id': '123', 'name': 'Test Campaign', 'impressions': '1000'})
+            writer.writerow({'id': '456', 'name': 'Another Campaign', 'impressions': '2000'})
+
+        # Create a sample manifest
+        manifest_file = tables_dir / "campaigns.csv.manifest"
+        manifest_data = {
+            "incremental": True,
+            "primary_key": ["id"],
+            "columns": ["id", "name", "impressions"]
+        }
+        with open(manifest_file, 'w', encoding='utf-8') as f:
+            json.dump(manifest_data, f)
+
+        # Test 1: Capture snapshot
+        snapshot = OutputSnapshot("test_case_1", tmpdir)
+        captured = snapshot.capture()
+
+        # Verify capture
+        assert "tables" in captured
+        assert "campaigns.csv" in captured["tables"]
+        assert captured["tables"]["campaigns.csv"]["row_count"] == 2
+        assert captured["tables"]["campaigns.csv"]["column_count"] == 3
+        assert set(captured["tables"]["campaigns.csv"]["columns"]) == {"id", "name", "impressions"}
+        assert "hash" in captured["tables"]["campaigns.csv"]
+        assert len(captured["tables"]["campaigns.csv"]["sample_rows"]) == 2
+
+        # Verify manifest capture
+        assert "campaigns.csv.manifest" in captured["tables"]
+        assert captured["tables"]["campaigns.csv.manifest"]["incremental"] == True
+        assert captured["tables"]["campaigns.csv.manifest"]["primary_key"] == ["id"]
+
+        # Test 2: Validation passes with same data
+        errors = snapshot.validate_against(captured)
+        assert errors == [], f"Validation should pass with same data, but got errors: {errors}"
+
+        # Test 3: Validation detects changes
+        modified_snapshot = copy.deepcopy(captured)
+        modified_snapshot["tables"]["campaigns.csv"]["row_count"] = 5  # Wrong count
+
+        errors = snapshot.validate_against(modified_snapshot)
+        assert len(errors) > 0, "Validation should fail with different row count"
+        assert any("Row count mismatch" in e for e in errors)
+
+        # Test 4: Validation detects column changes
+        modified_snapshot = copy.deepcopy(captured)
+        modified_snapshot["tables"]["campaigns.csv"]["columns"] = ["id", "name", "clicks"]  # Wrong columns
+
+        errors = snapshot.validate_against(modified_snapshot)
+        assert len(errors) > 0, "Validation should fail with different columns"
+        assert any("Column mismatch" in e for e in errors)
+
+
+def test_snapshot_manager(tmpdir):
+    """Test the SnapshotManager for saving and loading snapshots."""
+    from tempfile import TemporaryDirectory
+    
+    with TemporaryDirectory() as temp:
+        tmpdir = Path(temp)
+        snapshots_file = tmpdir / "snapshots.json"
+
+        # Create manager
+        manager = SnapshotManager(snapshots_file)
+        assert manager.list_snapshots() == []
+
+        # Create mock output directory
+        output_dir = tmpdir / "output"
+        tables_dir = output_dir / "out" / "tables"
+        tables_dir.mkdir(parents=True)
+
+        # Create sample CSV
+        sample_csv = tables_dir / "test.csv"
+        with open(sample_csv, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['id', 'value'])
+            writer.writerow(['1', '100'])
+
+        # Capture snapshot
+        manager.capture_snapshot("test_1", output_dir)
+        assert manager.has_snapshot("test_1")
+        assert "test_1" in manager.list_snapshots()
+
+        # Save to file
+        manager.save()
+        assert snapshots_file.exists()
+
+        # Load from file
+        manager2 = SnapshotManager(snapshots_file)
+        assert manager2.has_snapshot("test_1")
+        snapshot = manager2.get_snapshot("test_1")
+        assert "tables" in snapshot
+        assert "test.csv" in snapshot["tables"]
+
+        # Validate
+        errors = manager2.validate_snapshot("test_1", output_dir)
+        assert errors == [], f"Validation should pass, but got: {errors}"

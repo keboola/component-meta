@@ -10,13 +10,14 @@ from tempfile import TemporaryDirectory
 import vcr
 from freezegun import freeze_time
 
-# Add src to path
-sys.path.append(os.path.join(os.getcwd(), 'src'))
-from component import Component
+# Add src and scripts to path (relative to this file)
+SCRIPT_DIR = Path(__file__).parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+sys.path.insert(0, str(PROJECT_ROOT / 'src'))
+sys.path.insert(0, str(SCRIPT_DIR))
 
-# Add tests to path for output_validator
-sys.path.append(os.path.join(os.getcwd(), 'tests'))
-from output_validator import SnapshotManager
+from component import Component
+from lib.output_validator import SnapshotManager
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -288,7 +289,7 @@ def run_test_case(case, token):
     )
 
     print(f"Recording case: {case['name']}")
-
+    
     # Inject secrets into parameters for execution
     runtime_params = inject_secrets(case["params"], token)
 
@@ -304,22 +305,18 @@ def run_test_case(case, token):
                 }
             }
         }
-
+    
     runtime_params["action"] = case.get("action", "run")
-
-    # Track execution status
-    execution_success = False
-    error_message = None
-
+    
     # Setup temp env
     with TemporaryDirectory() as tmpdir:
         os.environ["KBC_DATADIR"] = tmpdir
         os.makedirs(os.path.join(tmpdir, "out", "tables"), exist_ok=True)
         os.makedirs(os.path.join(tmpdir, "out", "files"), exist_ok=True)
-
+        
         with open(os.path.join(tmpdir, "config.json"), "w") as f:
             json.dump(runtime_params, f)
-
+            
         with freeze_time(FIXED_DATETIME):
             cassette_name = f"{case['name']}.json"
             with my_vcr.use_cassette(cassette_name):
@@ -329,55 +326,24 @@ def run_test_case(case, token):
                             comp.run()
                     else:
                             comp.execute_action()
-                    execution_success = True
+                    print(f"Success: {case['name']}")
 
                     # Capture output snapshot if snapshot manager is enabled
                     global snapshot_manager
                     if snapshot_manager:
                         snapshot_manager.capture_snapshot(case['name'], tmpdir)
+                        print(f"  → Captured output snapshot for {case['name']}")
 
                 except BaseException as e:
                     import traceback
                     traceback.print_exc()
-                    error_message = str(e)
-                    execution_success = False
+                    print(f"Error executing {case['name']}: {e}")
 
-            # Validate cassette after recording
             cassette_path = CASSETTES_DIR / cassette_name
-
-            # Create empty cassette if none was created
             if not cassette_path.exists():
                     with open(cassette_path, 'w') as f:
                         f.write('{"interactions": [], "version": 1}\n')
-
-            # Load and analyze cassette
-            with open(cassette_path) as f:
-                cassette_data = json.load(f)
-
-            interaction_count = len(cassette_data.get('interactions', []))
-            expected_queries = len(case['params'].get('parameters', {}).get('queries', []))
-
-            # Report status based on execution and cassette completeness
-            if execution_success:
-                if interaction_count == 0:
-                    print(f"⚠️  WARNING: {case['name']} - Execution succeeded but NO interactions recorded!")
-                    print(f"   Expected {expected_queries} queries, got 0 interactions")
-                elif interaction_count < expected_queries * 0.5:  # Less than 50% coverage
-                    coverage_pct = round(100 * interaction_count / expected_queries, 1) if expected_queries else 0
-                    print(f"⚠️  WARNING: {case['name']} - Incomplete cassette ({coverage_pct}% coverage)")
-                    print(f"   Expected ~{expected_queries} queries, recorded {interaction_count} interactions")
-                else:
-                    coverage_pct = round(100 * interaction_count / expected_queries, 1) if expected_queries else 0
-                    print(f"✓ Success: {case['name']} - {interaction_count} interactions ({coverage_pct}% coverage)")
-
-                if snapshot_manager:
-                    print(f"  → Captured output snapshot")
-            else:
-                print(f"✗ FAILED: {case['name']}: {error_message}")
-                if interaction_count > 0:
-                    print(f"   Partial cassette recorded: {interaction_count} interactions before failure")
-                else:
-                    print(f"   No interactions recorded")
+                    print(f"Created empty cassette for {case['name']}")
 
 def run_gen():
     logging.basicConfig(level=logging.INFO)
