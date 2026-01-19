@@ -19,7 +19,7 @@
                 },
                 "headers": {
                     "content-length": [
-                        "564"
+                        "559"
                     ],
                     "Content-Type": [
                         "application/json; charset=UTF-8"
@@ -30,6 +30,1734 @@
                 },
                 "body": {
                     "string": "{\"data\": [{\"access_token\": \"token\", \"id\": \"683499195074649\"}], \"paging\": {\"cursors\": {\"after\": \"QVFIU2RDQXlmVzVTSlRwdmxqTWlfMlpMamVydm1sVzR2clNWc1JZAMGlkYzhDeGxXcmpicHozdEtNQ1lIMDBQSGpyX01CMFF3TEduOGkyTVFhYjU5bXVIaFlR\", \"before\": \"QVFIU2RDQXlmVzVTSlRwdmxqTWlfMlpMamVydm1sVzR2clNWc1JZAMGlkYzhDeGxXcmpicHozdEtNQ1lIMDBQSGpyX01CMFF3TEduOGkyTVFhYjU5bXVIaFlR\"}}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_impressions%2Cpage_impressions_unique%2Cpage_impressions_paid%2Cpage_impressions_paid_unique%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions_paid_unique%2Cpage_posts_impressions_organic_unique%2Cpage_post_engagements%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_reactions_by_type_total%2Cpage_video_views%2Cpage_video_views_unique%2Cpage_views_total&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AhLaq_6t3S5a4xNMou95YKE\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_impressions%2Cpage_impressions_unique%2Cpage_impressions_paid%2Cpage_impressions_paid_unique%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions_paid_unique%2Cpage_posts_impressions_organic_unique%2Cpage_post_engagements%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_reactions_by_type_total%2Cpage_video_views%2Cpage_video_views_unique%2Cpage_views_total&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ALr9z8cXfPpaca6RUQJ4aEU\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_negative_feedback%2Cpage_consumptions_unique%2Cpage_impressions&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AdKD9TXg2IFEN9OkCByI69W\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_negative_feedback%2Cpage_consumptions_unique%2Cpage_impressions&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AQhZA3XRYruYZ2DasITmkMV\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=post_impressions_organic_unique%2Cpost_impressions_organic%2Cpost_reactions_like_total%2Cpage_post_engagements%2Cpost_impressions%2Cpost_clicks%2Cpage_follows&since=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ATU2stR3gncQBj3USsKQ3vf\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=post_impressions_organic_unique%2Cpost_impressions_organic%2Cpost_reactions_like_total%2Cpage_post_engagements%2Cpost_impressions%2Cpost_clicks%2Cpage_follows&since=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Aivw4iEmntlC7wTD6vPWtCY\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A91N1WJIcyPkzQm6jur058s\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AVqHEqbP2CHZeWNUUnvj6E-\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Azak1tFMmDl4smwqb61lVQJ\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ARRRmS2zR5yiw2ieJhLAUv-\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_impressions&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Am6tz2EKbe3kNf-1z2fJ0-J\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_impressions&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A1osLmE7nVQYs-NXiqOJokM\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_impressions_unique&period=week&since=2024-12-27&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ATUN2Vv1jcs_YEOQfGClhGB\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_impressions_unique&period=week&since=2024-12-27&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AcjRpXsHc12iGojbRPw6zNV\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_follows%2Cpage_impressions_viral_unique%2Cpage_impressions_unique%2Cpage_impressions_paid_unique%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid_unique%2Cpost_impressions_fan_unique%2Cpage_post_engagements&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A0Xt24CzN8APFxSJQfHq7jJ\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&limit=25&metric=page_follows%2Cpage_impressions_viral_unique%2Cpage_impressions_unique%2Cpage_impressions_paid_unique%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid_unique%2Cpost_impressions_fan_unique%2Cpage_post_engagements&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Au0BEOvFLc6QOPqs7-PJEun\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541?access_token=token&fields=likes&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A4hfbViO-1PBwitKDJ19byr\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541?access_token=token&fields=likes&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Aj4SG_gbIQoQ-OsvUHWaYJ3\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541?access_token=token&fields=fan_count%2C+followers_count&limit=25&since=2024-12-04&until=2024-12-04",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ADqmNsDhrzog2bhA0Mo6tHe\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541?access_token=token&fields=followers_count&limit=25&since=2024-12-31&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A4czBwhxxpto4rMsfGCWXBb\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/473032723088889/ads-action-stats?access_token=token&fields=actions%2Cad_name%2Cad_id&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "142"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AfBoNX_zFd9l9CiyzPSpQcx\", \"message\": \"Unknown path components: /ads-action-stats\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AC8dLRapoppY5twmiMs-y3i\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AXLjMhaQgPM8Jeh7m5xcp-8\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Bcaption%2C+type%2C+description%7D%2Cmessage%2Ccreated_time%2Cshares&limit=25&since=2005-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A-cIVXU20aunVF9K6-SvVKo\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Akp_KucWPDiFF4VGeRABESL\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ANtqVBjsUGXSWolUtcRTbJ_\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_followers%29.as%28post_media_view_from_flwrs_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "167"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AI66N-PBqaqrpXim__lKveI\", \"message\": \"(#100) Tried accessing nonexisting field (feed) on node type (IGUser)\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_followers%29.as%28post_media_view_from_flwrs_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AVvOy-Z2Sef7ZNOM337ZzhG\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Aqu4og6NS9kKNmrEeWkrqvA\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AScQkkpDvxZ55haBGgcoMGb\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ARPn62_W4-i_1xs5gnP_9QI\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A6YbMSxdi16HLFkjOZSeyVX\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AF5UoYiRmjB9nAT-i2s_vK7\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A4giKFdZ67EbQHEtar11rHV\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Bcaption%2C+type%7D%2Cmessage%2Ccomments%2Ccreated_time%2Cshares%2Creactions%2Cinsights.metric%28post_clicks_by_type%2Cpost_impressions%2C+post_impressions_unique%2Cpost_impressions_paid%2C+post_impressions_paid_unique%2Cpost_reactions_by_type_total%2Cpost_negative_feedback%2C+page_positive_feedback_by_type%2Cpage_post_engagements%2C+post_engaged_users%29&limit=100&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AsZUHshH_EUv9pr3QfWvzHQ\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=attachments%7Bcaption%2C+type%7D%2Cmessage%2Ccomments%2Ccreated_time%2Cshares%2Creactions%2Cinsights.metric%28post_clicks_by_type%2Cpost_impressions%2C+post_impressions_unique%2Cpost_impressions_paid%2C+post_impressions_paid_unique%2Cpost_reactions_by_type_total%2Cpost_negative_feedback%2C+page_positive_feedback_by_type%2Cpage_post_engagements%2C+post_engaged_users%29&limit=100&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AoekNgOfbvmBhwu192-l7QX\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=message%2Ccreated_time%2Cupdated_time%2Cpermalink_url%2Cattachments%7Bid%2Ccaption%2C+type%2C+description%2Cunshimmed_url%7D%2Cinsights.metric%28post_impressions_unique%2Cpost_impressions_paid_unique%2Cpost_reactions_like_total%2Cpost_clicks%29.period%28lifetime%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AvanbknOnZal24obmPn0RC7\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=message%2Ccreated_time%2Cupdated_time%2Cpermalink_url%2Cattachments%7Bid%2Ccaption%2C+type%2C+description%2Cunshimmed_url%7D%2Cinsights.metric%28post_impressions_unique%2Cpost_impressions_paid_unique%2Cpost_reactions_like_total%2Cpost_clicks%29.period%28lifetime%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AcbTbAOBtTbcn6FJo1ZtRyw\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.since%282021-01-01%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=100&since=2020-01-01&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AhpI2vLANP0lmPBGJpHd2wK\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=insights.since%282021-01-01%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=100&since=2020-01-01&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AopXbb9ih0TjoCNMKCfTSnz\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AAxLP7fcyLAEGW4mDPZy3JQ\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A_klCFQQPXgLKbVOKQTZ3uS\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AMOu0BQA9eyvX6mw0J9l4Fr\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A5BzO_Qs_WkzVbb9C9PGCzt\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A8S-mdyWPYmsjUp0aYey1nm\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AQmlf4DxJ5MITzrgYlU1_3d\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions.type%28ANGRY%29.summary%28total_count%29.limit%280%29&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AvV46ren64ZvWSBm98_Yhgs\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions.type%28ANGRY%29.summary%28total_count%29.limit%280%29&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AlubjhuYs0AG-NeFC2OwS3q\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AmMuMWwymeNrDMZTgX-sBrw\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AVGxsYwdXuFAgD3GA6JrO_P\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=likes%7Bname%2Cusername%7D&limit=100&since=2024-09-23",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Ans38km_HOT_D6IG3ZA22MA\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=likes%7Bname%2Cusername%7D&limit=100&since=2024-09-23",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Aw9QaKWOxvL-_lf6LA_uXij\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Ay0XDXoZ7m2sV_RxrGgGU6h\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/feed?access_token=token&fields=reactions&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AMXSmUKDB7xZybT5Qu9Wj_D\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
                 }
             }
         },
@@ -61,7 +1789,1799 @@
                     ]
                 },
                 "body": {
-                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AMU_RFTfNKZal0xdw4fb8ru\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"ASgZEgOBUtru0vvYqr5AqPR\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/https%3A//graph.facebook.com/v3.3/AndrejBabis/feed?access_token=token&fields=id&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "179"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"ALhLictUBVWQtc01lCZP8T2\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/https%3A//graph.facebook.com/v3.3/AndrejBabis/feed?access_token=token&fields=id&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "179"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AbEcXqJBZz7CAg6zfOKOY-W\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/473032723088889/https%3A//graph.facebook.com/v3.3/AndrejBabis/feed?access_token=token&fields=id&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "179"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"A_imyCSMTHWhAJFWQi4mzbJ\", \"message\": \"Unknown path components: /https://graph.facebook.com/v3.3/AndrejBabis/feed\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&fields=page_fans&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AWXeI6L7yoZTmDaMwvnCMC0\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&fields=page_fans&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AvoN4vQw4y-lkEXKTj-iraI\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Al6kSy2mVvVmNyCW_LTwJpr\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AgCSg-Wc39jtOJ5SI4YQKDC\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&fields=page_impressions%2Cpage_views_total&limit=25&since=2025-09-01&until=2025-11-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AlFMiIn_GPIb6zYjTRyapsm\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/insights?access_token=token&fields=page_impressions%2Cpage_views_total&limit=25&since=2025-09-01&until=2025-11-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Apsa_nmfyhueNj_Iwn5F0BG\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/473032723088889/insights?access_token=token&limit=25&metric=page_impressions&period=day&since=2024-12-02&until=2024-12-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "156"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"AIRSL4aOc6ydPFfiBIIBFFU\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "135"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"Af8wsplEArLk_XO9lnpmGyM\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "135"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"ATzpogx7zY1kBBEwlkknaJe\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/page_post?access_token=token&fields=id%2Cmessage%2Ccreated_time%2Cpermalink_url%2Cpermalink_url%2Cshares&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "135"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AJHxz3g1qV0rvEnwW_ScEuI\", \"message\": \"Unknown path components: /page_post\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ANv_n99DAbT-3_GOJD6DU2h\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AIHhcDieTRIaKN37mVzExDi\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AV1H62upjDRjUqFQ_ErJ-EH\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A-U3b10_15uLEEc1dS8FDWq\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A1t329Rdazn6tf4MPIcqapN\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AojtDYH0Rz3_8RipRwagVtK\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.since%28today%29.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2022-01-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AKrtz0oFrdeTeS0JTLA_IYZ\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=insights.since%28today%29.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2022-01-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AImyNDp4qGdrZi_4lkWJmn7\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AZIIgtehxDSISYyhQbSvqzT\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"APMml9kATerwwW1HvuhSA-D\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=comments.limit%280%29.summary%28true%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A5ZygOYvXG2-qPwLbAKxAiT\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=comments.limit%280%29.summary%28true%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AbTPtFouGU1tk-6vgYOERfl\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=reactions.type%28ANGRY%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ALIPs5qviNCIx60GMsNzc-u\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=reactions.type%28ANGRY%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AwHWnjTySTQZArX8n3HBJKR\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AhdwXo-SiCTM_293w3jM6qc\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Aa7HdehorRV9CiRuqvDQwse\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=created_time%2Cshares%2Cpermalink_url%2Cfull_picture%2Ctimeline_visibility&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ATfDtVuiZp5MzPG7ghBHDTM\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=created_time%2Cshares%2Cpermalink_url%2Cfull_picture%2Ctimeline_visibility&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AmNi0VG8zuLlk1C3246ZyOQ\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AWj04vRa3utakuxWqkUMjLK\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AjMzzc6PrSlV4dBKn3_iFIg\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "178"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AmURwS5vSXcObiftXGXaWPO\", \"message\": \"(#100) Tried accessing nonexisting field (published_posts) on node type (IGUser)\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AqmSbFLx1QF7Az0bJiZv7rz\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/published_posts?access_token=token&fields=insights.since%283+days+ago%29.until%28today%29.metric%28post_impressions_paid%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_impressions_fan%2Cpost_clicks%2Cpost_reactions_love_total%2Cpost_reactions_haha_total%2Cpost_reactions_like_total%2Cpost_reactions_anger_total%2Cpost_reactions_wow_total%2Cpost_reactions_sorry_total%2Cpost_clicks_by_type%29&limit=25&since=2024-12-23&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Aoa3Ru7G-oWHQsscckwoilc\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/published_posts?access_token=token&fields=insights.since%283+days+ago%29.until%28today%29.metric%28post_impressions_paid%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_impressions_fan%2Cpost_clicks%2Cpost_reactions_love_total%2Cpost_reactions_haha_total%2Cpost_reactions_like_total%2Cpost_reactions_anger_total%2Cpost_reactions_wow_total%2Cpost_reactions_sorry_total%2Cpost_clicks_by_type%29&limit=25&since=2024-12-23&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AGNHbplVttFyKcH34_R_qOC\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ATsLQ9Y6LvQgfISLkJQcw4C\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AGPHSA0ZCk4w75ptu2jDPv4\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A5Si63A6hu-dykmMs-uU9KX\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AwHs-I6wpdFlN6FNDpS2g1r\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Ao3GehBCu5IKXHzKtmLVUGB\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"A3YwvV0OtmksRtREY7txl-d\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crecommendation_type&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AA082hiOlXmEf2Jdo7ITUYu\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crecommendation_type&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Ax1jDSL0kBElAt9AVSoFiKP\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "168"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AO7_Y23cBKsAoMlWM6b_zNA\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (IGUser)\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AX3wGRGDyVtMN3bmiCNjP7M\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"Ay4zXXVh5sj46n4-20k-s_V\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ASu28SV5d70M5_REZEl5bpw\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AU4YpMTPMWJ4Kj7LqG4B59S\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AnktNgGtKVNz_fdO8WvnAoC\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video_reels?access_token=token&fields=created_time%2Cid%2Cdescription%2Clength%2Cpublished%2Cviews%2Cpermalink_url%2Cvideo_insights.metric%28post_video_likes_by_reaction_type%2Cpost_video_social_actions%2Cpost_video_view_time%2Cpost_impressions_unique%2Cblue_reels_play_count%2Cpost_video_avg_time_watched%2Cpost_video_followers+%29%7Bname%2Cdescription%2Cvalues%7D&limit=25&since=2024-12-28&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"AHwP9FFaRF9ZsPbVR08Rjrr\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video_reels?access_token=token&fields=created_time%2Cid%2Cdescription%2Clength%2Cpublished%2Cviews%2Cpermalink_url%2Cvideo_insights.metric%28post_video_likes_by_reaction_type%2Cpost_video_social_actions%2Cpost_video_view_time%2Cpost_impressions_unique%2Cblue_reels_play_count%2Cpost_video_avg_time_watched%2Cpost_video_followers+%29%7Bname%2Cdescription%2Cvalues%7D&limit=25&since=2024-12-28&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "Content-Length": [
+                        "174"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"Atv-OWU7lLE70haFuHgfzgt\", \"message\": \"(#100) Tried accessing nonexisting field (video_reels) on node type (IGUser)\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ASqGnP_EplOqE27yipeyHQ1\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/17841403584244541/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "373"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"error_subcode\": 33, \"fbtrace_id\": \"ADUWb3sdPHTw_F_l_EEweyq\", \"message\": \"Unsupported get request. Object with ID '17841403584244541' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api\", \"type\": \"GraphMethodException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/videos?access_token=token&fields=id%2Clength%2Ccontent_category%2Ccreated_time%2Cis_crosspost_video%2Cpublished%2Ctitle&limit=25&since=2023-01-01&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AqOxOYbTJDpVG81mY41jEyM\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
                 }
             }
         }
