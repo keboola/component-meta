@@ -22,10 +22,22 @@ snapshot_manager = SnapshotManager(SNAPSHOTS_FILE)
 
 
 def load_configs():
+    """
+    Load test configurations from sanitized CSV queries.
+
+    Creates test cases by:
+    1. Loading queries from queries_sanitized.csv
+    2. Grouping by component (Facebook Ads, Facebook Pages, Instagram)
+    3. Creating separate test cases for each API version (v22.0, v23.0)
+    4. Assigning sequential IDs to queries (matching cassette generation)
+
+    Returns:
+        List of test case dicts with name, description, action, and params
+    """
     cases = []
 
-    # 2. Load generated cases from sanitized CSV
-    # Replay-only CI fallback
+    # Load generated cases from sanitized CSV
+    # CI fallback: use config.secrets.json.ci if main secrets file doesn't exist
     effective_secrets_file = SECRETS_FILE
     if not SECRETS_FILE.exists() and (TEST_DIR / "config.secrets.json.ci").exists():
         effective_secrets_file = TEST_DIR / "config.secrets.json.ci"
@@ -71,16 +83,22 @@ def load_configs():
 
                     try:
                         q = json.loads(json_str)
-                        # Reconstruct full object for Component
+
+                        # Normalize query object (matching generate_tests.py logic)
+                        real_query_params = (
+                            q.get("query", q) if isinstance(q.get("query"), dict) else q
+                        )
+                        if "limit" in real_query_params and real_query_params["limit"]:
+                            real_query_params["limit"] = str(real_query_params["limit"])
+
                         q_obj = {
-                            "id": q.get("id", 1),
+                            "id": q.get("id"),  # Will be None for CSV queries
                             "type": q_type,
                             "name": q.get("name", "query"),
-                            "query": q.get("query", q)
-                            if isinstance(q.get("query"), dict)
-                            else q,
+                            "query": real_query_params,
                             "run-by-id": q.get("run-by-id", False),
                         }
+
                         if comp_id not in component_queries:
                             component_queries[comp_id] = []
                         component_queries[comp_id].append(q_obj)
@@ -88,15 +106,39 @@ def load_configs():
                         continue
 
             for version in ["v22.0", "v23.0"]:
-                for comp_id, queries in component_queries.items():
+                for comp_id, queries_raw in component_queries.items():
                     comp_clean = comp_id.lower().replace(" ", "_")
                     version_clean = version.replace(".", "_")
                     case_name = f"gen_{comp_clean}_{version_clean}"
 
+                    # Normalize and add technical IDs if missing (matching generate_tests.py)
+                    final_queries = []
+                    for i, q in enumerate(queries_raw):
+                        # Check if q is already a full object or just parameters
+                        if "query" in q and isinstance(q["query"], dict) and "id" in q:
+                            # Likely already full object, just ensure id is int
+                            try:
+                                q["id"] = int(q["id"])
+                            except (TypeError, ValueError):
+                                q["id"] = i + 1
+                            final_queries.append(q)
+                        else:
+                            # q is parameters or incomplete object
+                            # Reconstruct full object
+                            final_queries.append(
+                                {
+                                    "id": i + 1,
+                                    "name": q.get("name", f"query_{i + 1}"),
+                                    "type": q.get("type", "nested-query"),
+                                    "query": q if "query" not in q else q["query"],
+                                    "run-by-id": q.get("run-by-id", False),
+                                }
+                            )
+
                     config = copy.deepcopy(secrets_placeholder)
                     if "parameters" not in config:
                         config["parameters"] = {}
-                    config["parameters"]["queries"] = queries
+                    config["parameters"]["queries"] = final_queries
                     config["parameters"]["api-version"] = version
 
                     cases.append(
@@ -118,7 +160,16 @@ def load_configs():
 @freeze_time(FIXED_DATETIME)
 def test_functional_component(config_data, tmpdir, monkeypatch):
     """
-    Runs the component with the given config, finding the corresponding cassette.
+    Functional test: Run component with VCR cassettes and validate outputs.
+
+    Flow:
+    1. Load test configuration with queries from queries_sanitized.csv
+    2. Setup temp directory and write config.json
+    3. Run component with VCR in replay-only mode (uses cassette responses)
+    4. Verify output CSV tables were generated
+    5. Validate output matches saved snapshot (row counts, columns, hashes)
+
+    This ensures the component produces consistent outputs from recorded API responses.
     """
     # Setup Environment
     monkeypatch.setenv("KBC_DATADIR", str(tmpdir))
