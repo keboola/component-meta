@@ -31,13 +31,21 @@ def load_configs():
     3. Creating separate test cases for each API version (v22.0, v23.0)
     4. Assigning sequential IDs to queries (matching cassette generation)
 
+    Account Matching:
+    - Secrets file contains ALL accounts used by ANY query in the CSV
+    - Each query specifies which account(s) to use via the 'ids' field
+    - Component filters accounts list based on query's 'ids' field
+    - Example: Query with ids="act_186649832776475" → uses only that account
+    - If query's 'ids' don't match any configured account → query is skipped
+
     Returns:
         List of test case dicts with name, description, action, and params
     """
     cases = []
 
-    # Load generated cases from sanitized CSV
-    # CI fallback: use config.secrets.json.ci if main secrets file doesn't exist
+    # Load secrets configuration
+    # Local: uses config.secrets.json (gitignored, contains real tokens)
+    # CI: falls back to config.secrets.json.ci (committed, placeholder tokens)
     effective_secrets_file = SECRETS_FILE
     if not SECRETS_FILE.exists() and (TEST_DIR / "config.secrets.json.ci").exists():
         effective_secrets_file = TEST_DIR / "config.secrets.json.ci"
