@@ -4,10 +4,18 @@ import os
 import csv
 import vcr
 import copy
+import logging
 from pathlib import Path
 from freezegun import freeze_time
 from component import Component
 from output_validator import SnapshotManager
+
+# Suppress verbose logging from component and libraries during tests
+# Must be set early before any loggers are created
+logging.getLogger().setLevel(logging.CRITICAL)
+logging.getLogger("vcr").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3").setLevel(logging.CRITICAL)
+logging.getLogger("requests").setLevel(logging.CRITICAL)
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -236,6 +244,10 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
         if validation_errors:
             error_msg = f"Output validation failed for {test_name}:\n"
             error_msg += "\n".join(f"  - {error}" for error in validation_errors)
+            # Show what tables were actually generated for debugging
+            actual_tables = list(out_tables_dir.glob("*.csv"))
+            error_msg += f"\n\nActual tables generated ({len(actual_tables)}):\n"
+            error_msg += "\n".join(f"  - {t.name}" for t in actual_tables)
             pytest.fail(error_msg)
         print(f"✓ Output validation passed for {test_name}")
     else:
