@@ -52,10 +52,12 @@ class OutputSnapshot:
                     rows = list(reader)
 
                 # Capture metadata
+                # Sort columns to ensure deterministic snapshots regardless of CSV column order
+                columns = sorted(rows[0].keys()) if rows else []
                 tables[csv_file.name] = {
                     "row_count": len(rows),
-                    "column_count": len(rows[0].keys()) if rows else 0,
-                    "columns": list(rows[0].keys()) if rows else [],
+                    "column_count": len(columns),
+                    "columns": columns,
                     "hash": self._hash_csv_content(csv_file),
                     "sample_rows": rows[:3] if rows else [],  # First 3 rows
                 }

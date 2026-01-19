@@ -8,11 +8,11 @@
       "accounts.csv": {
         "column_count": 5,
         "columns": [
-          "id",
-          "name",
           "account_id",
           "business_name",
-          "currency"
+          "currency",
+          "id",
+          "name"
         ],
         "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
@@ -37,11 +37,11 @@
       "query.csv": {
         "column_count": 5,
         "columns": [
-          "id",
+          "account_id",
           "ex_account_id",
           "fb_graph_node",
-          "parent_id",
-          "account_id"
+          "id",
+          "parent_id"
         ],
         "hash": "sha256:93dfffab43eeb325b60592ac1bcb4f7ccf152d4869a34f29d533865591d1391d",
         "row_count": 1,
@@ -68,18 +68,18 @@
       "query_adcreatives.csv": {
         "column_count": 12,
         "columns": [
-          "id",
+          "account_id",
+          "body",
           "ex_account_id",
           "fb_graph_node",
-          "parent_id",
-          "account_id",
-          "url_tags",
-          "title",
-          "body",
-          "name",
-          "thumbnail_url",
+          "id",
+          "image_url",
           "instagram_permalink_url",
-          "image_url"
+          "name",
+          "parent_id",
+          "thumbnail_url",
+          "title",
+          "url_tags"
         ],
         "hash": "sha256:1ec9ef2bbc57ade689d6cd6e148c470294704512c5c583f20b7711d33c431db0",
         "row_count": 633,
@@ -141,18 +141,18 @@
       "query_ads.csv": {
         "column_count": 12,
         "columns": [
-          "id",
+          "account_id",
+          "adset_id",
+          "campaign_id",
+          "created_time",
+          "creative_id",
+          "effective_status",
           "ex_account_id",
           "fb_graph_node",
-          "parent_id",
+          "id",
           "name",
-          "adset_id",
-          "effective_status",
-          "status",
-          "account_id",
-          "created_time",
-          "campaign_id",
-          "creative_id"
+          "parent_id",
+          "status"
         ],
         "hash": "sha256:cf2577cd3b1a06dac628d0cd1dbf01fc491245a7b02eb92b710764786245a1f9",
         "row_count": 219,
@@ -214,10 +214,6 @@
       "query_adsets.csv": {
         "column_count": 15,
         "columns": [
-          "id",
-          "ex_account_id",
-          "fb_graph_node",
-          "parent_id",
           "account_id",
           "billing_event",
           "budget_remaining",
@@ -226,9 +222,13 @@
           "configured_status",
           "created_time",
           "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
           "is_dynamic_creative",
           "lifetime_imps",
-          "name"
+          "name",
+          "parent_id"
         ],
         "hash": "sha256:2ebd034b74505e8147f7fc0ccb8936956b41d340bc3335f1ab93816ac8585d01",
         "row_count": 145,
@@ -300,11 +300,6 @@
       "query_campaigns.csv": {
         "column_count": 19,
         "columns": [
-          "id",
-          "ex_account_id",
-          "fb_graph_node",
-          "parent_id",
-          "name",
           "account_id",
           "bid_strategy",
           "budget_rebalance_flag",
@@ -314,11 +309,16 @@
           "created_time",
           "daily_budget",
           "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
           "is_skadnetwork_attribution",
+          "name",
           "objective",
+          "parent_id",
+          "primary_attribution",
           "spend_cap",
-          "status",
-          "primary_attribution"
+          "status"
         ],
         "hash": "sha256:fb27be460b16bebdccab4a131e9e037b8afe9e7369d1828f144ce03d8d78e20e",
         "row_count": 96,
@@ -401,13 +401,13 @@
       "query_insights.csv": {
         "column_count": 8,
         "columns": [
-          "ex_account_id",
-          "fb_graph_node",
-          "parent_id",
           "account_id",
           "attribution_setting",
           "date_start",
           "date_stop",
+          "ex_account_id",
+          "fb_graph_node",
+          "parent_id",
           "spend"
         ],
         "hash": "sha256:a782f642762817a73d86c796e38c7bb1de6e98580b7a8b5390481d06e3c8e771",
@@ -467,11 +467,11 @@
       "accounts.csv": {
         "column_count": 5,
         "columns": [
-          "id",
-          "name",
           "account_id",
           "business_name",
-          "currency"
+          "currency",
+          "id",
+          "name"
         ],
         "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
@@ -496,11 +496,11 @@
       "query.csv": {
         "column_count": 5,
         "columns": [
-          "id",
+          "account_id",
           "ex_account_id",
           "fb_graph_node",
-          "parent_id",
-          "account_id"
+          "id",
+          "parent_id"
         ],
         "hash": "sha256:93dfffab43eeb325b60592ac1bcb4f7ccf152d4869a34f29d533865591d1391d",
         "row_count": 1,
@@ -527,18 +527,18 @@
       "query_adcreatives.csv": {
         "column_count": 12,
         "columns": [
-          "id",
+          "account_id",
+          "body",
           "ex_account_id",
           "fb_graph_node",
-          "parent_id",
-          "account_id",
-          "url_tags",
-          "title",
-          "body",
-          "name",
-          "thumbnail_url",
+          "id",
+          "image_url",
           "instagram_permalink_url",
-          "image_url"
+          "name",
+          "parent_id",
+          "thumbnail_url",
+          "title",
+          "url_tags"
         ],
         "hash": "sha256:9c87ec6fd5eea3cc99fab78f23467a5b41c9cee40d6131964bbbe61281b420f1",
         "row_count": 633,
@@ -600,18 +600,18 @@
       "query_ads.csv": {
         "column_count": 12,
         "columns": [
-          "id",
+          "account_id",
+          "adset_id",
+          "campaign_id",
+          "created_time",
+          "creative_id",
+          "effective_status",
           "ex_account_id",
           "fb_graph_node",
-          "parent_id",
+          "id",
           "name",
-          "adset_id",
-          "effective_status",
-          "status",
-          "account_id",
-          "created_time",
-          "campaign_id",
-          "creative_id"
+          "parent_id",
+          "status"
         ],
         "hash": "sha256:cf2577cd3b1a06dac628d0cd1dbf01fc491245a7b02eb92b710764786245a1f9",
         "row_count": 219,
@@ -673,10 +673,6 @@
       "query_adsets.csv": {
         "column_count": 15,
         "columns": [
-          "id",
-          "ex_account_id",
-          "fb_graph_node",
-          "parent_id",
           "account_id",
           "billing_event",
           "budget_remaining",
@@ -685,9 +681,13 @@
           "configured_status",
           "created_time",
           "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
           "is_dynamic_creative",
           "lifetime_imps",
-          "name"
+          "name",
+          "parent_id"
         ],
         "hash": "sha256:2ebd034b74505e8147f7fc0ccb8936956b41d340bc3335f1ab93816ac8585d01",
         "row_count": 145,
@@ -759,11 +759,6 @@
       "query_campaigns.csv": {
         "column_count": 19,
         "columns": [
-          "id",
-          "ex_account_id",
-          "fb_graph_node",
-          "parent_id",
-          "name",
           "account_id",
           "bid_strategy",
           "budget_rebalance_flag",
@@ -773,11 +768,16 @@
           "created_time",
           "daily_budget",
           "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
           "is_skadnetwork_attribution",
+          "name",
           "objective",
+          "parent_id",
+          "primary_attribution",
           "spend_cap",
-          "status",
-          "primary_attribution"
+          "status"
         ],
         "hash": "sha256:fb27be460b16bebdccab4a131e9e037b8afe9e7369d1828f144ce03d8d78e20e",
         "row_count": 96,
@@ -860,13 +860,13 @@
       "query_insights.csv": {
         "column_count": 8,
         "columns": [
-          "ex_account_id",
-          "fb_graph_node",
-          "parent_id",
           "account_id",
           "attribution_setting",
           "date_start",
           "date_stop",
+          "ex_account_id",
+          "fb_graph_node",
+          "parent_id",
           "spend"
         ],
         "hash": "sha256:a782f642762817a73d86c796e38c7bb1de6e98580b7a8b5390481d06e3c8e771",
@@ -926,11 +926,11 @@
       "accounts.csv": {
         "column_count": 5,
         "columns": [
-          "id",
-          "name",
           "account_id",
           "business_name",
-          "currency"
+          "currency",
+          "id",
+          "name"
         ],
         "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
@@ -963,11 +963,11 @@
       "accounts.csv": {
         "column_count": 5,
         "columns": [
-          "id",
-          "name",
           "account_id",
           "business_name",
-          "currency"
+          "currency",
+          "id",
+          "name"
         ],
         "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
@@ -1000,11 +1000,11 @@
       "accounts.csv": {
         "column_count": 5,
         "columns": [
-          "id",
-          "name",
           "account_id",
           "business_name",
-          "currency"
+          "currency",
+          "id",
+          "name"
         ],
         "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
@@ -1037,11 +1037,11 @@
       "accounts.csv": {
         "column_count": 5,
         "columns": [
-          "id",
-          "name",
           "account_id",
           "business_name",
-          "currency"
+          "currency",
+          "id",
+          "name"
         ],
         "hash": "sha256:57c2f38af87ef804a7c5f624a520450046e31f51323044267df8045f359830bc",
         "row_count": 1,
