@@ -141,22 +141,22 @@ class OutputSnapshot:
 
         # List of dynamic Facebook URL parameters to remove
         dynamic_params = [
-            '_nc_gid',      # Session/group ID
-            '_nc_tpa',      # Tracking parameter
-            '_nc_oc',       # Cache parameter
-            'oh',           # Hash/signature
-            'oe',           # Expiry timestamp
+            "_nc_gid",  # Session/group ID
+            "_nc_tpa",  # Tracking parameter
+            "_nc_oc",  # Cache parameter
+            "oh",  # Hash/signature
+            "oe",  # Expiry timestamp
         ]
 
         # Remove dynamic parameters from URL
         for param in dynamic_params:
-            url = re.sub(f'[&?]{param}=[^&]*', '', url)
+            url = re.sub(f"[&?]{param}=[^&]*", "", url)
 
         # Clean up any trailing ? or & characters
-        url = re.sub(r'[?&]+$', '', url)
+        url = re.sub(r"[?&]+$", "", url)
         # Fix double && or &? patterns
-        url = re.sub(r'&{2,}', '&', url)
-        url = re.sub(r'\?&', '?', url)
+        url = re.sub(r"&{2,}", "&", url)
+        url = re.sub(r"\?&", "?", url)
 
         return url
 
@@ -186,7 +186,14 @@ class OutputSnapshot:
 
                 # Sanitize URL fields in rows to remove dynamic parameters
                 # This prevents hash mismatches due to session-specific URL parameters
-                url_columns = {'image_url', 'thumbnail_url', 'url', 'link', 'picture', 'instagram_permalink_url'}
+                url_columns = {
+                    "image_url",
+                    "thumbnail_url",
+                    "url",
+                    "link",
+                    "picture",
+                    "instagram_permalink_url",
+                }
                 sanitized_rows = []
                 for row in rows:
                     sanitized_row = row.copy()
@@ -199,7 +206,7 @@ class OutputSnapshot:
                 # This makes the hash independent of async processing order
                 sorted_rows = sorted(
                     sanitized_rows,
-                    key=lambda row: tuple(row.get(col, "") for col in columns)
+                    key=lambda row: tuple(row.get(col, "") for col in columns),
                 )
 
                 # Create deterministic string representation

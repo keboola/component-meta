@@ -493,7 +493,7 @@ def main():
     )
     total_failing = len(sampled_rows) - total_working
 
-    print(f"\nSanitization complete!")
+    print("\nSanitization complete!")
     print(
         f"Processed {sanitized_count} sampled queries from {len(groups)} structural categories."
     )
