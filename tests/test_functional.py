@@ -11,7 +11,6 @@ from output_validator import SnapshotManager
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
-CONFIGS_FILE = TEST_DIR / "configs/test_cases.json"
 CASSETTES_DIR = TEST_DIR / "cassettes"
 SECRETS_FILE = TEST_DIR / "config.secrets.json"
 QUERIES_SANITIZED_FILE = TEST_DIR / "queries_sanitized.csv"
@@ -24,11 +23,6 @@ snapshot_manager = SnapshotManager(SNAPSHOTS_FILE)
 
 def load_configs():
     cases = []
-
-    # 1. Load legacy test cases from test_cases.json
-    if CONFIGS_FILE.exists():
-        with open(CONFIGS_FILE) as f:
-            cases.extend(json.load(f))
 
     # 2. Load generated cases from sanitized CSV
     # Replay-only CI fallback

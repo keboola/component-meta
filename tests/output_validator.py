@@ -186,7 +186,7 @@ class OutputSnapshot:
 
                 # Sanitize URL fields in rows to remove dynamic parameters
                 # This prevents hash mismatches due to session-specific URL parameters
-                url_columns = {'image_url', 'thumbnail_url', 'url', 'link', 'picture'}
+                url_columns = {'image_url', 'thumbnail_url', 'url', 'link', 'picture', 'instagram_permalink_url'}
                 sanitized_rows = []
                 for row in rows:
                     sanitized_row = row.copy()
