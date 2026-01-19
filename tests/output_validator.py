@@ -3,6 +3,7 @@
 import json
 import hashlib
 import csv
+import re
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -122,11 +123,48 @@ class OutputSnapshot:
                 sha256.update(chunk)
         return f"sha256:{sha256.hexdigest()}"
 
+    def _sanitize_url(self, url: str) -> str:
+        """
+        Sanitize URLs by removing dynamic/session-specific parameters.
+
+        Facebook CDN URLs contain dynamic parameters like _nc_gid, _nc_tpa, oh, oe
+        that change between requests but don't affect the actual resource.
+
+        Args:
+            url: URL string to sanitize
+
+        Returns:
+            Sanitized URL with dynamic parameters removed
+        """
+        if not url or not isinstance(url, str):
+            return url
+
+        # List of dynamic Facebook URL parameters to remove
+        dynamic_params = [
+            '_nc_gid',      # Session/group ID
+            '_nc_tpa',      # Tracking parameter
+            '_nc_oc',       # Cache parameter
+            'oh',           # Hash/signature
+            'oe',           # Expiry timestamp
+        ]
+
+        # Remove dynamic parameters from URL
+        for param in dynamic_params:
+            url = re.sub(f'[&?]{param}=[^&]*', '', url)
+
+        # Clean up any trailing ? or & characters
+        url = re.sub(r'[?&]+$', '', url)
+        # Fix double && or &? patterns
+        url = re.sub(r'&{2,}', '&', url)
+        url = re.sub(r'\?&', '?', url)
+
+        return url
+
     def _hash_csv_content(self, file_path: Path) -> str:
         """
         Calculate SHA256 hash of CSV content in a row-order-independent way.
         Sorts rows by all columns to ensure deterministic output regardless of
-        async processing order.
+        async processing order. Also sanitizes URLs to remove dynamic parameters.
 
         Args:
             file_path: Path to CSV file
@@ -146,9 +184,23 @@ class OutputSnapshot:
                 # Get columns in sorted order for deterministic hashing
                 columns = sorted(rows[0].keys())
 
+                # Sanitize URL fields in rows to remove dynamic parameters
+                # This prevents hash mismatches due to session-specific URL parameters
+                url_columns = {'image_url', 'thumbnail_url', 'url', 'link', 'picture'}
+                sanitized_rows = []
+                for row in rows:
+                    sanitized_row = row.copy()
+                    for col in columns:
+                        if col in url_columns and sanitized_row.get(col):
+                            sanitized_row[col] = self._sanitize_url(sanitized_row[col])
+                    sanitized_rows.append(sanitized_row)
+
                 # Sort rows by all column values to ensure deterministic order
                 # This makes the hash independent of async processing order
-                sorted_rows = sorted(rows, key=lambda row: tuple(row.get(col, "") for col in columns))
+                sorted_rows = sorted(
+                    sanitized_rows,
+                    key=lambda row: tuple(row.get(col, "") for col in columns)
+                )
 
                 # Create deterministic string representation
                 sha256 = hashlib.sha256()
