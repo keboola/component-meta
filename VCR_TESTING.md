@@ -8,7 +8,7 @@ This component uses VCR (Video Cassette Recorder) to create functional tests usi
 |--------|---------|
 | Generate cassettes + snapshots | `python scripts/generate_tests.py --csv --capture-outputs` |
 | Run tests with validation | `pytest tests/test_functional.py` |
-| Update sanitized queries | `python tests/fixtures/sanitize_queries.py` |
+| Update sanitized queries | `python scripts/sanitize_queries.py` |
 | Add new API version | Edit `generate_tests.py` line 196, regenerate |
 
 ## Overview
@@ -62,7 +62,7 @@ cp tests/fixtures/config.secrets.json.example tests/fixtures/config.secrets.json
 
 # (Optional) If you have production queries
 cp production_queries.csv tests/fixtures/queries.csv
-python tests/fixtures/sanitize_queries.py
+python scripts/sanitize_queries.py
 # This creates queries_sanitized.csv
 ```
 
@@ -73,7 +73,7 @@ python tests/fixtures/sanitize_queries.py
 If you have customer queries in `queries.csv`, sanitize them first:
 
 ```bash
-python tests/fixtures/sanitize_queries.py
+python scripts/sanitize_queries.py
 ```
 
 This script:
@@ -320,7 +320,7 @@ VCRError: Could not find matching request for <Request (GET) https://graph.faceb
 
 3. **Check query sanitization** (for production queries):
    - Ensure IDs are replaced consistently
-   - Check `sanitize_queries.py` logic
+   - Check [scripts/sanitize_queries.py](scripts/sanitize_queries.py) logic
 
 ## File Structure
 
@@ -453,7 +453,7 @@ The sanitization script samples queries based on structural features to ensure c
 
 ### Too many test cases from queries.csv
 
-**Cause**: Not using sampling in `sanitize_queries.py`
+**Cause**: Not using sampling in [scripts/sanitize_queries.py](scripts/sanitize_queries.py)
 
 **Solution**: The script already samples 2 queries per structural category. Adjust `SAMPLES_PER_CATEGORY` if needed.
 
