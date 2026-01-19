@@ -18,11 +18,11 @@
                     "message": "OK"
                 },
                 "headers": {
-                    "Content-Type": [
-                        "application/json; charset=UTF-8"
-                    ],
                     "content-length": [
                         "566"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
                     ],
                     "facebook-api-version": [
                         "v23.0"
