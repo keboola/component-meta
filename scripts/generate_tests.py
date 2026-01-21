@@ -169,7 +169,9 @@ def before_record_response(response, replacements):
 
 
 def before_record_request(request, replacements):
+    # Apply general string replacements (tokens, etc.)
     request.uri = scrub_string(request.uri, replacements)
+
     # Scrub request headers (keep Content-Length for requests)
     request.headers = scrub_headers(request.headers, is_response=False)
 
@@ -351,32 +353,52 @@ def sanitize_output_csvs(output_dir, replacements):
     This ensures that output snapshots are deterministic and don't contain
     sensitive data like access tokens or dynamic URLs.
 
+    Parses CSV properly to avoid corrupting the file structure.
+
     Args:
         output_dir: Path to the KBC_DATADIR
         replacements: Dictionary of string replacements to apply
     """
+    import csv as csv_module
+
     tables_dir = Path(output_dir) / "out" / "tables"
     if not tables_dir.exists():
         return
 
     for csv_file in tables_dir.glob("*.csv"):
         try:
-            # Read the CSV
-            with open(csv_file, 'r', encoding='utf-8') as f:
-                content = f.read()
+            # Read the CSV properly
+            with open(csv_file, 'r', encoding='utf-8', newline='') as f:
+                reader = csv_module.DictReader(f)
+                rows = list(reader)
+                fieldnames = reader.fieldnames
 
-            # Apply string replacements
-            sanitized_content = scrub_string(content, replacements)
+            # Sanitize each cell value
+            sanitized_rows = []
+            for row in rows:
+                sanitized_row = {}
+                for key, value in row.items():
+                    if value is not None and isinstance(value, str):
+                        # Apply string replacements
+                        sanitized_value = scrub_string(value, replacements)
+                        # Apply URL sanitization
+                        sanitized_value = sanitize_url(sanitized_value)
+                        sanitized_row[key] = sanitized_value
+                    else:
+                        sanitized_row[key] = value
+                sanitized_rows.append(sanitized_row)
 
-            # Apply URL sanitization
-            sanitized_content = sanitize_url(sanitized_content)
-
-            # Write back
-            with open(csv_file, 'w', encoding='utf-8') as f:
-                f.write(sanitized_content)
+            # Write back as valid CSV
+            with open(csv_file, 'w', encoding='utf-8', newline='') as f:
+                if fieldnames:
+                    writer = csv_module.DictWriter(f, fieldnames=fieldnames)
+                    writer.writeheader()
+                    writer.writerows(sanitized_rows)
 
         except Exception as e:
-            logging.warning(f"Failed to sanitize {csv_file}: {e}")
+            logging.error(f"Failed to sanitize {csv_file}: {e}")
+            # Don't silently continue - re-raise to make the error visible
+            raise
 
 
 def run_test_case(case, token):
