@@ -3,6 +3,7 @@ import os
 import json
 import logging
 import csv
+import re
 import argparse
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -41,7 +42,59 @@ def scrub_string(string, replacements):
     return string
 
 
-def scrub_headers(headers):
+def sanitize_url(url):
+    """
+    Sanitize URLs by removing dynamic Facebook/Meta parameters.
+
+    Facebook CDN URLs contain session-specific parameters that change
+    between requests but don't affect the actual resource.
+
+    Args:
+        url: String that may contain a URL
+
+    Returns:
+        Sanitized string with dynamic parameters removed
+    """
+    if not url or not isinstance(url, str):
+        return url
+
+    # Only sanitize if it looks like a Facebook/Meta CDN URL
+    if not any(domain in url for domain in ['fbcdn.net', 'facebook.com']):
+        return url
+
+    # Dynamic parameters to remove
+    dynamic_params = [
+        "_nc_gid",   # Session/group ID
+        "_nc_tpa",   # Tracking parameter
+        "_nc_oc",    # Cache parameter
+        "oh",        # Hash/signature
+        "oe",        # Expiry timestamp
+    ]
+
+    # Remove each parameter
+    for param in dynamic_params:
+        url = re.sub(f"[&?]{param}=[^&]*", "", url)
+
+    # Clean up trailing ? or & characters
+    url = re.sub(r"[?&]+$", "", url)
+    # Fix double && or &? patterns
+    url = re.sub(r"&{2,}", "&", url)
+    url = re.sub(r"\?&", "?", url)
+
+    return url
+
+
+def scrub_headers(headers, is_response=False):
+    """
+    Remove sensitive and dynamic headers from requests/responses.
+
+    Args:
+        headers: Header dictionary
+        is_response: If True, also removes Content-Length from responses
+
+    Returns:
+        Filtered headers dictionary
+    """
     # Only keep essential headers to ensure deterministic cassettes and no environment leaks
     whitelist = ["content-type", "content-length", "facebook-api-version"]
     new_headers = {}
@@ -55,6 +108,10 @@ def scrub_headers(headers):
                 new_headers[k] = v if isinstance(v, list) else [v]
     except Exception:
         return headers
+
+    # For responses, remove Content-Length as it changes with body sanitization
+    if is_response and "Content-Length" in new_headers:
+        del new_headers["Content-Length"]
 
     return new_headers
 
@@ -71,13 +128,17 @@ def recursive_scrub(obj, replacements):
     elif isinstance(obj, list):
         return [recursive_scrub(i, replacements) for i in obj]
     elif isinstance(obj, str):
-        return scrub_string(obj, replacements)
+        # First apply token scrubbing
+        scrubbed = scrub_string(obj, replacements)
+        # Then sanitize URLs
+        scrubbed = sanitize_url(scrubbed)
+        return scrubbed
     return obj
 
 
 def before_record_response(response, replacements):
-    # Scrub headers
-    response["headers"] = scrub_headers(response.get("headers", {}))
+    # Scrub headers (response headers - remove Content-Length)
+    response["headers"] = scrub_headers(response.get("headers", {}), is_response=True)
 
     # Scrub body
     if "body" in response and "string" in response["body"]:
@@ -109,7 +170,8 @@ def before_record_response(response, replacements):
 
 def before_record_request(request, replacements):
     request.uri = scrub_string(request.uri, replacements)
-    request.headers = scrub_headers(request.headers)
+    # Scrub request headers (keep Content-Length for requests)
+    request.headers = scrub_headers(request.headers, is_response=False)
 
     if request.body:
         try:
@@ -282,6 +344,41 @@ def run_from_csv(csv_path, secrets_path):
             run_test_case(case, token)
 
 
+def sanitize_output_csvs(output_dir, replacements):
+    """
+    Sanitize CSV files in the output directory by applying replacements.
+
+    This ensures that output snapshots are deterministic and don't contain
+    sensitive data like access tokens or dynamic URLs.
+
+    Args:
+        output_dir: Path to the KBC_DATADIR
+        replacements: Dictionary of string replacements to apply
+    """
+    tables_dir = Path(output_dir) / "out" / "tables"
+    if not tables_dir.exists():
+        return
+
+    for csv_file in tables_dir.glob("*.csv"):
+        try:
+            # Read the CSV
+            with open(csv_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            # Apply string replacements
+            sanitized_content = scrub_string(content, replacements)
+
+            # Apply URL sanitization
+            sanitized_content = sanitize_url(sanitized_content)
+
+            # Write back
+            with open(csv_file, 'w', encoding='utf-8') as f:
+                f.write(sanitized_content)
+
+        except Exception as e:
+            logging.warning(f"Failed to sanitize {csv_file}: {e}")
+
+
 def run_test_case(case, token):
     # Replacements map: Real -> Dummy
     replacements = {token: "token"}
@@ -337,6 +434,9 @@ def run_test_case(case, token):
                     else:
                         comp.execute_action()
                     print(f"Success: {case['name']}")
+
+                    # Sanitize output CSVs before capturing snapshot
+                    sanitize_output_csvs(tmpdir, replacements)
 
                     # Capture output snapshot if snapshot manager is enabled
                     if snapshot_manager:
