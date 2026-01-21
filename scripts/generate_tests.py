@@ -59,16 +59,16 @@ def sanitize_url(url):
         return url
 
     # Only sanitize if it looks like a Facebook/Meta CDN URL
-    if not any(domain in url for domain in ['fbcdn.net', 'facebook.com']):
+    if not any(domain in url for domain in ["fbcdn.net", "facebook.com"]):
         return url
 
     # Dynamic parameters to remove
     dynamic_params = [
-        "_nc_gid",   # Session/group ID
-        "_nc_tpa",   # Tracking parameter
-        "_nc_oc",    # Cache parameter
-        "oh",        # Hash/signature
-        "oe",        # Expiry timestamp
+        "_nc_gid",  # Session/group ID
+        "_nc_tpa",  # Tracking parameter
+        "_nc_oc",  # Cache parameter
+        "oh",  # Hash/signature
+        "oe",  # Expiry timestamp
     ]
 
     # Remove each parameter
@@ -368,7 +368,7 @@ def sanitize_output_csvs(output_dir, replacements):
     for csv_file in tables_dir.glob("*.csv"):
         try:
             # Read the CSV properly
-            with open(csv_file, 'r', encoding='utf-8', newline='') as f:
+            with open(csv_file, "r", encoding="utf-8", newline="") as f:
                 reader = csv_module.DictReader(f)
                 rows = list(reader)
                 fieldnames = reader.fieldnames
@@ -389,7 +389,7 @@ def sanitize_output_csvs(output_dir, replacements):
                 sanitized_rows.append(sanitized_row)
 
             # Write back as valid CSV
-            with open(csv_file, 'w', encoding='utf-8', newline='') as f:
+            with open(csv_file, "w", encoding="utf-8", newline="") as f:
                 if fieldnames:
                     writer = csv_module.DictWriter(f, fieldnames=fieldnames)
                     writer.writeheader()

@@ -1,5 +1,6 @@
 import logging
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import parse_qs, urlparse
@@ -10,6 +11,200 @@ from keboola.utils.date import get_past_date
 from requests import HTTPError
 
 logger = logging.getLogger(__name__)
+
+
+# Facebook API error codes
+@dataclass(frozen=True)
+class FacebookErrorCode:
+    """Facebook API error code constants."""
+
+    code: int
+    subcode: Optional[int] = None
+    message_fragment: Optional[str] = None
+
+
+# Known recoverable errors
+BUSINESS_CONVERSION_ERROR = FacebookErrorCode(
+    code=100,
+    subcode=2108006,
+    message_fragment="media posted before business account conversion",
+)
+
+OBJECT_NOT_FOUND_ERROR = FacebookErrorCode(
+    code=100,
+    subcode=33,
+    message_fragment="does not exist, cannot be loaded due to missing permissions",
+)
+
+DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(
+    code=None, message_fragment="there cannot be more than 30 days"
+)
+
+# Instagram insights configuration
+MAX_INSTAGRAM_INSIGHTS_DAYS = 30
+IG_INSIGHTS_METRICS = frozenset(
+    ["follower_count", "reach", "impressions", "profile_views"]
+)
+
+
+class FacebookErrorHandler:
+    """Handles Facebook API error detection and categorization."""
+
+    @staticmethod
+    def is_recoverable_error(http_error: HTTPError) -> tuple[bool, str]:
+        """
+        Check if an HTTP error is recoverable (should return empty data instead of failing).
+        Returns (is_recoverable, error_description).
+        """
+        if FacebookErrorHandler._matches_error(http_error, BUSINESS_CONVERSION_ERROR):
+            return True, "Media Posted Before Business Account Conversion"
+
+        if FacebookErrorHandler._matches_error(http_error, DATE_RANGE_LIMIT_ERROR):
+            return (
+                True,
+                "30-day limit exceeded. Change 'since(30 days ago)' to '29 days ago' in config.",
+            )
+
+        if FacebookErrorHandler._matches_error(http_error, OBJECT_NOT_FOUND_ERROR):
+            return (
+                True,
+                "Account no longer exists or is inaccessible. Remove it or re-run Add Account.",
+            )
+
+        return False, ""
+
+    @staticmethod
+    def _matches_error(http_error: HTTPError, error_code: FacebookErrorCode) -> bool:
+        """Check if HTTP error matches the given error code definition."""
+        response = getattr(http_error, "response", None)
+
+        # Try structured JSON error first
+        if response is not None:
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+
+                # Match by code and subcode if both are defined
+                if error_code.code is not None:
+                    if error_info.get("code") == error_code.code:
+                        if (
+                            error_code.subcode is None
+                            or error_info.get("error_subcode") == error_code.subcode
+                        ):
+                            return True
+            except Exception:
+                pass
+
+        # Fall back to message fragment matching
+        if error_code.message_fragment:
+            # Check response text
+            if response is not None:
+                try:
+                    if error_code.message_fragment in response.text.lower():
+                        return True
+                except Exception:
+                    pass
+
+            # Check exception message
+            try:
+                if error_code.message_fragment in str(http_error).lower():
+                    return True
+            except Exception:
+                pass
+
+        return False
+
+
+class InstagramInsightsValidator:
+    """Validates Instagram insights query parameters."""
+
+    @staticmethod
+    def is_instagram_insights_query(fields: str) -> bool:
+        """Check if fields contain Instagram-specific metrics."""
+        return any(metric in fields for metric in IG_INSIGHTS_METRICS)
+
+    @staticmethod
+    def validate_date_range(params: dict[str, Any], fields: str) -> None:
+        """
+        Validate that Instagram insights date range doesn't exceed 30 days.
+        Raises UserException if validation fails.
+        """
+        if not InstagramInsightsValidator.is_instagram_insights_query(fields):
+            return
+
+        since_str = params.get("since")
+        if not since_str:
+            return
+
+        # Parse dates
+        try:
+            since_date = datetime.strptime(since_str, "%Y-%m-%d")
+        except ValueError:
+            return  # Let API handle invalid format
+
+        until_str = params.get("until")
+        until_date = (
+            datetime.strptime(until_str, "%Y-%m-%d") if until_str else datetime.now()
+        )
+
+        # Check range
+        delta_days = (until_date - since_date).days
+        if delta_days > MAX_INSTAGRAM_INSIGHTS_DAYS:
+            raise UserException(
+                f"Instagram insights queries cannot exceed {MAX_INSTAGRAM_INSIGHTS_DAYS} days. "
+                f"Your query spans {delta_days} days (from {since_str} to {until_str or 'today'}). "
+                f"Please reduce the date range to 29 days or less."
+            )
+
+
+class PaginationHandler:
+    """Handles Facebook API pagination timestamp edge cases."""
+
+    @staticmethod
+    def should_skip_pagination(params: dict[str, Any]) -> tuple[bool, str]:
+        """
+        Check if pagination request should be skipped due to invalid timestamps.
+        Returns (should_skip, reason).
+        """
+        now_ts = int(datetime.now(timezone.utc).timestamp())
+        since_ts = PaginationHandler._parse_unix_ts(params.get("since"))
+        until_ts = PaginationHandler._parse_unix_ts(params.get("until"))
+        one_hour_ago = now_ts - 3600
+
+        # Case 1: Very recent 'since' without 'until' - reached end of historical data
+        if since_ts is not None and until_ts is None and since_ts > one_hour_ago:
+            return True, "reached end of historical data"
+
+        # Case 2: Both timestamps in future - no historical data
+        if since_ts is not None and until_ts is not None:
+            if since_ts > now_ts and until_ts > now_ts:
+                return True, "both timestamps in future"
+
+            # Future 'until' with very recent 'since' - no meaningful data
+            if until_ts > now_ts and since_ts > one_hour_ago:
+                return True, "reached end of historical data"
+
+        return False, ""
+
+    @staticmethod
+    def adjust_params(params: dict[str, Any]) -> dict[str, Any]:
+        """Remove future 'until' timestamp if present, return adjusted params."""
+        until_ts = PaginationHandler._parse_unix_ts(params.get("until"))
+        if until_ts is not None:
+            now_ts = int(datetime.now(timezone.utc).timestamp())
+            if until_ts > now_ts:
+                logger.debug("Adjusting pagination window to end at current time")
+                params = params.copy()
+                params.pop("until", None)
+        return params
+
+    @staticmethod
+    def _parse_unix_ts(value: Any) -> Optional[int]:
+        """Parse a 10-digit Unix timestamp, return None if not valid."""
+        if value is None:
+            return None
+        s = str(value)
+        return int(s) if s.isdigit() and len(s) == 10 else None
 
 
 class PageLoader:
@@ -143,9 +338,17 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
+            # Check for recoverable errors
+            is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
+            if is_recoverable:
+                logger.warning(f"Skipping account: {error_desc}")
+                return {"data": []}
+
+            # Non-recoverable error
             logger.error(f"HTTP error while loading page data: {e}")
-            if hasattr(e, "response") and e.response:
-                logger.error(f"Response text: {e.response.text}")
+            response = getattr(e, "response", None)
+            if response is not None:
+                logger.error(f"Facebook API error response: {response.text}")
             raise
 
         except Exception as e:
@@ -192,6 +395,9 @@ class PageLoader:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
 
+            # Validate 30-day limit for Instagram insights queries
+            InstagramInsightsValidator.validate_date_range(params, fields)
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
@@ -234,7 +440,6 @@ class PageLoader:
 
             # Parse query parameters
             query_params = parse_qs(parsed_url.query)
-            # Convert lists to single values (parse_qs returns lists)
             params = {
                 k: v[0] if isinstance(v, list) and len(v) == 1 else v
                 for k, v in query_params.items()
@@ -243,50 +448,35 @@ class PageLoader:
             logger.debug(f"Loading paginated data from path: {path}")
             logger.debug(f"Pagination params: {params}")
 
-            # Handle Meta bug: pagination URLs sometimes have future timestamps
-            until_ts = self._parse_unix_ts(params.get("until"))
-            if until_ts is not None:
-                now_ts = int(datetime.now(timezone.utc).timestamp())
+            # Check if pagination should be skipped (e.g., future timestamps)
+            should_skip, reason = PaginationHandler.should_skip_pagination(params)
+            if should_skip:
+                logger.info(f"Skipping pagination: {reason} for URL: {url}")
+                return {"data": []}
 
-                # Check if 'until' is in the future
-                if until_ts > now_ts:
-                    since_ts = self._parse_unix_ts(params.get("since"))
-
-                    # Both since and until in future -> no historical data to fetch
-                    if since_ts is not None and since_ts > now_ts:
-                        logger.warning(
-                            f"Skipping future-only pagination range. URL: {url}"
-                        )
-                        return {"data": []}
-
-                    # Only until in future -> remove it, API will use 'now' implicitly
-                    logger.warning(
-                        f"Removing future 'until'={params.get('until')}. URL: {url}"
-                    )
-                    params.pop("until", None)
+            # Adjust params if needed (e.g., remove future 'until')
+            params = PaginationHandler.adjust_params(params)
 
             response = self.client.get(endpoint_path=path, params=params)
-
             return response if response else {"data": []}
 
         except HTTPError as e:
+            # Check for recoverable errors
+            is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
+            if is_recoverable:
+                logger.warning(f"Skipping account: {error_desc}")
+                return {"data": []}
+
+            # Non-recoverable error
             status_code = getattr(getattr(e, "response", None), "status_code", None)
             logger.error(
                 f"HTTP error while loading paginated data (status={status_code}): {e}"
             )
-            if hasattr(e, "response") and e.response is not None:
-                logger.error(f"Facebook API error response: {e.response.text}")
+            response = getattr(e, "response", None)
+            if response is not None:
+                logger.error(f"Facebook API error response: {response.text}")
             raise
 
         except Exception as e:
             logger.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
-
-    def _parse_unix_ts(self, value: Any) -> int | None:
-        """Parse a 10-digit Unix timestamp, return None if not valid."""
-        if value is None:
-            return None
-        s = str(value)
-        if s.isdigit() and len(s) == 10:
-            return int(s)
-        return None

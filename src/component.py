@@ -243,9 +243,34 @@ class Component(ComponentBase):
 
     @sync_action("igaccounts")
     def run_ig_accounts_action(self) -> list[dict[str, Any]]:
-        return self.client.get_accounts(
+        """
+        Get Instagram Business Accounts linked to Facebook Pages.
+
+        Returns only accounts with an instagram_business_account field,
+        transforming the response to use the Instagram Business Account ID
+        as the primary ID (matching V1 behavior).
+        """
+        raw_accounts = self.client.get_accounts(
             "me/accounts", "instagram_business_account,name,category"
         )
+
+        # Transform to V1 format: filter and restructure
+        result = []
+        for account in raw_accounts:
+            ig_account_data = account.get("instagram_business_account")
+            if not ig_account_data:
+                continue
+
+            transformed = {
+                "id": ig_account_data["id"],
+                "fb_page_id": account["id"],
+                "name": account.get("name"),
+                "category": account.get("category"),
+            }
+            # Remove None values
+            result.append({k: v for k, v in transformed.items() if v is not None})
+
+        return result
 
 
 """
