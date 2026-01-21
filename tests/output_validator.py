@@ -11,16 +11,18 @@ from typing import Dict, Any, List
 class OutputSnapshot:
     """Snapshot of component output for validation."""
 
-    def __init__(self, test_name: str, output_dir: Path):
+    def __init__(self, test_name: str, output_dir: Path, full_output: bool = False):
         """
         Initialize output snapshot.
 
         Args:
             test_name: Name of the test case
             output_dir: Directory containing component outputs (KBC_DATADIR)
+            full_output: If True, capture all rows instead of just samples (default: False)
         """
         self.test_name = test_name
         self.output_dir = Path(output_dir)
+        self.full_output = full_output
         self.snapshot = {}
 
     def capture(self) -> Dict[str, Any]:
@@ -55,12 +57,14 @@ class OutputSnapshot:
                 # Capture metadata
                 # Sort columns to ensure deterministic snapshots regardless of CSV column order
                 columns = sorted(rows[0].keys()) if rows else []
+                # Capture either full output or just samples based on flag
+                sample_rows = rows if self.full_output else (rows[:3] if rows else [])
                 tables[csv_file.name] = {
                     "row_count": len(rows),
                     "column_count": len(columns),
                     "columns": columns,
                     "hash": self._hash_csv_content(csv_file),
-                    "sample_rows": rows[:3] if rows else [],  # First 3 rows
+                    "sample_rows": sample_rows,
                 }
             except Exception as e:
                 tables[csv_file.name] = {"error": f"Failed to read CSV: {str(e)}"}
@@ -328,18 +332,19 @@ class SnapshotManager:
             json.dump(self.snapshots, f, indent=2, sort_keys=True)
         print(f"Saved snapshots to {self.snapshots_file}")
 
-    def capture_snapshot(self, test_name: str, output_dir: Path) -> Dict[str, Any]:
+    def capture_snapshot(self, test_name: str, output_dir: Path, full_output: bool = False) -> Dict[str, Any]:
         """
         Capture and store snapshot for a test case.
 
         Args:
             test_name: Name of the test case
             output_dir: Output directory to snapshot
+            full_output: If True, capture all rows instead of just samples
 
         Returns:
             Captured snapshot data
         """
-        snapshot = OutputSnapshot(test_name, output_dir)
+        snapshot = OutputSnapshot(test_name, output_dir, full_output=full_output)
         captured = snapshot.capture()
         self.snapshots[test_name] = captured
         return captured

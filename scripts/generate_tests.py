@@ -206,7 +206,7 @@ def inject_secrets(config, token):
     return config
 
 
-def run_from_csv(csv_path, secrets_path):
+def run_from_csv(csv_path, secrets_path, full_output=False):
     # Try sanitized file first if it exists
     sanitized_path = csv_path.parent / "queries_sanitized.csv"
     if sanitized_path.exists():
@@ -343,7 +343,7 @@ def run_from_csv(csv_path, secrets_path):
             except Exception:
                 pass
 
-            run_test_case(case, token)
+            run_test_case(case, token, full_output=full_output)
 
 
 def sanitize_output_csvs(output_dir, replacements):
@@ -401,7 +401,7 @@ def sanitize_output_csvs(output_dir, replacements):
             raise
 
 
-def run_test_case(case, token):
+def run_test_case(case, token, full_output=False):
     # Replacements map: Real -> Dummy
     replacements = {token: "token"}
 
@@ -462,8 +462,9 @@ def run_test_case(case, token):
 
                     # Capture output snapshot if snapshot manager is enabled
                     if snapshot_manager:
-                        snapshot_manager.capture_snapshot(case["name"], tmpdir)
-                        print(f"  → Captured output snapshot for {case['name']}")
+                        snapshot_manager.capture_snapshot(case["name"], tmpdir, full_output=full_output)
+                        mode = "full output" if full_output else "samples only"
+                        print(f"  → Captured output snapshot for {case['name']} ({mode})")
 
                 except BaseException as e:
                     import traceback
@@ -488,6 +489,11 @@ def run_gen():
         action="store_true",
         help="Capture output snapshots for validation",
     )
+    parser.add_argument(
+        "--full-output",
+        action="store_true",
+        help="Capture all rows in snapshots instead of just samples (for debugging hash differences)",
+    )
     args = parser.parse_args()
 
     # Initialize snapshot manager if requested
@@ -497,7 +503,7 @@ def run_gen():
         print(f"Output snapshot capture enabled → {SNAPSHOTS_FILE}")
 
     if args.csv:
-        run_from_csv(QUERIES_FILE, SECRETS_FILE)
+        run_from_csv(QUERIES_FILE, SECRETS_FILE, full_output=args.full_output)
         # Save snapshots after all tests
         if snapshot_manager:
             snapshot_manager.save()
