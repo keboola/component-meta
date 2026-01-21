@@ -52,6 +52,9 @@ logging.getLogger().addFilter(access_token_filter)
 for name in logging.root.manager.loggerDict:
     logging.getLogger(name).addFilter(access_token_filter)
 
+# Create module logger after filter is set up
+logger = logging.getLogger(__name__)
+
 
 class FacebookClient:
     def __init__(self, oauth: OauthCredentials, api_version: str):
@@ -64,7 +67,7 @@ class FacebookClient:
             and self.oauth.data.get("token", None)
             and not self.oauth.data.get("access_token", None)
         ):
-            logging.info("Direct insert token is used for authentication.")
+            logger.info("Direct insert token is used for authentication.")
             self.oauth.data["access_token"] = self.oauth.data["token"]
 
         self.client = HttpClient(
@@ -99,20 +102,20 @@ class FacebookClient:
         # Start all async jobs
         all_job_details = {}
         if async_queries:
-            logging.info(f"Starting {len(async_queries)} async queries in parallel.")
+            logger.info(f"Starting {len(async_queries)} async queries in parallel.")
             for query in async_queries:
-                logging.info(f"Starting async query: {query.name}")
+                logger.info(f"Starting async query: {query.name}")
                 job_details = self._start_async_jobs_for_query(accounts, query)
                 all_job_details.update(job_details)
 
         # Poll and process async results
         if all_job_details:
-            logging.info(f"Polling and processing {len(all_job_details)} async jobs.")
+            logger.info(f"Polling and processing {len(all_job_details)} async jobs.")
             yield from self._poll_and_process_async_jobs(all_job_details)
 
         # Process sync queries
         for query in sync_queries:
-            logging.info(f"Processing sync query: {query.name}")
+            logger.info(f"Processing sync query: {query.name}")
             yield from self._process_single_sync_query(accounts, query)
 
     def _start_async_jobs_for_query(self, accounts: list, row_config) -> dict:
@@ -148,7 +151,7 @@ class FacebookClient:
                         "access_token": token,
                     }
             except Exception as e:
-                logging.error(f"Failed to start async job for {page_id}: {e}")
+                logger.error(f"Failed to start async job for {page_id}: {e}")
         return job_details
 
     def _poll_and_process_async_jobs(self, all_job_details: dict) -> Iterator[dict]:
@@ -169,7 +172,7 @@ class FacebookClient:
                 if res:
                     yield res
             except Exception as e:
-                logging.error(
+                logger.error(
                     f"Failed to process async job result for report_id: {report_id}: {e}"
                 )
 
@@ -181,7 +184,7 @@ class FacebookClient:
         Yields parsed data for each item in the response.
         Raises HTTPError on failure so the caller can handle fallbacks.
         """
-        logging.info(f"Batch fetching object details for IDs: {','.join(account_ids)}")
+        logger.info(f"Batch fetching object details for IDs: {','.join(account_ids)}")
         params = {"ids": ",".join(account_ids), "fields": row_config.query.fields}
 
         # Raises HTTPError on failure
@@ -190,13 +193,13 @@ class FacebookClient:
         )
 
         if not response or not isinstance(response, dict):
-            logging.warning("Empty or invalid response for batch ID fetch.")
+            logger.warning("Empty or invalid response for batch ID fetch.")
             return
 
         fb_graph_node = self._get_fb_graph_node(False, row_config)
         for item_id, item_data in response.items():
             if isinstance(item_data, dict) and "error" in item_data:
-                logging.warning(
+                logger.warning(
                     f"Error fetching data for ID {item_id}: {item_data['error']}"
                 )
                 continue
@@ -227,7 +230,7 @@ class FacebookClient:
 
             if account_ids:
                 try:
-                    logging.info(
+                    logger.info(
                         f"Attempting to batch fetch data for {len(account_ids)} IDs."
                     )
                     params = {
@@ -239,12 +242,12 @@ class FacebookClient:
                     )
 
                     if not response or not isinstance(response, dict):
-                        logging.warning("Empty or invalid response for batch ID fetch.")
+                        logger.warning("Empty or invalid response for batch ID fetch.")
                     else:
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         for item_id, item_data in response.items():
                             if isinstance(item_data, dict) and "error" in item_data:
-                                logging.warning(
+                                logger.warning(
                                     f"Error fetching data for ID {item_id}: {item_data['error']}"
                                 )
                                 continue
@@ -265,12 +268,12 @@ class FacebookClient:
                         str(e.response.text) if hasattr(e, "response") else str(e)
                     )
                     if "Page Access Token" in error_text:
-                        logging.info(
+                        logger.info(
                             "Batch request requires page token, falling back to individual requests."
                         )
                         # Let the code fall through to individual processing below.
                     else:
-                        logging.error(
+                        logger.error(
                             f"Batch request failed with a non-token error: {error_text}"
                         )
                         return  # A definitive failure, stop processing.
@@ -282,11 +285,11 @@ class FacebookClient:
             accounts = [account for account in accounts if account.id in selected_ids]
 
         if self._request_require_page_token(row_config):
-            logging.info("Require page token")
+            logger.info("Require page token")
             is_page_token = True
             page_tokens = self._get_pages_token(accounts)
         else:
-            logging.info("Don't need page token")
+            logger.info("Don't need page token")
             is_page_token = False
             page_tokens = {
                 account.id: self.oauth.data.get("access_token") for account in accounts
@@ -318,7 +321,7 @@ class FacebookClient:
 
             except Exception as e:
                 if is_page_token and str(e).startswith("400"):
-                    logging.warning(
+                    logger.warning(
                         f"Page token failed with 400 error for {page_id}, falling back to user token"
                     )
                     try:
@@ -339,13 +342,13 @@ class FacebookClient:
                         else:
                             page_content = page_data.get("data", [])
                     except Exception as user_token_error:
-                        logging.error(
+                        logger.error(
                             f"User token also failed for {page_id}: {str(user_token_error)}"
                         )
                         continue
 
                 else:
-                    logging.error(f"Failed to load data for {page_id}: {str(e)}")
+                    logger.error(f"Failed to load data for {page_id}: {str(e)}")
                     continue
 
             if not page_content:
@@ -395,7 +398,7 @@ class FacebookClient:
             )
             return response
         except Exception as e:
-            logging.error(f"Failed to fetch account data for {account_id}: {str(e)}")
+            logger.error(f"Failed to fetch account data for {account_id}: {str(e)}")
             return None
 
     def debug_token(self, token: str) -> dict[str, Any]:
@@ -438,7 +441,7 @@ class FacebookClient:
                 )
 
         except Exception as e:
-            logging.warning(f"Unable to get page tokens: {e}")
+            logger.warning(f"Unable to get page tokens: {e}")
             # Use the fallback user token for all accounts
             for account in accounts:
                 page_tokens[account.id] = self.oauth.data.get("access_token")

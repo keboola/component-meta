@@ -11,6 +11,8 @@ from keboola.csvwriter import ElasticDictWriter
 from client import FacebookClient
 from configuration import Configuration
 
+logger = logging.getLogger(__name__)
+
 PREFERRED_COLUMNS_ORDER = [
     "id",
     "ex_account_id",
@@ -101,7 +103,7 @@ class Component(ComponentBase):
         self._finalize_tables()
 
     def _write_accounts_from_config(self, config: Configuration) -> None:
-        logging.info("Writing accounts table from configuration")
+        logger.info("Writing accounts table from configuration")
         accounts_data = []
         for acc in config.accounts.values():
             account_dict = {
@@ -129,7 +131,7 @@ class Component(ComponentBase):
         if not queries_to_process:
             return
 
-        logging.info(f"Processing {len(queries_to_process)} queries.")
+        logger.info(f"Processing {len(queries_to_process)} queries.")
 
         for parsed_data in self.client.process_queries(
             list(config.accounts.values()), queries_to_process
@@ -139,7 +141,7 @@ class Component(ComponentBase):
                     continue
                 primary_key = self._get_primary_key(rows_list)
                 self._write_rows(table_name, rows_list, primary_key, True)
-                logging.debug(
+                logger.debug(
                     f"Wrote batch of {len(rows_list)} rows to table {table_name}"
                 )
 
@@ -185,7 +187,7 @@ class Component(ComponentBase):
         remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
-        logging.debug(
+        logger.debug(
             f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}"
         )
         table_def = self.create_out_table_definition(
@@ -216,7 +218,7 @@ class Component(ComponentBase):
         # This function replace default bucket option in Developer portal with custom implementation.
         # It allows set own bucket.
         if self.config.bucket_id:
-            logging.info(f"Using bucket ID from configuration: {self.config.bucket_id}")
+            logger.info(f"Using bucket ID from configuration: {self.config.bucket_id}")
             return f"{self.config.bucket_id}"
         config_id = self.environment_variables.config_id
         component_id = self.environment_variables.component_id
@@ -224,7 +226,7 @@ class Component(ComponentBase):
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
             component_id = "keboola-ex-meta"
-        logging.info(
+        logger.info(
             f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}"
         )
         return f"in.c-{component_id.replace('.', '-')}-{config_id}"
@@ -255,8 +257,8 @@ if __name__ == "__main__":
         # this triggers the run method by default and is controlled by the configuration.action parameter
         comp.execute_action()
     except UserException as exc:
-        logging.exception(exc)
+        logger.exception(exc)
         exit(1)
     except Exception as exc:
-        logging.exception(exc)
+        logger.exception(exc)
         exit(2)

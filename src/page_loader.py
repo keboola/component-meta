@@ -33,7 +33,7 @@ class PageLoader:
         if not report_id:
             return {"data": []}
 
-        logging.info(f"Started polling for insights job report: {report_id}")
+        logger.info(f"Started polling for insights job report: {report_id}")
 
         # Poll for completion
         return self.poll_async_job(report_id)
@@ -51,22 +51,22 @@ class PageLoader:
             )
             params.update({k.strip(): v.strip() for k, v in param_pairs})
 
-        logging.info(f"Starting async insights request: {endpoint_path}")
+        logger.info(f"Starting async insights request: {endpoint_path}")
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
             report_id = response.get("report_run_id")
             if not report_id:
-                logging.warning(
+                logger.warning(
                     "No 'report_run_id' found in the async insights response."
                 )
                 return None
 
-            logging.info(f"Async job started successfully with report ID: {report_id}")
+            logger.info(f"Async job started successfully with report ID: {report_id}")
             return report_id
 
         except Exception as e:
-            logging.error(f"Error starting async insights job: {e}")
+            logger.error(f"Error starting async insights job: {e}")
             return None
 
     def poll_async_job(
@@ -88,13 +88,13 @@ class PageLoader:
                 )
 
                 if not response:
-                    logging.error("Empty response from async job status check")
+                    logger.error("Empty response from async job status check")
                     break
 
                 async_percent = response.get("async_percent_completion", 0)
                 async_status = response.get("async_status", "Unknown")
 
-                logging.info(
+                logger.info(
                     f"Async job {report_id}: {async_percent}% complete, status: {async_status}"
                 )
 
@@ -108,7 +108,7 @@ class PageLoader:
                     attempt += 1
 
             except Exception as e:
-                logging.error(f"Error polling async job {report_id}: {str(e)}")
+                logger.error(f"Error polling async job {report_id}: {str(e)}")
                 raise e
 
         if not is_finished or async_status != "Job Completed":
@@ -124,7 +124,7 @@ class PageLoader:
             )
             return final_response if final_response else {"data": []}
         except Exception as e:
-            logging.error(f"Failed to get final results for job {report_id}: {str(e)}")
+            logger.error(f"Failed to get final results for job {report_id}: {str(e)}")
             return {"data": []}
 
     def _load_regular_page(
@@ -135,21 +135,21 @@ class PageLoader:
 
         endpoint_path = self._build_endpoint_path(query_config, page_id)
 
-        logging.debug(f"Loading page data from: {endpoint_path}")
-        logging.debug(f"Request params: {base_params}")
+        logger.debug(f"Loading page data from: {endpoint_path}")
+        logger.debug(f"Request params: {base_params}")
 
         try:
             response = self.client.get(endpoint_path=endpoint_path, params=base_params)
             return response or {"data": []}
 
         except HTTPError as e:
-            logging.error(f"HTTP error while loading page data: {e}")
+            logger.error(f"HTTP error while loading page data: {e}")
             if hasattr(e, "response") and e.response:
-                logging.error(f"Response text: {e.response.text}")
+                logger.error(f"Response text: {e.response.text}")
             raise
 
         except Exception as e:
-            logging.error(f"Failed to load page data: {e}")
+            logger.error(f"Failed to load page data: {e}")
             raise
 
     def _build_params(self, query_config) -> dict[str, Any]:
@@ -240,8 +240,8 @@ class PageLoader:
                 for k, v in query_params.items()
             }
 
-            logging.debug(f"Loading paginated data from path: {path}")
-            logging.debug(f"Pagination params: {params}")
+            logger.debug(f"Loading paginated data from path: {path}")
+            logger.debug(f"Pagination params: {params}")
 
             # Handle Meta bug: pagination URLs sometimes have future timestamps
             until_ts = self._parse_unix_ts(params.get("until"))
@@ -254,13 +254,13 @@ class PageLoader:
 
                     # Both since and until in future -> no historical data to fetch
                     if since_ts is not None and since_ts > now_ts:
-                        logging.warning(
+                        logger.warning(
                             f"Skipping future-only pagination range. URL: {url}"
                         )
                         return {"data": []}
 
                     # Only until in future -> remove it, API will use 'now' implicitly
-                    logging.warning(
+                    logger.warning(
                         f"Removing future 'until'={params.get('until')}. URL: {url}"
                     )
                     params.pop("until", None)
@@ -271,15 +271,15 @@ class PageLoader:
 
         except HTTPError as e:
             status_code = getattr(getattr(e, "response", None), "status_code", None)
-            logging.error(
+            logger.error(
                 f"HTTP error while loading paginated data (status={status_code}): {e}"
             )
             if hasattr(e, "response") and e.response is not None:
-                logging.error(f"Facebook API error response: {e.response.text}")
+                logger.error(f"Facebook API error response: {e.response.text}")
             raise
 
         except Exception as e:
-            logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
+            logger.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
 
     def _parse_unix_ts(self, value: Any) -> int | None:
