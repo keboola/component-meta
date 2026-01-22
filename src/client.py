@@ -88,13 +88,17 @@ class PageTokenResolver:
             # Assign tokens to accounts
             for account in accounts:
                 if account.fb_page_id:
-                    # Account has fb_page_id - look up page token
+                    # Instagram account - account.id is IG Business Account ID
+                    # Look up page token using the linked Facebook Page ID
                     page_tokens[account.id] = page_token_map.get(
                         account.fb_page_id, user_token
                     )
                 else:
-                    # Account without fb_page_id - use user token directly
-                    page_tokens[account.id] = user_token
+                    # Facebook Page account - account.id IS the Facebook Page ID
+                    # Look up page token using account.id
+                    page_tokens[account.id] = page_token_map.get(
+                        account.id, user_token
+                    )
 
         except Exception as e:
             logger.warning(f"Unable to get page tokens: {e}")
