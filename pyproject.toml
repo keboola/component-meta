@@ -18,3 +18,16 @@ dependencies = [
 
 [tool.uv.sources]
 keboola-http-client = { git = "https://github.com/keboola/python-http-client.git", rev = "feature/async" }
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "vcrpy>=8.1.1",
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:Primary key is set but columns are not:DeprecationWarning",
+    "ignore:Parsing dates involving a day of month:DeprecationWarning",
+]
+

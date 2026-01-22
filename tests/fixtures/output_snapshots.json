@@ -1,0 +1,1158 @@
+{
+  "gen_facebook_ads_v2_v22_0": {
+    "files": {},
+    "metadata": {
+      "test_name": "gen_facebook_ads_v2_v22_0"
+    },
+    "tables": {
+      "accounts.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "business_name",
+          "currency",
+          "id",
+          "name"
+        ],
+        "hash": "sha256:2814b000f9e1481b0329ff5a2c56b5cd711d49bdb92b8a392272c2aaf8810c16",
+        "row_count": 4,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "business_name": "",
+            "currency": "USD",
+            "id": "act_186649832776475",
+            "name": "Keboola Ads"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "177057932317550",
+            "name": "Test Account 1"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "17841403584244541",
+            "name": "Test Account 2"
+          }
+        ]
+      },
+      "accounts.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:89c64d4c0c18134631488691ba907c3efc1c8f2260e3b3ef5191e34322b09b89",
+        "incremental": false,
+        "primary_key": [
+          "id"
+        ]
+      },
+      "query.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "parent_id"
+        ],
+        "hash": "sha256:93dfffab43eeb325b60592ac1bcb4f7ccf152d4869a34f29d533865591d1391d",
+        "row_count": 1,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page",
+            "id": "act_186649832776475",
+            "parent_id": "act_186649832776475"
+          }
+        ]
+      },
+      "query.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:7e9734ee8e31b503c678d70df8678b5f05f7968fd3ae171abb8218fb7701f4ac",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id"
+        ]
+      },
+      "query_adcreatives.csv": {
+        "column_count": 13,
+        "columns": [
+          "account_id",
+          "body",
+          "effective_object_story_id",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "image_url",
+          "instagram_permalink_url",
+          "name",
+          "parent_id",
+          "thumbnail_url",
+          "title",
+          "url_tags"
+        ],
+        "hash": "sha256:81a23c24cedbe4d8d893512d47bb4ac51e00e011ffabce138467d51072759385",
+        "row_count": 706,
+        "sample_rows": [
+          {
+            "account_id": "",
+            "body": "Wouldn\u2019t it be great if you could start modeling data in minutes? \nWith Keboola, you can simply access and load data into your tool of choice. Everything is accessible in one place.",
+            "effective_object_story_id": "177057932317550_3189986301024683",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads_adcreatives",
+            "id": "23845266696350593",
+            "image_url": "",
+            "instagram_permalink_url": "",
+            "name": "",
+            "parent_id": "23845266671230593",
+            "thumbnail_url": "",
+            "title": "",
+            "url_tags": ""
+          },
+          {
+            "account_id": "",
+            "body": "Do you wish you could predict the demand for your product? \nWell, you can. The only thing that\u2019s stopping you is the how. Here\u2019s the cheat sheet to get started.",
+            "effective_object_story_id": "177057932317550_3189077571115556",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads_adcreatives",
+            "id": "23845264645860593",
+            "image_url": "",
+            "instagram_permalink_url": "",
+            "name": "",
+            "parent_id": "23845264499650593",
+            "thumbnail_url": "",
+            "title": "",
+            "url_tags": ""
+          },
+          {
+            "account_id": "",
+            "body": "Our customer switched from Stitch to Keboola. Read the reasons behind it.",
+            "effective_object_story_id": "177057932317550_3189960637693916",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads_adcreatives",
+            "id": "23845266635330593",
+            "image_url": "",
+            "instagram_permalink_url": "",
+            "name": "",
+            "parent_id": "23845266632400593",
+            "thumbnail_url": "",
+            "title": "",
+            "url_tags": ""
+          }
+        ]
+      },
+      "query_adcreatives.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:1e75531d116869d065fbbc1cf79d632b3a72a019b2c0f8990a9dd8a4fe77f7ca",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id"
+        ]
+      },
+      "query_ads.csv": {
+        "column_count": 12,
+        "columns": [
+          "account_id",
+          "adset_id",
+          "campaign_id",
+          "created_time",
+          "creative_id",
+          "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "name",
+          "parent_id",
+          "status"
+        ],
+        "hash": "sha256:b8314ce9ea71f14e01ac3c3ff993f21f04da788d225377636dc9b194d57a3759",
+        "row_count": 292,
+        "sample_rows": [
+          {
+            "account_id": "",
+            "adset_id": "",
+            "campaign_id": "",
+            "created_time": "2020-07-16T05:42:15-1000",
+            "creative_id": "23845266696350593",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads",
+            "id": "23845266671230593",
+            "name": "Video sandbox",
+            "parent_id": "act_186649832776475",
+            "status": ""
+          },
+          {
+            "account_id": "",
+            "adset_id": "",
+            "campaign_id": "",
+            "created_time": "2020-07-15T22:14:58-1000",
+            "creative_id": "23845264645860593",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads",
+            "id": "23845264499650593",
+            "name": "Data driven marketing 101 - 1",
+            "parent_id": "act_186649832776475",
+            "status": ""
+          },
+          {
+            "account_id": "",
+            "adset_id": "",
+            "campaign_id": "",
+            "created_time": "2020-07-16T05:30:04-1000",
+            "creative_id": "23845266635330593",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads",
+            "id": "23845266632400593",
+            "name": "Compology CS 2",
+            "parent_id": "act_186649832776475",
+            "status": ""
+          }
+        ]
+      },
+      "query_ads.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:29f808eefa1ad9b6169e3c6fa111f7c25b70a647d11d6a5586d313b3db1a9d65",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id"
+        ]
+      },
+      "query_adsets.csv": {
+        "column_count": 15,
+        "columns": [
+          "account_id",
+          "billing_event",
+          "budget_remaining",
+          "campaign_attribution",
+          "campaign_id",
+          "configured_status",
+          "created_time",
+          "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "is_dynamic_creative",
+          "lifetime_imps",
+          "name",
+          "parent_id"
+        ],
+        "hash": "sha256:00a927cb14e5a58597c6e96f6aa8b1aee66a20c77cf8c8fa3dc4b736d05b7e09",
+        "row_count": 232,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "billing_event": "IMPRESSIONS",
+            "budget_remaining": "0",
+            "campaign_attribution": "DEFAULT",
+            "campaign_id": "23845266671190593",
+            "configured_status": "ACTIVE",
+            "created_time": "2020-07-16T05:42:12-1000",
+            "effective_status": "CAMPAIGN_PAUSED",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_adsets",
+            "id": "23845266671210593",
+            "is_dynamic_creative": "False",
+            "lifetime_imps": "0",
+            "name": "",
+            "parent_id": "act_186649832776475"
+          },
+          {
+            "account_id": "186649832776475",
+            "billing_event": "IMPRESSIONS",
+            "budget_remaining": "0",
+            "campaign_attribution": "DEFAULT",
+            "campaign_id": "23845266520570593",
+            "configured_status": "ACTIVE",
+            "created_time": "2020-07-16T05:20:37-1000",
+            "effective_status": "CAMPAIGN_PAUSED",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_adsets",
+            "id": "23845266520680593",
+            "is_dynamic_creative": "False",
+            "lifetime_imps": "0",
+            "name": "",
+            "parent_id": "act_186649832776475"
+          },
+          {
+            "account_id": "186649832776475",
+            "billing_event": "IMPRESSIONS",
+            "budget_remaining": "0",
+            "campaign_attribution": "DEFAULT",
+            "campaign_id": "23845266450910593",
+            "configured_status": "PAUSED",
+            "created_time": "2020-07-16T04:58:21-1000",
+            "effective_status": "WITH_ISSUES",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_adsets",
+            "id": "23845266450960593",
+            "is_dynamic_creative": "False",
+            "lifetime_imps": "0",
+            "name": "",
+            "parent_id": "act_186649832776475"
+          }
+        ]
+      },
+      "query_adsets.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:2532950708654d56ab222e0caeae033d77f83db9b8311150361a6617e4ff6646",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id",
+          "campaign_id"
+        ]
+      },
+      "query_campaigns.csv": {
+        "column_count": 19,
+        "columns": [
+          "account_id",
+          "bid_strategy",
+          "budget_rebalance_flag",
+          "budget_remaining",
+          "buying_type",
+          "configured_status",
+          "created_time",
+          "daily_budget",
+          "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "is_skadnetwork_attribution",
+          "name",
+          "objective",
+          "parent_id",
+          "primary_attribution",
+          "spend_cap",
+          "status"
+        ],
+        "hash": "sha256:fe71d9f133bcec420dbe074bc67522c4143bf92c01e5eaeb928b009223c1fd74",
+        "row_count": 128,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "bid_strategy": "",
+            "budget_rebalance_flag": "",
+            "budget_remaining": "",
+            "buying_type": "",
+            "configured_status": "",
+            "created_time": "",
+            "daily_budget": "",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_campaigns",
+            "id": "23845266671190593",
+            "is_skadnetwork_attribution": "",
+            "name": "Video - Sandbox",
+            "objective": "VIDEO_VIEWS",
+            "parent_id": "act_186649832776475",
+            "primary_attribution": "DEFAULT",
+            "spend_cap": "",
+            "status": ""
+          },
+          {
+            "account_id": "186649832776475",
+            "bid_strategy": "",
+            "budget_rebalance_flag": "",
+            "budget_remaining": "",
+            "buying_type": "",
+            "configured_status": "",
+            "created_time": "",
+            "daily_budget": "",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_campaigns",
+            "id": "23845266520570593",
+            "is_skadnetwork_attribution": "",
+            "name": "Case study - Compology",
+            "objective": "LINK_CLICKS",
+            "parent_id": "act_186649832776475",
+            "primary_attribution": "DEFAULT",
+            "spend_cap": "",
+            "status": ""
+          },
+          {
+            "account_id": "186649832776475",
+            "bid_strategy": "",
+            "budget_rebalance_flag": "",
+            "budget_remaining": "",
+            "buying_type": "",
+            "configured_status": "",
+            "created_time": "",
+            "daily_budget": "",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_campaigns",
+            "id": "23845266450910593",
+            "is_skadnetwork_attribution": "",
+            "name": "Blog post - 10x data scientist",
+            "objective": "LINK_CLICKS",
+            "parent_id": "act_186649832776475",
+            "primary_attribution": "DEFAULT",
+            "spend_cap": "",
+            "status": ""
+          }
+        ]
+      },
+      "query_campaigns.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:59072b96a0cb693ed7d4afdd0d7bc14bad85c729758126ca78375ff5afc56cee",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id"
+        ]
+      },
+      "query_insights.csv": {
+        "column_count": 8,
+        "columns": [
+          "account_id",
+          "attribution_setting",
+          "date_start",
+          "date_stop",
+          "ex_account_id",
+          "fb_graph_node",
+          "parent_id",
+          "spend"
+        ],
+        "hash": "sha256:75b09d4d762c27743a6970c2bae1976db73ad62f950a78e2ca9559a2a850d24b",
+        "row_count": 548,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "attribution_setting": "1d_view_28d_click",
+            "date_start": "2025-12-22",
+            "date_stop": "2026-01-20",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_insights",
+            "parent_id": "act_186649832776475",
+            "spend": "0"
+          },
+          {
+            "account_id": "186649832776475",
+            "attribution_setting": "1d_view_28d_click",
+            "date_start": "2025-10-01",
+            "date_stop": "2025-10-01",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_insights",
+            "parent_id": "act_186649832776475",
+            "spend": ""
+          },
+          {
+            "account_id": "186649832776475",
+            "attribution_setting": "1d_view_28d_click",
+            "date_start": "2025-10-02",
+            "date_stop": "2025-10-02",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_insights",
+            "parent_id": "act_186649832776475",
+            "spend": ""
+          }
+        ]
+      },
+      "query_insights.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:c746ca13c17fa6a2dbcd2f50889baa7fb4d5c51e22efb78f9921994077ce6708",
+        "incremental": true,
+        "primary_key": [
+          "parent_id",
+          "account_id",
+          "date_start",
+          "date_stop"
+        ]
+      }
+    }
+  },
+  "gen_facebook_ads_v2_v23_0": {
+    "files": {},
+    "metadata": {
+      "test_name": "gen_facebook_ads_v2_v23_0"
+    },
+    "tables": {
+      "accounts.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "business_name",
+          "currency",
+          "id",
+          "name"
+        ],
+        "hash": "sha256:2814b000f9e1481b0329ff5a2c56b5cd711d49bdb92b8a392272c2aaf8810c16",
+        "row_count": 4,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "business_name": "",
+            "currency": "USD",
+            "id": "act_186649832776475",
+            "name": "Keboola Ads"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "177057932317550",
+            "name": "Test Account 1"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "17841403584244541",
+            "name": "Test Account 2"
+          }
+        ]
+      },
+      "accounts.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:89c64d4c0c18134631488691ba907c3efc1c8f2260e3b3ef5191e34322b09b89",
+        "incremental": false,
+        "primary_key": [
+          "id"
+        ]
+      },
+      "query.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "parent_id"
+        ],
+        "hash": "sha256:93dfffab43eeb325b60592ac1bcb4f7ccf152d4869a34f29d533865591d1391d",
+        "row_count": 1,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page",
+            "id": "act_186649832776475",
+            "parent_id": "act_186649832776475"
+          }
+        ]
+      },
+      "query.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:7e9734ee8e31b503c678d70df8678b5f05f7968fd3ae171abb8218fb7701f4ac",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id"
+        ]
+      },
+      "query_adcreatives.csv": {
+        "column_count": 13,
+        "columns": [
+          "account_id",
+          "body",
+          "effective_object_story_id",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "image_url",
+          "instagram_permalink_url",
+          "name",
+          "parent_id",
+          "thumbnail_url",
+          "title",
+          "url_tags"
+        ],
+        "hash": "sha256:81a23c24cedbe4d8d893512d47bb4ac51e00e011ffabce138467d51072759385",
+        "row_count": 706,
+        "sample_rows": [
+          {
+            "account_id": "",
+            "body": "Wouldn\u2019t it be great if you could start modeling data in minutes? \nWith Keboola, you can simply access and load data into your tool of choice. Everything is accessible in one place.",
+            "effective_object_story_id": "177057932317550_3189986301024683",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads_adcreatives",
+            "id": "23845266696350593",
+            "image_url": "",
+            "instagram_permalink_url": "",
+            "name": "",
+            "parent_id": "23845266671230593",
+            "thumbnail_url": "",
+            "title": "",
+            "url_tags": ""
+          },
+          {
+            "account_id": "",
+            "body": "Do you wish you could predict the demand for your product? \nWell, you can. The only thing that\u2019s stopping you is the how. Here\u2019s the cheat sheet to get started.",
+            "effective_object_story_id": "177057932317550_3189077571115556",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads_adcreatives",
+            "id": "23845264645860593",
+            "image_url": "",
+            "instagram_permalink_url": "",
+            "name": "",
+            "parent_id": "23845264499650593",
+            "thumbnail_url": "",
+            "title": "",
+            "url_tags": ""
+          },
+          {
+            "account_id": "",
+            "body": "Our customer switched from Stitch to Keboola. Read the reasons behind it.",
+            "effective_object_story_id": "177057932317550_3189960637693916",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads_adcreatives",
+            "id": "23845266635330593",
+            "image_url": "",
+            "instagram_permalink_url": "",
+            "name": "",
+            "parent_id": "23845266632400593",
+            "thumbnail_url": "",
+            "title": "",
+            "url_tags": ""
+          }
+        ]
+      },
+      "query_adcreatives.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:1e75531d116869d065fbbc1cf79d632b3a72a019b2c0f8990a9dd8a4fe77f7ca",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id"
+        ]
+      },
+      "query_ads.csv": {
+        "column_count": 12,
+        "columns": [
+          "account_id",
+          "adset_id",
+          "campaign_id",
+          "created_time",
+          "creative_id",
+          "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "name",
+          "parent_id",
+          "status"
+        ],
+        "hash": "sha256:b8314ce9ea71f14e01ac3c3ff993f21f04da788d225377636dc9b194d57a3759",
+        "row_count": 292,
+        "sample_rows": [
+          {
+            "account_id": "",
+            "adset_id": "",
+            "campaign_id": "",
+            "created_time": "2020-07-16T05:42:15-1000",
+            "creative_id": "23845266696350593",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads",
+            "id": "23845266671230593",
+            "name": "Video sandbox",
+            "parent_id": "act_186649832776475",
+            "status": ""
+          },
+          {
+            "account_id": "",
+            "adset_id": "",
+            "campaign_id": "",
+            "created_time": "2020-07-15T22:14:58-1000",
+            "creative_id": "23845264645860593",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads",
+            "id": "23845264499650593",
+            "name": "Data driven marketing 101 - 1",
+            "parent_id": "act_186649832776475",
+            "status": ""
+          },
+          {
+            "account_id": "",
+            "adset_id": "",
+            "campaign_id": "",
+            "created_time": "2020-07-16T05:30:04-1000",
+            "creative_id": "23845266635330593",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_ads",
+            "id": "23845266632400593",
+            "name": "Compology CS 2",
+            "parent_id": "act_186649832776475",
+            "status": ""
+          }
+        ]
+      },
+      "query_ads.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:29f808eefa1ad9b6169e3c6fa111f7c25b70a647d11d6a5586d313b3db1a9d65",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id"
+        ]
+      },
+      "query_adsets.csv": {
+        "column_count": 15,
+        "columns": [
+          "account_id",
+          "billing_event",
+          "budget_remaining",
+          "campaign_attribution",
+          "campaign_id",
+          "configured_status",
+          "created_time",
+          "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "is_dynamic_creative",
+          "lifetime_imps",
+          "name",
+          "parent_id"
+        ],
+        "hash": "sha256:00a927cb14e5a58597c6e96f6aa8b1aee66a20c77cf8c8fa3dc4b736d05b7e09",
+        "row_count": 232,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "billing_event": "IMPRESSIONS",
+            "budget_remaining": "0",
+            "campaign_attribution": "DEFAULT",
+            "campaign_id": "23845266671190593",
+            "configured_status": "ACTIVE",
+            "created_time": "2020-07-16T05:42:12-1000",
+            "effective_status": "CAMPAIGN_PAUSED",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_adsets",
+            "id": "23845266671210593",
+            "is_dynamic_creative": "False",
+            "lifetime_imps": "0",
+            "name": "",
+            "parent_id": "act_186649832776475"
+          },
+          {
+            "account_id": "186649832776475",
+            "billing_event": "IMPRESSIONS",
+            "budget_remaining": "0",
+            "campaign_attribution": "DEFAULT",
+            "campaign_id": "23845266520570593",
+            "configured_status": "ACTIVE",
+            "created_time": "2020-07-16T05:20:37-1000",
+            "effective_status": "CAMPAIGN_PAUSED",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_adsets",
+            "id": "23845266520680593",
+            "is_dynamic_creative": "False",
+            "lifetime_imps": "0",
+            "name": "",
+            "parent_id": "act_186649832776475"
+          },
+          {
+            "account_id": "186649832776475",
+            "billing_event": "IMPRESSIONS",
+            "budget_remaining": "0",
+            "campaign_attribution": "DEFAULT",
+            "campaign_id": "23845266450910593",
+            "configured_status": "PAUSED",
+            "created_time": "2020-07-16T04:58:21-1000",
+            "effective_status": "WITH_ISSUES",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_adsets",
+            "id": "23845266450960593",
+            "is_dynamic_creative": "False",
+            "lifetime_imps": "0",
+            "name": "",
+            "parent_id": "act_186649832776475"
+          }
+        ]
+      },
+      "query_adsets.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:2532950708654d56ab222e0caeae033d77f83db9b8311150361a6617e4ff6646",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id",
+          "campaign_id"
+        ]
+      },
+      "query_campaigns.csv": {
+        "column_count": 19,
+        "columns": [
+          "account_id",
+          "bid_strategy",
+          "budget_rebalance_flag",
+          "budget_remaining",
+          "buying_type",
+          "configured_status",
+          "created_time",
+          "daily_budget",
+          "effective_status",
+          "ex_account_id",
+          "fb_graph_node",
+          "id",
+          "is_skadnetwork_attribution",
+          "name",
+          "objective",
+          "parent_id",
+          "primary_attribution",
+          "spend_cap",
+          "status"
+        ],
+        "hash": "sha256:fe71d9f133bcec420dbe074bc67522c4143bf92c01e5eaeb928b009223c1fd74",
+        "row_count": 128,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "bid_strategy": "",
+            "budget_rebalance_flag": "",
+            "budget_remaining": "",
+            "buying_type": "",
+            "configured_status": "",
+            "created_time": "",
+            "daily_budget": "",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_campaigns",
+            "id": "23845266671190593",
+            "is_skadnetwork_attribution": "",
+            "name": "Video - Sandbox",
+            "objective": "VIDEO_VIEWS",
+            "parent_id": "act_186649832776475",
+            "primary_attribution": "DEFAULT",
+            "spend_cap": "",
+            "status": ""
+          },
+          {
+            "account_id": "186649832776475",
+            "bid_strategy": "",
+            "budget_rebalance_flag": "",
+            "budget_remaining": "",
+            "buying_type": "",
+            "configured_status": "",
+            "created_time": "",
+            "daily_budget": "",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_campaigns",
+            "id": "23845266520570593",
+            "is_skadnetwork_attribution": "",
+            "name": "Case study - Compology",
+            "objective": "LINK_CLICKS",
+            "parent_id": "act_186649832776475",
+            "primary_attribution": "DEFAULT",
+            "spend_cap": "",
+            "status": ""
+          },
+          {
+            "account_id": "186649832776475",
+            "bid_strategy": "",
+            "budget_rebalance_flag": "",
+            "budget_remaining": "",
+            "buying_type": "",
+            "configured_status": "",
+            "created_time": "",
+            "daily_budget": "",
+            "effective_status": "",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_campaigns",
+            "id": "23845266450910593",
+            "is_skadnetwork_attribution": "",
+            "name": "Blog post - 10x data scientist",
+            "objective": "LINK_CLICKS",
+            "parent_id": "act_186649832776475",
+            "primary_attribution": "DEFAULT",
+            "spend_cap": "",
+            "status": ""
+          }
+        ]
+      },
+      "query_campaigns.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:59072b96a0cb693ed7d4afdd0d7bc14bad85c729758126ca78375ff5afc56cee",
+        "incremental": true,
+        "primary_key": [
+          "id",
+          "parent_id",
+          "account_id"
+        ]
+      },
+      "query_insights.csv": {
+        "column_count": 8,
+        "columns": [
+          "account_id",
+          "attribution_setting",
+          "date_start",
+          "date_stop",
+          "ex_account_id",
+          "fb_graph_node",
+          "parent_id",
+          "spend"
+        ],
+        "hash": "sha256:75b09d4d762c27743a6970c2bae1976db73ad62f950a78e2ca9559a2a850d24b",
+        "row_count": 548,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "attribution_setting": "1d_view_28d_click",
+            "date_start": "2025-12-22",
+            "date_stop": "2026-01-20",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_insights",
+            "parent_id": "act_186649832776475",
+            "spend": "0"
+          },
+          {
+            "account_id": "186649832776475",
+            "attribution_setting": "1d_view_28d_click",
+            "date_start": "2025-10-01",
+            "date_stop": "2025-10-01",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_insights",
+            "parent_id": "act_186649832776475",
+            "spend": ""
+          },
+          {
+            "account_id": "186649832776475",
+            "attribution_setting": "1d_view_28d_click",
+            "date_start": "2025-10-02",
+            "date_stop": "2025-10-02",
+            "ex_account_id": "act_186649832776475",
+            "fb_graph_node": "page_insights",
+            "parent_id": "act_186649832776475",
+            "spend": ""
+          }
+        ]
+      },
+      "query_insights.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:c746ca13c17fa6a2dbcd2f50889baa7fb4d5c51e22efb78f9921994077ce6708",
+        "incremental": true,
+        "primary_key": [
+          "parent_id",
+          "account_id",
+          "date_start",
+          "date_stop"
+        ]
+      }
+    }
+  },
+  "gen_facebook_pages_v2_v22_0": {
+    "files": {},
+    "metadata": {
+      "test_name": "gen_facebook_pages_v2_v22_0"
+    },
+    "tables": {
+      "accounts.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "business_name",
+          "currency",
+          "id",
+          "name"
+        ],
+        "hash": "sha256:2814b000f9e1481b0329ff5a2c56b5cd711d49bdb92b8a392272c2aaf8810c16",
+        "row_count": 4,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "business_name": "",
+            "currency": "USD",
+            "id": "act_186649832776475",
+            "name": "Keboola Ads"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "177057932317550",
+            "name": "Test Account 1"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "17841403584244541",
+            "name": "Test Account 2"
+          }
+        ]
+      },
+      "accounts.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:89c64d4c0c18134631488691ba907c3efc1c8f2260e3b3ef5191e34322b09b89",
+        "incremental": false,
+        "primary_key": [
+          "id"
+        ]
+      }
+    }
+  },
+  "gen_facebook_pages_v2_v23_0": {
+    "files": {},
+    "metadata": {
+      "test_name": "gen_facebook_pages_v2_v23_0"
+    },
+    "tables": {
+      "accounts.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "business_name",
+          "currency",
+          "id",
+          "name"
+        ],
+        "hash": "sha256:2814b000f9e1481b0329ff5a2c56b5cd711d49bdb92b8a392272c2aaf8810c16",
+        "row_count": 4,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "business_name": "",
+            "currency": "USD",
+            "id": "act_186649832776475",
+            "name": "Keboola Ads"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "177057932317550",
+            "name": "Test Account 1"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "17841403584244541",
+            "name": "Test Account 2"
+          }
+        ]
+      },
+      "accounts.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:89c64d4c0c18134631488691ba907c3efc1c8f2260e3b3ef5191e34322b09b89",
+        "incremental": false,
+        "primary_key": [
+          "id"
+        ]
+      }
+    }
+  },
+  "gen_instagram_v2_v22_0": {
+    "files": {},
+    "metadata": {
+      "test_name": "gen_instagram_v2_v22_0"
+    },
+    "tables": {
+      "accounts.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "business_name",
+          "currency",
+          "id",
+          "name"
+        ],
+        "hash": "sha256:2814b000f9e1481b0329ff5a2c56b5cd711d49bdb92b8a392272c2aaf8810c16",
+        "row_count": 4,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "business_name": "",
+            "currency": "USD",
+            "id": "act_186649832776475",
+            "name": "Keboola Ads"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "177057932317550",
+            "name": "Test Account 1"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "17841403584244541",
+            "name": "Test Account 2"
+          }
+        ]
+      },
+      "accounts.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:89c64d4c0c18134631488691ba907c3efc1c8f2260e3b3ef5191e34322b09b89",
+        "incremental": false,
+        "primary_key": [
+          "id"
+        ]
+      }
+    }
+  },
+  "gen_instagram_v2_v23_0": {
+    "files": {},
+    "metadata": {
+      "test_name": "gen_instagram_v2_v23_0"
+    },
+    "tables": {
+      "accounts.csv": {
+        "column_count": 5,
+        "columns": [
+          "account_id",
+          "business_name",
+          "currency",
+          "id",
+          "name"
+        ],
+        "hash": "sha256:2814b000f9e1481b0329ff5a2c56b5cd711d49bdb92b8a392272c2aaf8810c16",
+        "row_count": 4,
+        "sample_rows": [
+          {
+            "account_id": "186649832776475",
+            "business_name": "",
+            "currency": "USD",
+            "id": "act_186649832776475",
+            "name": "Keboola Ads"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "177057932317550",
+            "name": "Test Account 1"
+          },
+          {
+            "account_id": "",
+            "business_name": "",
+            "currency": "",
+            "id": "17841403584244541",
+            "name": "Test Account 2"
+          }
+        ]
+      },
+      "accounts.csv.manifest": {
+        "columns": [],
+        "hash": "sha256:89c64d4c0c18134631488691ba907c3efc1c8f2260e3b3ef5191e34322b09b89",
+        "incremental": false,
+        "primary_key": [
+          "id"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+    "version": 1,
+    "interactions": [
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/me/accounts?access_token=token&fields=id%2Caccess_token",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 200,
+                    "message": "OK"
+                },
+                "headers": {
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ],
+                    "content-length": [
+                        "560"
+                    ],
+                    "facebook-api-version": [
+                        "v22.0"
+                    ]
+                },
+                "body": {
+                    "string": "{\"data\": [{\"access_token\": \"token\", \"id\": \"683499195074649\"}], \"paging\": {\"cursors\": {\"after\": \"QVFIU2RDQXlmVzVTSlRwdmxqTWlfMlpMamVydm1sVzR2clNWc1JZAMGlkYzhDeGxXcmpicHozdEtNQ1lIMDBQSGpyX01CMFF3TEduOGkyTVFhYjU5bXVIaFlR\", \"before\": \"QVFIU2RDQXlmVzVTSlRwdmxqTWlfMlpMamVydm1sVzR2clNWc1JZAMGlkYzhDeGxXcmpicHozdEtNQ1lIMDBQSGpyX01CMFF3TEduOGkyTVFhYjU5bXVIaFlR\"}}}"
+                }
+            }
+        }
+    ]
+}

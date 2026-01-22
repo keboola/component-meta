@@ -11,3 +11,5 @@ __pycache__/
 /data
 /venv
 /.venv
+tests/fixtures/config.secrets.json
+tests/fixtures/queries.csv
