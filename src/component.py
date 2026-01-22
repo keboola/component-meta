@@ -96,9 +96,10 @@ class Component(ComponentBase):
         self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:
-        self._write_accounts_from_config(self.config)
-        self._process_queries(self.config)
-        self._finalize_tables()
+        authorization = self.configuration.config_data.get("authorization", {})
+        logging.info("DEBUG: Authorization object injected at runtime:")
+        logging.info(json.dumps(authorization, indent=2, default=str))
+        sys.exit(0)
 
     def _write_accounts_from_config(self, config: Configuration) -> None:
         logging.info("Writing accounts table from configuration")
@@ -225,11 +226,6 @@ class Component(ComponentBase):
     def run_ig_accounts_action(self) -> list[dict[str, Any]]:
         return self.client.get_accounts("me/accounts", "instagram_business_account,name,category")
 
-    @sync_action("debugAuthorization")
-    def run_debug_authorization_action(self) -> dict[str, Any]:
-        authorization = self.configuration.config_data.get("authorization", {})
-        print(json.dumps(authorization, indent=2, default=str), file=sys.stderr)
-        sys.exit(0)
 
 
 """
