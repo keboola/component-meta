@@ -10,7 +10,7 @@ from requests import HTTPError
 
 from configuration import Account, QueryRow
 from output_parser import OutputParser
-from page_loader import InstagramInsightsValidator, PageLoader
+from page_loader import PageLoader
 
 
 class AccessTokenFilter(logging.Filter):
@@ -103,31 +103,6 @@ class PageTokenResolver:
                 page_tokens[account.id] = user_token
 
         return page_tokens
-
-
-class AccountFilter:
-    """Filters accounts based on query requirements."""
-
-    @staticmethod
-    def filter_for_instagram_insights(
-        accounts: list[Account], row_config: QueryRow
-    ) -> tuple[list[Account], list[Account]]:
-        """
-        Filter accounts for Instagram insights queries.
-        Returns (valid_accounts, filtered_accounts).
-        """
-        query_config = row_config.query if hasattr(row_config, "query") else row_config
-        fields = str(query_config.fields or "")
-
-        # Check if this is an Instagram insights query
-        if not query_config.path and fields.startswith("insights"):
-            if InstagramInsightsValidator.is_instagram_insights_query(fields):
-                # Filter out Facebook Page entries (those without fb_page_id)
-                valid = [acc for acc in accounts if acc.fb_page_id]
-                filtered = [acc for acc in accounts if not acc.fb_page_id]
-                return valid, filtered
-
-        return accounts, []
 
 
 class FacebookClient:
@@ -376,18 +351,6 @@ class FacebookClient:
         if ids_str := row_config.query.ids:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]
-
-        # Filter accounts for Instagram insights queries
-        accounts, filtered_accounts = AccountFilter.filter_for_instagram_insights(
-            accounts, row_config
-        )
-        if filtered_accounts:
-            filtered_ids = [acc.id for acc in filtered_accounts]
-            logger.warning(
-                f"Skipping {len(filtered_accounts)} Facebook Page account(s) for Instagram insights query: "
-                f"{', '.join(filtered_ids)}. These are Facebook Pages, not Instagram Business Accounts. "
-                f"Please remove them from your config or re-run Add Account to refresh."
-            )
 
         # Resolve tokens
         user_token = self.oauth.data.get("access_token")

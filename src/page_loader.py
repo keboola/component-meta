@@ -40,12 +40,6 @@ DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(
     code=None, message_fragment="there cannot be more than 30 days"
 )
 
-# Instagram insights configuration
-MAX_INSTAGRAM_INSIGHTS_DAYS = 30
-IG_INSIGHTS_METRICS = frozenset(
-    ["follower_count", "reach", "impressions", "profile_views"]
-)
-
 
 class FacebookErrorHandler:
     """Handles Facebook API error detection and categorization."""
@@ -113,48 +107,6 @@ class FacebookErrorHandler:
                 pass
 
         return False
-
-
-class InstagramInsightsValidator:
-    """Validates Instagram insights query parameters."""
-
-    @staticmethod
-    def is_instagram_insights_query(fields: str) -> bool:
-        """Check if fields contain Instagram-specific metrics."""
-        return any(metric in fields for metric in IG_INSIGHTS_METRICS)
-
-    @staticmethod
-    def validate_date_range(params: dict[str, Any], fields: str) -> None:
-        """
-        Validate that Instagram insights date range doesn't exceed 30 days.
-        Raises UserException if validation fails.
-        """
-        if not InstagramInsightsValidator.is_instagram_insights_query(fields):
-            return
-
-        since_str = params.get("since")
-        if not since_str:
-            return
-
-        # Parse dates
-        try:
-            since_date = datetime.strptime(since_str, "%Y-%m-%d")
-        except ValueError:
-            return  # Let API handle invalid format
-
-        until_str = params.get("until")
-        until_date = (
-            datetime.strptime(until_str, "%Y-%m-%d") if until_str else datetime.now()
-        )
-
-        # Check range
-        delta_days = (until_date - since_date).days
-        if delta_days > MAX_INSTAGRAM_INSIGHTS_DAYS:
-            raise UserException(
-                f"Instagram insights queries cannot exceed {MAX_INSTAGRAM_INSIGHTS_DAYS} days. "
-                f"Your query spans {delta_days} days (from {since_str} to {until_str or 'today'}). "
-                f"Please reduce the date range to 29 days or less."
-            )
 
 
 class PaginationHandler:
@@ -394,9 +346,6 @@ class PageLoader:
             if ".until(" in fields:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
-
-            # Validate 30-day limit for Instagram insights queries
-            InstagramInsightsValidator.validate_date_range(params, fields)
 
         else:
             # Regular queries use the 'fields' parameter directly
