@@ -23,12 +23,8 @@ class AccessTokenFilter(logging.Filter):
 
     def _mask(self, obj):
         if isinstance(obj, str):
-            obj = re.sub(
-                r"access_token=[^&\s]+", "access_token=---ACCESS-TOKEN---", obj
-            )
-            return re.sub(
-                r"'access_token': '[^']+'", "'access_token': '---ACCESS-TOKEN---'", obj
-            )
+            obj = re.sub(r"access_token=[^&\s]+", "access_token=---ACCESS-TOKEN---", obj)
+            return re.sub(r"'access_token': '[^']+'", "'access_token': '---ACCESS-TOKEN---'", obj)
 
         if isinstance(obj, Exception):
             # Convert exception to string and mask it
@@ -215,9 +211,7 @@ class FacebookClient:
                         "page_id": page_id,
                         "page_loader": page_loader,
                         "output_parser": OutputParser(page_loader, page_id, row_config),
-                        "fb_graph_node": self._get_fb_graph_node(
-                            is_page_token, row_config
-                        ),
+                        "fb_graph_node": self._get_fb_graph_node(is_page_token, row_config),
                         "access_token": token,
                     }
             except Exception as e:
@@ -229,9 +223,7 @@ class FacebookClient:
             try:
                 page_loader = details["page_loader"]
                 # Get the access token from the job details
-                access_token = details.get(
-                    "access_token", self.oauth.data.get("access_token")
-                )
+                access_token = details.get("access_token", self.oauth.data.get("access_token"))
                 page_data = page_loader.poll_async_job(report_id, access_token)
                 if not page_data.get("data"):
                     continue
@@ -246,9 +238,7 @@ class FacebookClient:
                     f"Failed to process async job result for report_id: {report_id}: {e}"
                 )
 
-    def _handle_batch_request(
-        self, account_ids: list[str], row_config
-    ) -> Iterator[dict]:
+    def _handle_batch_request(self, account_ids: list[str], row_config) -> Iterator[dict]:
         """
         Executes and parses a batch request for a list of account IDs.
         Yields parsed data for each item in the response.
@@ -258,9 +248,7 @@ class FacebookClient:
         params = {"ids": ",".join(account_ids), "fields": row_config.query.fields}
 
         # Raises HTTPError on failure
-        response = self.client.get(
-            f"/{self.api_version}/", params=self._with_token(params)
-        )
+        response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
 
         if not response or not isinstance(response, dict):
             logger.warning("Empty or invalid response for batch ID fetch.")
@@ -274,12 +262,8 @@ class FacebookClient:
                 )
                 continue
 
-            output_parser = OutputParser(
-                page_loader=None, page_id=item_id, row_config=row_config
-            )
-            parsed_result = output_parser.parse_data(
-                response=item_data, fb_node=fb_graph_node, parent_id=item_id
-            )
+            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+            parsed_result = output_parser.parse_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
             if parsed_result:
                 yield parsed_result
 
@@ -287,10 +271,7 @@ class FacebookClient:
         self, accounts: list[Account], row_config: QueryRow
     ) -> Iterator[dict[str, Any]]:
         # Determine if a query is eligible for batch processing.
-        is_batchable_query = (
-            not row_config.query.path
-            and getattr(row_config, "type", "") != "nested-query"
-        )
+        is_batchable_query = not row_config.query.path and getattr(row_config, "type", "") != "nested-query"
         is_insights_query = str(row_config.query.fields or "").startswith("insights")
 
         if is_batchable_query and not is_insights_query:
@@ -309,9 +290,7 @@ class FacebookClient:
                         "ids": ",".join(account_ids),
                         "fields": row_config.query.fields,
                     }
-                    response = self.client.get(
-                        f"/{self.api_version}/", params=self._with_token(params)
-                    )
+                    response = self.client.get(f"/{self.api_version}/", params=self._with_token(params))
 
                     if not response or not isinstance(response, dict):
                         logger.warning("Empty or invalid response for batch ID fetch.")
@@ -323,9 +302,7 @@ class FacebookClient:
                                     f"Error fetching data for ID {item_id}: {item_data['error']}"
                                 )
                                 continue
-                            output_parser = OutputParser(
-                                page_loader=None, page_id=item_id, row_config=row_config
-                            )
+                            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
                             parsed_result = output_parser.parse_data(
                                 response=item_data,
                                 fb_node=fb_graph_node,
@@ -336,9 +313,7 @@ class FacebookClient:
                         return  # Batch processing successful, exit the function.
 
                 except HTTPError as e:
-                    error_text = (
-                        str(e.response.text) if hasattr(e, "response") else str(e)
-                    )
+                    error_text = str(e.response.text) if hasattr(e, "response") else str(e)
                     if "Page Access Token" in error_text:
                         logger.info(
                             "Batch request requires page token, falling back to individual requests."
@@ -398,9 +373,7 @@ class FacebookClient:
                     )
                     try:
                         # Fallback to user token
-                        page_loader = PageLoader(
-                            self.client, row_config.type, self.api_version
-                        )
+                        page_loader = PageLoader(self.client, row_config.type, self.api_version)
                         output_parser = OutputParser(page_loader, page_id, row_config)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(
@@ -499,13 +472,7 @@ class FacebookClient:
 
         fields = str(query_config.fields or "")
 
-        return (
-            check_path
-            or "insights" in fields
-            or "likes" in fields
-            or "from" in fields
-            or "username" in fields
-        )
+        return check_path or "insights" in fields or "likes" in fields or "from" in fields or "username" in fields
 
     def _get_fb_graph_node(self, is_page_token: bool, row_config) -> str:
         """
