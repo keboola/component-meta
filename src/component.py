@@ -1,4 +1,6 @@
+import json
 import logging
+import sys
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
@@ -222,6 +224,12 @@ class Component(ComponentBase):
     @sync_action("igaccounts")
     def run_ig_accounts_action(self) -> list[dict[str, Any]]:
         return self.client.get_accounts("me/accounts", "instagram_business_account,name,category")
+
+    @sync_action("debugAuthorization")
+    def run_debug_authorization_action(self) -> dict[str, Any]:
+        authorization = self.configuration.config_data.get("authorization", {})
+        print(json.dumps(authorization, indent=2, default=str), file=sys.stderr)
+        sys.exit(0)
 
 
 """
