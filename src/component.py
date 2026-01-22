@@ -90,9 +90,7 @@ class Component(ComponentBase):
         params = self.configuration.parameters
         params["accounts"] = params.get("accounts") or {}
         self.config = Configuration(**params)
-        self.client: FacebookClient = FacebookClient(
-            self.configuration.oauth_credentials, self.config.api_version
-        )
+        self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
         self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:
@@ -116,9 +114,7 @@ class Component(ComponentBase):
                 "fb_page_id": acc.fb_page_id,
             }
             # filter None values
-            accounts_data.append(
-                dict(filter(lambda x: x[1] is not None, account_dict.items()))
-            )
+            accounts_data.append(dict(filter(lambda x: x[1] is not None, account_dict.items())))
 
         if accounts_data:
             self._write_rows("accounts", accounts_data, ["id"], False)
@@ -131,17 +127,13 @@ class Component(ComponentBase):
 
         logging.info(f"Processing {len(queries_to_process)} queries.")
 
-        for parsed_data in self.client.process_queries(
-            list(config.accounts.values()), queries_to_process
-        ):
+        for parsed_data in self.client.process_queries(list(config.accounts.values()), queries_to_process):
             for table_name, rows_list in parsed_data.items():
                 if not rows_list:
                     continue
                 primary_key = self._get_primary_key(rows_list)
                 self._write_rows(table_name, rows_list, primary_key, True)
-                logging.debug(
-                    f"Wrote batch of {len(rows_list)} rows to table {table_name}"
-                )
+                logging.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
     def _finalize_tables(self) -> None:
         for cache_record in self._writer_cache.values():
@@ -179,15 +171,11 @@ class Component(ComponentBase):
             all_columns_set.update(row.keys())
 
         # Reorder columns based on preferred order, then add remaining sorted
-        ordered_columns = [
-            col for col in PREFERRED_COLUMNS_ORDER if col in all_columns_set
-        ]
+        ordered_columns = [col for col in PREFERRED_COLUMNS_ORDER if col in all_columns_set]
         remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
-        logging.debug(
-            f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}"
-        )
+        logging.debug(f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}")
         table_def = self.create_out_table_definition(
             f"{table_name}.csv",
             primary_key=primary_key,
@@ -196,9 +184,7 @@ class Component(ComponentBase):
         )
 
         writer = ElasticDictWriter(table_def.full_path, all_columns)
-        self._writer_cache[table_name] = WriterCacheRecord(
-            writer=writer, table_definition=table_def
-        )
+        self._writer_cache[table_name] = WriterCacheRecord(writer=writer, table_definition=table_def)
 
     def _get_primary_key(self, rows: list[dict[str, Any]]) -> list[str]:
         if not rows:
@@ -207,9 +193,7 @@ class Component(ComponentBase):
         available_columns: set[str] = set()
         for row in rows:
             available_columns.update(row.keys())
-        primary_key = [
-            col for col in PRIMARY_KEY_CANDIDATES if col in available_columns
-        ]
+        primary_key = [col for col in PRIMARY_KEY_CANDIDATES if col in available_columns]
         return primary_key or (["id"] if "id" in available_columns else [])
 
     def _retrieve_bucket_id(self) -> str:
@@ -224,9 +208,7 @@ class Component(ComponentBase):
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
             component_id = "keboola-ex-meta"
-        logging.info(
-            f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}"
-        )
+        logging.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}")
         return f"in.c-{component_id.replace('.', '-')}-{config_id}"
 
     @sync_action("accounts")
@@ -235,15 +217,11 @@ class Component(ComponentBase):
 
     @sync_action("adaccounts")
     def run_ad_accounts_action(self) -> list[dict[str, Any]]:
-        return self.client.get_accounts(
-            "me/adaccounts", "account_id,id,business_name,name,currency"
-        )
+        return self.client.get_accounts("me/adaccounts", "account_id,id,business_name,name,currency")
 
     @sync_action("igaccounts")
     def run_ig_accounts_action(self) -> list[dict[str, Any]]:
-        return self.client.get_accounts(
-            "me/accounts", "instagram_business_account,name,category"
-        )
+        return self.client.get_accounts("me/accounts", "instagram_business_account,name,category")
 
 
 """
