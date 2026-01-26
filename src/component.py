@@ -135,9 +135,7 @@ class Component(ComponentBase):
                     continue
                 primary_key = self._get_primary_key(rows_list)
                 self._write_rows(table_name, rows_list, primary_key, True)
-                logger.debug(
-                    f"Wrote batch of {len(rows_list)} rows to table {table_name}"
-                )
+                logger.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
     def _finalize_tables(self) -> None:
         for cache_record in self._writer_cache.values():
@@ -179,9 +177,7 @@ class Component(ComponentBase):
         remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
-        logger.debug(
-            f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}"
-        )
+        logger.debug(f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}")
         table_def = self.create_out_table_definition(
             f"{table_name}.csv",
             primary_key=primary_key,
@@ -214,9 +210,7 @@ class Component(ComponentBase):
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
             component_id = "keboola-ex-meta"
-        logger.info(
-            f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}"
-        )
+        logger.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}")
         return f"in.c-{component_id.replace('.', '-')}-{config_id}"
 
     @sync_action("accounts")
@@ -236,9 +230,7 @@ class Component(ComponentBase):
         transforming the response to use the Instagram Business Account ID
         as the primary ID (matching V1 behavior).
         """
-        raw_accounts = self.client.get_accounts(
-            "me/accounts", "instagram_business_account,name,category"
-        )
+        raw_accounts = self.client.get_accounts("me/accounts", "instagram_business_account,name,category")
 
         # Transform to V1 format: filter and restructure
         result = []

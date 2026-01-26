@@ -36,14 +36,9 @@ OBJECT_NOT_FOUND_ERROR = FacebookErrorCode(
     message_fragment="does not exist, cannot be loaded due to missing permissions",
 )
 
-DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(
-    code=None, message_fragment="there cannot be more than 30 days"
-)
+DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there cannot be more than 30 days")
 
-INVALID_METRIC_ERROR = FacebookErrorCode(
-    code=100,
-    message_fragment="should be specified with parameter metric_type"
-)
+INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
 
 
 class FacebookErrorHandler:
@@ -98,10 +93,7 @@ class FacebookErrorHandler:
                 # Match by code and subcode if both are defined
                 if error_code.code is not None:
                     if error_info.get("code") == error_code.code:
-                        if (
-                            error_code.subcode is None
-                            or error_info.get("error_subcode") == error_code.subcode
-                        ):
+                        if error_code.subcode is None or error_info.get("error_subcode") == error_code.subcode:
                             return True
             except Exception:
                 pass
@@ -213,9 +205,7 @@ class PageLoader:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
             report_id = response.get("report_run_id")
             if not report_id:
-                logger.warning(
-                    "No 'report_run_id' found in the async insights response."
-                )
+                logger.warning("No 'report_run_id' found in the async insights response.")
                 return None
 
             logger.info(f"Async job started successfully with report ID: {report_id}")
@@ -244,9 +234,7 @@ class PageLoader:
                 async_percent = response.get("async_percent_completion", 0)
                 async_status = response.get("async_status", "Unknown")
 
-                logger.info(
-                    f"Async job {report_id}: {async_percent}% complete, status: {async_status}"
-                )
+                logger.info(f"Async job {report_id}: {async_percent}% complete, status: {async_status}")
 
                 is_finished = async_percent == 100
 
@@ -409,9 +397,7 @@ class PageLoader:
 
             # Non-recoverable error
             status_code = getattr(getattr(e, "response", None), "status_code", None)
-            logger.error(
-                f"HTTP error while loading paginated data (status={status_code}): {e}"
-            )
+            logger.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
             response = getattr(e, "response", None)
             if response is not None:
                 logger.error(f"Facebook API error response: {response.text}")

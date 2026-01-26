@@ -82,9 +82,7 @@ class OutputSnapshot:
                         "columns": manifest.get("columns", []),
                     }
                 except Exception as e:
-                    tables[manifest_file.name] = {
-                        "error": f"Failed to read manifest: {str(e)}"
-                    }
+                    tables[manifest_file.name] = {"error": f"Failed to read manifest: {str(e)}"}
 
         return tables
 
@@ -284,10 +282,7 @@ class OutputSnapshot:
             # Hash validation (strict for manifests, optional for CSVs)
             if "hash" in expected_meta:
                 if actual_meta.get("hash") != expected_meta["hash"]:
-                    errors.append(
-                        f"{table_name}: Content changed "
-                        f"(hash mismatch - use --update-snapshots to update)"
-                    )
+                    errors.append(f"{table_name}: Content changed (hash mismatch - use --update-snapshots to update)")
 
         # Validate files
         for file_name, expected_meta in expected.get("files", {}).items():

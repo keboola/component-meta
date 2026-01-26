@@ -125,8 +125,7 @@ def get_sampling_fingerprint(row):
         "attribution": "attribution" in all_content,
         "time_increment": "time_increment" in all_content,
         "summary": "summary" in all_content,
-        "nested": "insights" in all_content
-        and ("{" in all_content or "." in all_content),
+        "nested": "insights" in all_content and ("{" in all_content or "." in all_content),
         "async": "async" in query_type.lower(),
         "split_by_day": "split-query-time-range-by-day" in all_content,
         "stop_empty": "stop-on-empty-response" in all_content,
@@ -198,15 +197,11 @@ def main():
         selected = []
         selected.extend(working[:2])  # Take up to 2 working
         if len(selected) < SAMPLES_PER_CATEGORY:
-            selected.extend(
-                failing[: SAMPLES_PER_CATEGORY - len(selected)]
-            )  # Fill remaining with failing
+            selected.extend(failing[: SAMPLES_PER_CATEGORY - len(selected)])  # Fill remaining with failing
 
         sampled_rows.extend(selected)
 
-    print(
-        f"Sampled {len(sampled_rows)} queries from {len(groups)} structural categories."
-    )
+    print(f"Sampled {len(sampled_rows)} queries from {len(groups)} structural categories.")
 
     sanitized_count = 0
     with open(output_file, "w", encoding="utf-8", newline="") as f_out:
@@ -276,15 +271,9 @@ def main():
     total_failing = len(sampled_rows) - total_working
 
     print("\nSanitization complete!")
-    print(
-        f"Processed {sanitized_count} sampled queries from {len(groups)} structural categories."
-    )
-    print(
-        f"  - Working in production: {total_working} ({100 * total_working / len(sampled_rows):.1f}%)"
-    )
-    print(
-        f"  - Failing in production: {total_failing} ({100 * total_failing / len(sampled_rows):.1f}%)"
-    )
+    print(f"Processed {sanitized_count} sampled queries from {len(groups)} structural categories.")
+    print(f"  - Working in production: {total_working} ({100 * total_working / len(sampled_rows):.1f}%)")
+    print(f"  - Failing in production: {total_failing} ({100 * total_failing / len(sampled_rows):.1f}%)")
     print(f"Output written to: {output_file}")
 
 

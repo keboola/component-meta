@@ -154,9 +154,7 @@ def before_record_response(response, replacements):
                 body_json = json.loads(body_str)
                 scrubbed_json = recursive_scrub(body_json, replacements)
                 # Sort keys for deterministic git diffs
-                response["body"]["string"] = json.dumps(
-                    scrubbed_json, sort_keys=True
-                ).encode("utf-8")
+                response["body"]["string"] = json.dumps(scrubbed_json, sort_keys=True).encode("utf-8")
             except json.JSONDecodeError:
                 # Fallback to string replacement
                 scrubbed_str = scrub_string(body_str, replacements)
@@ -250,9 +248,7 @@ def run_from_csv(csv_path, secrets_path, full_output=False):
                 q = json.loads(json_str)
 
                 # Normalize query object
-                real_query_params = (
-                    q.get("query", q) if isinstance(q.get("query"), dict) else q
-                )
+                real_query_params = q.get("query", q) if isinstance(q.get("query"), dict) else q
                 if "limit" in real_query_params and real_query_params["limit"]:
                     real_query_params["limit"] = str(real_query_params["limit"])
 
@@ -273,16 +269,12 @@ def run_from_csv(csv_path, secrets_path, full_output=False):
             except json.JSONDecodeError:
                 continue
 
-    print(
-        f"Total unique queries found across {len(component_queries)} components: {total_found}"
-    )
+    print(f"Total unique queries found across {len(component_queries)} components: {total_found}")
 
     # Generate cassettes for both v22.0 and v23.0
     for version in ["v22.0", "v23.0"]:
         for comp_id, queries_raw in component_queries.items():
-            print(
-                f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}"
-            )
+            print(f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}")
 
             # Normalize and add technical IDs if missing
             final_queries = []
@@ -430,9 +422,7 @@ def run_test_case(case, token, full_output=False):
     param_token = params.get("access_token") or params.get("#access_token")
     if param_token and "authorization" not in runtime_params:
         runtime_params["authorization"] = {
-            "oauth_api": {
-                "credentials": {"token": param_token, "access_token": param_token}
-            }
+            "oauth_api": {"credentials": {"token": param_token, "access_token": param_token}}
         }
 
     runtime_params["action"] = case.get("action", "run")
