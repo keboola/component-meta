@@ -44,13 +44,13 @@ class AccessTokenFilter(logging.Filter):
 
 access_token_filter = AccessTokenFilter()
 
+# Create module logger after filter is set up
+logger = logging.getLogger(__name__)
+
 # Add filter to root logger and all existing loggers
 logging.getLogger().addFilter(access_token_filter)
 for name in logging.root.manager.loggerDict:
     logging.getLogger(name).addFilter(access_token_filter)
-
-# Create module logger after filter is set up
-logger = logging.getLogger(__name__)
 
 
 class PageTokenResolver:
