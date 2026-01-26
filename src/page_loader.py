@@ -40,6 +40,11 @@ DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(
     code=None, message_fragment="there cannot be more than 30 days"
 )
 
+INVALID_METRIC_ERROR = FacebookErrorCode(
+    code=100,
+    message_fragment="should be specified with parameter metric_type"
+)
+
 
 class FacebookErrorHandler:
     """Handles Facebook API error detection and categorization."""
@@ -64,6 +69,18 @@ class FacebookErrorHandler:
                 True,
                 "Account no longer exists or is inaccessible. Remove it or re-run Add Account.",
             )
+
+        if FacebookErrorHandler._matches_error(http_error, INVALID_METRIC_ERROR):
+            # Extract detailed error message from response
+            response = getattr(http_error, "response", None)
+            error_msg = "Invalid metric configuration"
+            if response is not None:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("error", {}).get("message", error_msg)
+                except Exception:
+                    pass
+            return True, f"Query configuration error: {error_msg}"
 
         return False, ""
 

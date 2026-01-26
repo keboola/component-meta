@@ -368,8 +368,8 @@ class FacebookClient:
 
             except Exception as e:
                 if is_page_token and str(e).startswith("400"):
-                    logger.warning(
-                        f"Page token failed with 400 error for {page_id}, falling back to user token"
+                    logger.debug(
+                        f"Page token failed for {page_id}, trying user token"
                     )
                     try:
                         # Fallback to user token
@@ -383,7 +383,7 @@ class FacebookClient:
                             row_config.query.path, page_data
                         )
                     except Exception as user_token_error:
-                        logger.error(
+                        logger.debug(
                             f"User token also failed for {page_id}: {str(user_token_error)}"
                         )
                         continue
