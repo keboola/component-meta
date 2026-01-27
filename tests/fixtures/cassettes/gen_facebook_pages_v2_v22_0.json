@@ -363,6 +363,1543 @@
                     "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AXsmjIz2Xis6vDPKbIHlqsT\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
                 }
             }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_impressions%2Cpage_impressions_unique%2Cpage_impressions_paid%2Cpage_impressions_paid_unique%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions_paid_unique%2Cpage_posts_impressions_organic_unique%2Cpage_post_engagements%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_reactions_by_type_total%2Cpage_video_views%2Cpage_video_views_unique%2Cpage_views_total&since=2024-12-02&time_increment=1&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"AwXc9cH2rC0AkV2EooymjPB\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_negative_feedback%2Cpage_consumptions_unique%2Cpage_impressions&since=2024-10-03&time_increment=1",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AD1NTIGc7VnaJshlzOkZa2-\", \"message\": \"(#100) The value must be a valid insights metric\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=25&metric=post_impressions_organic_unique%2Cpost_impressions_organic%2Cpost_reactions_like_total%2Cpage_post_engagements%2Cpost_impressions%2Cpost_clicks%2Cpage_follows&since=2025-01-01&time_increment=1",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"A9HqQis2eHts67jwDwyTKiX\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"ACTXL7PTHq_bMI9vti8yXoI\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=100&metric=page_impressions%2Cpage_impressions_paid%2Cpage_impressions_viral%2Cpage_impressions_nonviral%2Cpage_impressions_paid_unique%2Cpage_views_total%2Cpage_fans%2Cpage_fan_adds%2Cpage_fan_removes%2Cpage_follows%2Cpage_post_engagements%2Cpage_posts_impressions%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid%2Cpage_video_views%2Cpage_video_views_paid%2Cpage_video_views_organic&period=day&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"A2sVFCxkVW2tdSZHPjNL0t5\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=25&metric=page_views_total%2Cpage_fan_removes%2Cpage_fan_adds%2Cpage_fans%2Cpage_impressions&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"Ajx6CuGWgj6974nk0mq2M4t\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=25&metric=page_impressions_unique&period=week&since=2024-12-27&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"AAxkoIrxOYRoCSwU4thjcf2\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&limit=25&metric=page_follows%2Cpage_impressions_viral_unique%2Cpage_impressions_unique%2Cpage_impressions_paid_unique%2Cpage_posts_impressions_unique%2Cpage_posts_impressions_paid_unique%2Cpost_impressions_fan_unique%2Cpage_post_engagements&since=2024-10-03",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"ALSbFUFa1JiutgKaw1q0hsi\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550?access_token=token&fields=likes&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "671"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AaC1taVMLjRF15VvUtxJto3\", \"message\": \"(#100) Object does not exist, cannot be loaded due to missing permission or reviewable feature, or does not support this operation. This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature or the 'Page Public Metadata Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages, https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS and https://developers.facebook.com/docs/apps/review/feature#page-public-metadata-access for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/conversations?access_token=token&fields=messages%7Bcreated_time%2Cfrom%2Cto%2Cmessage%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"ATNwVNxe9Zp7lUerS9skwcH\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_ads%29.as%28post_media_view_from_ads_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AgFXxb4Qt5XmeQxg7_KdCsV\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=insights.metric%28post_media_view%29.breakdown%28is_from_followers%29.as%28post_media_view_from_flwrs_new%29.period%28lifetime%29&limit=25&since=2024-11-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"A1ks-lDg6dl-Wrywf3r_RU_\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=insights.since%28now%29.metric%28post_media_view%29.breakdown%28is_from_ads%2C+is_from_followers%2C+action_type%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ACC5cR5Ztf7NPB7sGi6o8bm\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights%0A.since%2810+days+ago%29%0A.until%288+das+ago%29%0A.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"As2iA0VF6ewMqF7hvmUJDoo\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=attachments%7Btype%2C+url%7D%2C%0Amessage%2C+created_time%2C+permalink_url%2C+is_published%2C+shares%2C%0Acomments.summary%28total_count%2C+can_comment%29.limit%280%29%2C%0Ainsights.metric%28%0Apost_clicks%2C+post_clicks_by_type%2C%0Apost_reactions_like_total%2C+post_reactions_love_total%2C+post_reactions_wow_total%2C+post_reactions_haha_total%2C+post_reactions_sorry_total%2C+post_reactions_anger_total%2C+%0Apost_video_views_organic%2C+%0Apost_video_views_paid%2C%0Apost_video_views%2C%0Apost_video_views_autoplayed%2C+%0Apage_video_complete_views_30s%2C%0Apost_video_complete_views_30s_paid%2C%0Apost_video_complete_views_30s_organic%2C+%0Apost_video_view_time%2C+%0Apost_video_views_sound_on%2C+%0Apost_video_avg_time_watched%2C+%0Apost_video_complete_views_organic%2C+%0Apost_video_complete_views_paid%29%0A.period%28lifetime%29%0A%7Bname%2C+period%2Cvalues%7D&limit=70&since=2024-12-02&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AjthN4L243Of7PwCTh7L3Of\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=attachments%7Bcaption%2C+type%7D%2Cmessage%2Ccomments%2Ccreated_time%2Cshares%2Creactions%2Cinsights.metric%28post_clicks_by_type%2Cpost_impressions%2C+post_impressions_unique%2Cpost_impressions_paid%2C+post_impressions_paid_unique%2Cpost_reactions_by_type_total%2Cpost_negative_feedback%2C+page_positive_feedback_by_type%2Cpage_post_engagements%2C+post_engaged_users%29&limit=100&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"A3pn48YpJeObb-tgtDWtP1_\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=message%2Ccreated_time%2Cupdated_time%2Cpermalink_url%2Cattachments%7Bid%2Ccaption%2C+type%2C+description%2Cunshimmed_url%7D%2Cinsights.metric%28post_impressions_unique%2Cpost_impressions_paid_unique%2Cpost_reactions_like_total%2Cpost_clicks%29.period%28lifetime%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AvDQkvh0Y0D9ildJ08kQ0dP\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=insights.since%282021-01-01%29.metric%28post_negative_feedback%2C+post_engaged_users%2C+post_impressions_fan%2C+post_impressions_paid%2C+post_impressions%2C+page_posts_impressions_organic%2C+page_posts_impressions_paid%2C+page_posts_impressions%29&limit=100&since=2020-01-01&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AdeLySnqJd5pniw3wCWSKmC\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%2Ccomments%7Bmessage%2Ccreated_time%2Cfrom%7D%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"A121iHX5GXCOK85so8aBFJ2\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=reactions.type%28SAD%29.summary%28total_count%29.limit%280%29&limit=100&since=2024-12-22&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AFjdLf97sCNUdYlmV9XmWCM\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=reactions.type%28HAHA%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ApREsK6KOtGkGt1DqNLBfmU\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=reactions.type%28ANGRY%29.summary%28total_count%29.limit%280%29&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ANFGQu47lKlxNjW2SmePhmc\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=comments%7Bmessage%2Ccreated_time%2Cfrom%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AkiJTcGt76T4mYL6BkaBDVB\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=likes%7Bname%2Cusername%7D&limit=100&since=2024-09-23",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ACCW5Rr5vStLCrwjghsFj0I\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/feed?access_token=token&fields=reactions&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"Au0FiEStt30-N_WWggd0V3T\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&fields=page_fans&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"ACfFvTJM2OwLnhN8y374Y__\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&fields=page_impressions%2Cpage_impressions_unique%2Cpage_views_total&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"Au_8WwjLQ5Lr2pIaVSsSfuO\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/insights?access_token=token&fields=page_impressions%2Cpage_views_total&limit=25&since=2025-09-01&until=2025-11-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 190, \"fbtrace_id\": \"AyVGkdMITIqts-CNHZYbMmj\", \"message\": \"(#190) This method must be called with a Page Access Token\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/me/posts?access_token=token&fields=created_time%2Cid%2Cmessage%2Cfull_picture%2Cinsights.period%28lifetime%29.metric%28post_reactions_by_type_total%2Cpost_clicks%29&limit=25&since=2024-12-25&until=2024-12-31",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 2500, \"fbtrace_id\": \"AD_UvT7v69ivIaImwvUtwt6\", \"message\": \"Unknown path components: /me/posts\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=insights.metric%28post_media_view%29.period%28lifetime%29.breakdown%28is_from_followers%2Cis_from_ads%29&limit=99&since=2024-12-27&until=2024-12-30",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"Aq5YTof3iAmqykT8uGeB7gs\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=insights.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2023-01-12&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AA97v8uwyb1yAUMgLE-kzJo\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=insights.metric%28post_stories_by_action_type%2C+post_impressions%29.period%28lifetime%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"A7Sgg2t0CvYc7T_DQL4NS3W\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=insights.since%28today%29.metric%28post_impressions_paid%2C+post_impressions_paid_unique%2Cpost_impressions_organic%2Cpost_impressions_organic_unique%2Cpost_clicks_by_type%29&limit=25&since=2022-01-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AxijQ4RDZS4BXPvDIdD6wCo\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=reactions.type%28LOVE%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ACXZoCQpkJMh8Lha-f8HOmR\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=comments.limit%280%29.summary%28true%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AwlauHJixc61FqQJqiwMfz2\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=reactions.type%28ANGRY%29.summary%28total_count%29.limit%280%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AOZeEvlPlgqjR2VTDPyUaVp\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AQ85M6aSWeorQgirY8Dc68U\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=created_time%2Cshares%2Cpermalink_url%2Cfull_picture%2Ctimeline_visibility&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"Andg23wTkcKMJ9E-iTDRic8\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/posts?access_token=token&fields=attachments%7Btitle%2C+unshimmed_url%7D&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AC3iQ2hEWtzOJ8BmCfXSUsP\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%2Cpage_post_engagements%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 403,
+                    "message": "Forbidden"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 210, \"fbtrace_id\": \"Aw3Fg8FQO3C-kpQgisJZyU6\", \"message\": \"(#210) A page access token is required to request this resource.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/published_posts?access_token=token&fields=insights.since%283+days+ago%29.until%28today%29.metric%28post_impressions_paid%2Cpost_impressions%2Cpost_impressions_unique%2Cpost_impressions_fan%2Cpost_clicks%2Cpost_reactions_love_total%2Cpost_reactions_haha_total%2Cpost_reactions_like_total%2Cpost_reactions_anger_total%2Cpost_reactions_wow_total%2Cpost_reactions_sorry_total%2Cpost_clicks_by_type%29&limit=25&since=2024-12-23&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 403,
+                    "message": "Forbidden"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 210, \"fbtrace_id\": \"Axls1jC35s8O6f5OuSZ7n0z\", \"message\": \"(#210) A page access token is required to request this resource.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/published_posts?access_token=token&fields=insights.since%28now%29.metric%28post_impressions_fan%2Cpost_impressions_paid%2Cpost_impressions%2Cpage_posts_impressions_organic_unique%2Cpage_posts_impressions_paid%2Cpage_posts_impressions%2Cpost_clicks%2Cpost_clicks_by_type%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 403,
+                    "message": "Forbidden"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 210, \"fbtrace_id\": \"AsKhX-YOdkIaXBCoG2nZYFY\", \"message\": \"(#210) A page access token is required to request this resource.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/ratings?access_token=token&fields=created_time%2Creviewer%2Crating%2Creview_text%2Chas_review%2Chas_rating&limit=25&since=2024-12-02&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 403,
+                    "message": "Forbidden"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 210, \"fbtrace_id\": \"AOyy1QQIqmTBC5IsHQm1sqR\", \"message\": \"(#210) A page access token is required to request this resource.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crating&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 403,
+                    "message": "Forbidden"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 210, \"fbtrace_id\": \"AdWPEJg7aQdflWnHS6kd7_V\", \"message\": \"(#210) A page access token is required to request this resource.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/ratings?access_token=token&fields=created_time%2Creviewer%2Creview_text%2Chas_review%2Chas_rating%2Crecommendation_type&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 403,
+                    "message": "Forbidden"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 210, \"fbtrace_id\": \"AMVc3ByNpOOwP1HeYXaBlYR\", \"message\": \"(#210) A page access token is required to request this resource.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/video?access_token=token&fields=video_insights.since%28now%29.metric%28total_video_views%2C+total_video_views_unique%2C+total_video_views_autoplayed%2C+total_video_views_clicked_to_play%2C+total_video_views_organic%2C+total_video_views_paid%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AwH0VYA_7ghsDAFrSCPm7t6\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (Page)\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/video?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%29&limit=25",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 100, \"fbtrace_id\": \"AEukt6CwTOL5oPw9kW6lBTs\", \"message\": \"(#100) Tried accessing nonexisting field (video) on node type (Page)\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/video_reels?access_token=token&fields=video_reels_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-31&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ASzJmWKO061Y1bIHqBrrSrk\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/video_reels?access_token=token&fields=created_time%2Cid%2Cdescription%2Clength%2Cpublished%2Cviews%2Cpermalink_url%2Cvideo_insights.metric%28post_video_likes_by_reaction_type%2Cpost_video_social_actions%2Cpost_video_view_time%2Cpost_impressions_unique%2Cblue_reels_play_count%2Cpost_video_avg_time_watched%2Cpost_video_followers+%29%7Bname%2Cdescription%2Cvalues%7D&limit=25&since=2024-12-28&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"ACGYmzYHzEQMX5-R3eEuArd\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "uri": "https://graph.facebook.com/v22.0/177057932317550/video_reels?access_token=token&fields=video_insights.since%28now%29.metric%28blue_reels_play_count%2C+fb_reels_total_plays%2C+post_video_avg_time_watched%2C+post_video_view_time%2C+post_video_followers%2C+post_video_likes_by_reaction_type%2C+post_video_social_actions%29&limit=25&since=2024-12-29&until=2025-01-01",
+                "body": null,
+                "headers": {
+                    "Content-Type": [
+                        "application/json"
+                    ]
+                }
+            },
+            "response": {
+                "status": {
+                    "code": 400,
+                    "message": "Bad Request"
+                },
+                "headers": {
+                    "facebook-api-version": [
+                        "v22.0"
+                    ],
+                    "content-length": [
+                        "407"
+                    ],
+                    "Content-Type": [
+                        "application/json; charset=UTF-8"
+                    ]
+                },
+                "body": {
+                    "string": "{\"error\": {\"code\": 10, \"fbtrace_id\": \"AQOLixFUG9YMBlvOVO9SrAQ\", \"message\": \"(#10) This endpoint requires the 'pages_read_engagement' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs/apps/review/login-permissions#manage-pages and https://developers.facebook.com/docs/apps/review/feature#reference-PAGES_ACCESS for details.\", \"type\": \"OAuthException\"}}"
+                }
+            }
         }
     ]
 }
