@@ -369,6 +369,66 @@ class PageLoader:
                 if field_list:
                     params["fields"] = ",".join(field_list)
 
+            # Extract 'action_attribution_windows' (e.g., "insights.action_attribution_windows(7d_click,1d_view)")
+            if ".action_attribution_windows(" in fields:
+                action_attr_windows_part = fields.split(".action_attribution_windows(")[1].split(")")[0]
+                params["action_attribution_windows"] = action_attr_windows_part.strip()
+
+            # Extract 'action_report_time' (e.g., "insights.action_report_time(impression)")
+            if ".action_report_time(" in fields:
+                action_report_time_part = fields.split(".action_report_time(")[1].split(")")[0]
+                params["action_report_time"] = action_report_time_part.strip()
+
+            # Extract 'use_account_attribution_setting' (e.g., "insights.use_account_attribution_setting(true)")
+            if ".use_account_attribution_setting(" in fields:
+                use_account_attr_part = fields.split(".use_account_attribution_setting(")[1].split(")")[0]
+                params["use_account_attribution_setting"] = use_account_attr_part.strip()
+
+            # Extract 'use_unified_attribution_setting' (e.g., "insights.use_unified_attribution_setting(true)")
+            if ".use_unified_attribution_setting(" in fields:
+                use_unified_attr_part = fields.split(".use_unified_attribution_setting(")[1].split(")")[0]
+                params["use_unified_attribution_setting"] = use_unified_attr_part.strip()
+
+            # Extract 'filtering' (e.g., "insights.filtering([{...}])")
+            if ".filtering(" in fields:
+                filtering_part = fields.split(".filtering(")[1].split(")")[0]
+                params["filtering"] = filtering_part.strip()
+
+            # Extract 'summary_action_breakdowns' (e.g., "insights.summary_action_breakdowns(action_type)")
+            if ".summary_action_breakdowns(" in fields:
+                summary_action_breakdowns_part = fields.split(".summary_action_breakdowns(")[1].split(")")[0]
+                params["summary_action_breakdowns"] = summary_action_breakdowns_part.strip()
+
+            # Extract 'product_id_limit' (e.g., "insights.product_id_limit(10)")
+            if ".product_id_limit(" in fields:
+                product_id_limit_part = fields.split(".product_id_limit(")[1].split(")")[0]
+                params["product_id_limit"] = product_id_limit_part.strip()
+
+            # Extract 'sort' (e.g., "insights.sort(field_name)")
+            if ".sort(" in fields:
+                sort_part = fields.split(".sort(")[1].split(")")[0]
+                params["sort"] = sort_part.strip()
+
+            # Extract 'summary' (e.g., "insights.summary(actions,impressions)")
+            if ".summary(" in fields:
+                summary_part = fields.split(".summary(")[1].split(")")[0]
+                params["summary"] = summary_part.strip()
+
+            # Extract 'default_summary' (e.g., "insights.default_summary(true)")
+            if ".default_summary(" in fields:
+                default_summary_part = fields.split(".default_summary(")[1].split(")")[0]
+                params["default_summary"] = default_summary_part.strip()
+
+            # Extract 'time_range' (e.g., "insights.time_range(since:2024-01-01,until:2024-01-31)")
+            if ".time_range(" in fields:
+                time_range_part = fields.split(".time_range(")[1].split(")")[0]
+                params["time_range"] = time_range_part.strip()
+
+            # Extract 'time_ranges' (e.g., "insights.time_ranges([...])")
+            if ".time_ranges(" in fields:
+                time_ranges_part = fields.split(".time_ranges(")[1].split(")")[0]
+                params["time_ranges"] = time_ranges_part.strip()
+
         else:
             # Regular queries use the 'fields' parameter directly
             if query_config.fields:
