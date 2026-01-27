@@ -18,6 +18,12 @@ import vcr
 
 logger = logging.getLogger(__name__)
 
+# Suppress VCR and related library logging to prevent log pollution
+# VCR logs warnings for every request that doesn't match a cassette entry
+logging.getLogger("vcr").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3").setLevel(logging.CRITICAL)
+logging.getLogger("requests").setLevel(logging.CRITICAL)
+
 
 def is_debug_mode() -> bool:
     """Check if the component is running in debug mode."""
