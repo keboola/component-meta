@@ -59,16 +59,16 @@ def sanitize_url(url):
         return url
 
     # Only sanitize if it looks like a Facebook/Meta CDN URL
-    if not any(domain in url for domain in ['fbcdn.net', 'facebook.com']):
+    if not any(domain in url for domain in ["fbcdn.net", "facebook.com"]):
         return url
 
     # Dynamic parameters to remove
     dynamic_params = [
-        "_nc_gid",   # Session/group ID
-        "_nc_tpa",   # Tracking parameter
-        "_nc_oc",    # Cache parameter
-        "oh",        # Hash/signature
-        "oe",        # Expiry timestamp
+        "_nc_gid",  # Session/group ID
+        "_nc_tpa",  # Tracking parameter
+        "_nc_oc",  # Cache parameter
+        "oh",  # Hash/signature
+        "oe",  # Expiry timestamp
     ]
 
     # Remove each parameter
@@ -154,9 +154,7 @@ def before_record_response(response, replacements):
                 body_json = json.loads(body_str)
                 scrubbed_json = recursive_scrub(body_json, replacements)
                 # Sort keys for deterministic git diffs
-                response["body"]["string"] = json.dumps(
-                    scrubbed_json, sort_keys=True
-                ).encode("utf-8")
+                response["body"]["string"] = json.dumps(scrubbed_json, sort_keys=True).encode("utf-8")
             except json.JSONDecodeError:
                 # Fallback to string replacement
                 scrubbed_str = scrub_string(body_str, replacements)
@@ -206,7 +204,7 @@ def inject_secrets(config, token):
     return config
 
 
-def run_from_csv(csv_path, secrets_path):
+def run_from_csv(csv_path, secrets_path, full_output=False):
     # Try sanitized file first if it exists
     sanitized_path = csv_path.parent / "queries_sanitized.csv"
     if sanitized_path.exists():
@@ -250,9 +248,7 @@ def run_from_csv(csv_path, secrets_path):
                 q = json.loads(json_str)
 
                 # Normalize query object
-                real_query_params = (
-                    q.get("query", q) if isinstance(q.get("query"), dict) else q
-                )
+                real_query_params = q.get("query", q) if isinstance(q.get("query"), dict) else q
                 if "limit" in real_query_params and real_query_params["limit"]:
                     real_query_params["limit"] = str(real_query_params["limit"])
 
@@ -273,16 +269,12 @@ def run_from_csv(csv_path, secrets_path):
             except json.JSONDecodeError:
                 continue
 
-    print(
-        f"Total unique queries found across {len(component_queries)} components: {total_found}"
-    )
+    print(f"Total unique queries found across {len(component_queries)} components: {total_found}")
 
     # Generate cassettes for both v22.0 and v23.0
     for version in ["v22.0", "v23.0"]:
         for comp_id, queries_raw in component_queries.items():
-            print(
-                f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}"
-            )
+            print(f"Generating test for component: {comp_id} ({len(queries_raw)} queries) - API {version}")
 
             # Normalize and add technical IDs if missing
             final_queries = []
@@ -343,7 +335,7 @@ def run_from_csv(csv_path, secrets_path):
             except Exception:
                 pass
 
-            run_test_case(case, token)
+            run_test_case(case, token, full_output=full_output)
 
 
 def sanitize_output_csvs(output_dir, replacements):
@@ -368,7 +360,7 @@ def sanitize_output_csvs(output_dir, replacements):
     for csv_file in tables_dir.glob("*.csv"):
         try:
             # Read the CSV properly
-            with open(csv_file, 'r', encoding='utf-8', newline='') as f:
+            with open(csv_file, "r", encoding="utf-8", newline="") as f:
                 reader = csv_module.DictReader(f)
                 rows = list(reader)
                 fieldnames = reader.fieldnames
@@ -389,7 +381,7 @@ def sanitize_output_csvs(output_dir, replacements):
                 sanitized_rows.append(sanitized_row)
 
             # Write back as valid CSV
-            with open(csv_file, 'w', encoding='utf-8', newline='') as f:
+            with open(csv_file, "w", encoding="utf-8", newline="") as f:
                 if fieldnames:
                     writer = csv_module.DictWriter(f, fieldnames=fieldnames)
                     writer.writeheader()
@@ -401,7 +393,7 @@ def sanitize_output_csvs(output_dir, replacements):
             raise
 
 
-def run_test_case(case, token):
+def run_test_case(case, token, full_output=False):
     # Replacements map: Real -> Dummy
     replacements = {token: "token"}
 
@@ -430,9 +422,7 @@ def run_test_case(case, token):
     param_token = params.get("access_token") or params.get("#access_token")
     if param_token and "authorization" not in runtime_params:
         runtime_params["authorization"] = {
-            "oauth_api": {
-                "credentials": {"token": param_token, "access_token": param_token}
-            }
+            "oauth_api": {"credentials": {"token": param_token, "access_token": param_token}}
         }
 
     runtime_params["action"] = case.get("action", "run")
@@ -462,8 +452,9 @@ def run_test_case(case, token):
 
                     # Capture output snapshot if snapshot manager is enabled
                     if snapshot_manager:
-                        snapshot_manager.capture_snapshot(case["name"], tmpdir)
-                        print(f"  → Captured output snapshot for {case['name']}")
+                        snapshot_manager.capture_snapshot(case["name"], tmpdir, full_output=full_output)
+                        mode = "full output" if full_output else "samples only"
+                        print(f"  → Captured output snapshot for {case['name']} ({mode})")
 
                 except BaseException as e:
                     import traceback
@@ -488,6 +479,11 @@ def run_gen():
         action="store_true",
         help="Capture output snapshots for validation",
     )
+    parser.add_argument(
+        "--full-output",
+        action="store_true",
+        help="Capture all rows in snapshots instead of just samples (for debugging hash differences)",
+    )
     args = parser.parse_args()
 
     # Initialize snapshot manager if requested
@@ -497,7 +493,7 @@ def run_gen():
         print(f"Output snapshot capture enabled → {SNAPSHOTS_FILE}")
 
     if args.csv:
-        run_from_csv(QUERIES_FILE, SECRETS_FILE)
+        run_from_csv(QUERIES_FILE, SECRETS_FILE, full_output=args.full_output)
         # Save snapshots after all tests
         if snapshot_manager:
             snapshot_manager.save()

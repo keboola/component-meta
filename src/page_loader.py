@@ -1,5 +1,6 @@
 import logging
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Optional
 from urllib.parse import parse_qs, urlparse
@@ -10,6 +11,161 @@ from keboola.utils.date import get_past_date
 from requests import HTTPError
 
 logger = logging.getLogger(__name__)
+
+
+# Facebook API error codes
+@dataclass(frozen=True)
+class FacebookErrorCode:
+    """Facebook API error code constants."""
+
+    code: int
+    subcode: Optional[int] = None
+    message_fragment: Optional[str] = None
+
+
+# Known recoverable errors
+BUSINESS_CONVERSION_ERROR = FacebookErrorCode(
+    code=100,
+    subcode=2108006,
+    message_fragment="media posted before business account conversion",
+)
+
+OBJECT_NOT_FOUND_ERROR = FacebookErrorCode(
+    code=100,
+    subcode=33,
+    message_fragment="does not exist, cannot be loaded due to missing permissions",
+)
+
+DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there cannot be more than 30 days")
+
+INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
+
+
+class FacebookErrorHandler:
+    """Handles Facebook API error detection and categorization."""
+
+    @staticmethod
+    def is_recoverable_error(http_error: HTTPError) -> tuple[bool, str]:
+        """
+        Check if an HTTP error is recoverable (should return empty data instead of failing).
+        Returns (is_recoverable, error_description).
+        """
+        if FacebookErrorHandler._matches_error(http_error, BUSINESS_CONVERSION_ERROR):
+            return True, "Media Posted Before Business Account Conversion"
+
+        if FacebookErrorHandler._matches_error(http_error, DATE_RANGE_LIMIT_ERROR):
+            return (
+                True,
+                "30-day limit exceeded. Change 'since(30 days ago)' to '29 days ago' in config.",
+            )
+
+        if FacebookErrorHandler._matches_error(http_error, OBJECT_NOT_FOUND_ERROR):
+            return (
+                True,
+                "Account no longer exists or is inaccessible. Remove it or re-run Add Account.",
+            )
+
+        if FacebookErrorHandler._matches_error(http_error, INVALID_METRIC_ERROR):
+            # Extract detailed error message from response
+            response = getattr(http_error, "response", None)
+            error_msg = "Invalid metric configuration"
+            if response is not None:
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("error", {}).get("message", error_msg)
+                except Exception:
+                    pass
+            return True, f"Query configuration error: {error_msg}"
+
+        return False, ""
+
+    @staticmethod
+    def _matches_error(http_error: HTTPError, error_code: FacebookErrorCode) -> bool:
+        """Check if HTTP error matches the given error code definition."""
+        response = getattr(http_error, "response", None)
+
+        # Try structured JSON error first
+        if response is not None:
+            try:
+                error_data = response.json()
+                error_info = error_data.get("error", {})
+
+                # Match by code and subcode if both are defined
+                if error_code.code is not None:
+                    if error_info.get("code") == error_code.code:
+                        if error_code.subcode is None or error_info.get("error_subcode") == error_code.subcode:
+                            return True
+            except Exception:
+                pass
+
+        # Fall back to message fragment matching
+        if error_code.message_fragment:
+            # Check response text
+            if response is not None:
+                try:
+                    if error_code.message_fragment in response.text.lower():
+                        return True
+                except Exception:
+                    pass
+
+            # Check exception message
+            try:
+                if error_code.message_fragment in str(http_error).lower():
+                    return True
+            except Exception:
+                pass
+
+        return False
+
+
+class PaginationHandler:
+    """Handles Facebook API pagination timestamp edge cases."""
+
+    @staticmethod
+    def should_skip_pagination(params: dict[str, Any]) -> tuple[bool, str]:
+        """
+        Check if pagination request should be skipped due to invalid timestamps.
+        Returns (should_skip, reason).
+        """
+        now_ts = int(datetime.now(timezone.utc).timestamp())
+        since_ts = PaginationHandler._parse_unix_ts(params.get("since"))
+        until_ts = PaginationHandler._parse_unix_ts(params.get("until"))
+        one_hour_ago = now_ts - 3600
+
+        # Case 1: Very recent 'since' without 'until' - reached end of historical data
+        if since_ts is not None and until_ts is None and since_ts > one_hour_ago:
+            return True, "reached end of historical data"
+
+        # Case 2: Both timestamps in future - no historical data
+        if since_ts is not None and until_ts is not None:
+            if since_ts > now_ts and until_ts > now_ts:
+                return True, "both timestamps in future"
+
+            # Future 'until' with very recent 'since' - no meaningful data
+            if until_ts > now_ts and since_ts > one_hour_ago:
+                return True, "reached end of historical data"
+
+        return False, ""
+
+    @staticmethod
+    def adjust_params(params: dict[str, Any]) -> dict[str, Any]:
+        """Remove future 'until' timestamp if present, return adjusted params."""
+        until_ts = PaginationHandler._parse_unix_ts(params.get("until"))
+        if until_ts is not None:
+            now_ts = int(datetime.now(timezone.utc).timestamp())
+            if until_ts > now_ts:
+                logger.debug("Adjusting pagination window to end at current time")
+                params = params.copy()
+                params.pop("until", None)
+        return params
+
+    @staticmethod
+    def _parse_unix_ts(value: Any) -> Optional[int]:
+        """Parse a 10-digit Unix timestamp, return None if not valid."""
+        if value is None:
+            return None
+        s = str(value)
+        return int(s) if s.isdigit() and len(s) == 10 else None
 
 
 class PageLoader:
@@ -29,7 +185,7 @@ class PageLoader:
         if not report_id:
             return {"data": []}
 
-        logging.info(f"Started polling for insights job report: {report_id}")
+        logger.info(f"Started polling for insights job report: {report_id}")
 
         # Poll for completion
         return self.poll_async_job(report_id)
@@ -43,20 +199,20 @@ class PageLoader:
             param_pairs = (p.split("=", 1) for p in query_config.parameters.split("&") if "=" in p)
             params.update({k.strip(): v.strip() for k, v in param_pairs})
 
-        logging.info(f"Starting async insights request: {endpoint_path}")
+        logger.info(f"Starting async insights request: {endpoint_path}")
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
             report_id = response.get("report_run_id")
             if not report_id:
-                logging.warning("No 'report_run_id' found in the async insights response.")
+                logger.warning("No 'report_run_id' found in the async insights response.")
                 return None
 
-            logging.info(f"Async job started successfully with report ID: {report_id}")
+            logger.info(f"Async job started successfully with report ID: {report_id}")
             return report_id
 
         except Exception as e:
-            logging.error(f"Error starting async insights job: {e}")
+            logger.error(f"Error starting async insights job: {e}")
             return None
 
     def poll_async_job(self, report_id: str, access_token: str = None) -> dict[str, Any]:
@@ -72,13 +228,13 @@ class PageLoader:
                 response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}", params=params)
 
                 if not response:
-                    logging.error("Empty response from async job status check")
+                    logger.error("Empty response from async job status check")
                     break
 
                 async_percent = response.get("async_percent_completion", 0)
                 async_status = response.get("async_status", "Unknown")
 
-                logging.info(f"Async job {report_id}: {async_percent}% complete, status: {async_status}")
+                logger.info(f"Async job {report_id}: {async_percent}% complete, status: {async_status}")
 
                 is_finished = async_percent == 100
 
@@ -90,7 +246,7 @@ class PageLoader:
                     attempt += 1
 
             except Exception as e:
-                logging.error(f"Error polling async job {report_id}: {str(e)}")
+                logger.error(f"Error polling async job {report_id}: {str(e)}")
                 raise e
 
         if not is_finished or async_status != "Job Completed":
@@ -102,7 +258,7 @@ class PageLoader:
             final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
             return final_response if final_response else {"data": []}
         except Exception as e:
-            logging.error(f"Failed to get final results for job {report_id}: {str(e)}")
+            logger.error(f"Failed to get final results for job {report_id}: {str(e)}")
             return {"data": []}
 
     def _load_regular_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
@@ -111,21 +267,29 @@ class PageLoader:
 
         endpoint_path = self._build_endpoint_path(query_config, page_id)
 
-        logging.debug(f"Loading page data from: {endpoint_path}")
-        logging.debug(f"Request params: {base_params}")
+        logger.debug(f"Loading page data from: {endpoint_path}")
+        logger.debug(f"Request params: {base_params}")
 
         try:
             response = self.client.get(endpoint_path=endpoint_path, params=base_params)
             return response or {"data": []}
 
         except HTTPError as e:
-            logging.error(f"HTTP error while loading page data: {e}")
-            if hasattr(e, "response") and e.response:
-                logging.error(f"Response text: {e.response.text}")
+            # Check for recoverable errors
+            is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
+            if is_recoverable:
+                logger.warning(f"Skipping account: {error_desc}")
+                return {"data": []}
+
+            # Non-recoverable error
+            logger.error(f"HTTP error while loading page data: {e}")
+            response = getattr(e, "response", None)
+            if response is not None:
+                logger.error(f"Facebook API error response: {response.text}")
             raise
 
         except Exception as e:
-            logging.error(f"Failed to load page data: {e}")
+            logger.error(f"Failed to load page data: {e}")
             raise
 
     def _build_params(self, query_config) -> dict[str, Any]:
@@ -209,47 +373,36 @@ class PageLoader:
             # Convert lists to single values (parse_qs returns lists)
             params = {k: v[0] if isinstance(v, list) and len(v) == 1 else v for k, v in query_params.items()}
 
-            logging.debug(f"Loading paginated data from path: {path}")
-            logging.debug(f"Pagination params: {params}")
+            logger.debug(f"Loading paginated data from path: {path}")
+            logger.debug(f"Pagination params: {params}")
 
-            # Handle Meta bug: pagination URLs sometimes have future timestamps
-            until_ts = self._parse_unix_ts(params.get("until"))
-            if until_ts is not None:
-                now_ts = int(datetime.now(timezone.utc).timestamp())
+            # Check if pagination should be skipped (e.g., future timestamps)
+            should_skip, reason = PaginationHandler.should_skip_pagination(params)
+            if should_skip:
+                logger.info(f"Skipping pagination: {reason} for URL: {url}")
+                return {"data": []}
 
-                # Check if 'until' is in the future
-                if until_ts > now_ts:
-                    since_ts = self._parse_unix_ts(params.get("since"))
-
-                    # Both since and until in future -> no historical data to fetch
-                    if since_ts is not None and since_ts > now_ts:
-                        logging.warning(f"Skipping future-only pagination range. URL: {url}")
-                        return {"data": []}
-
-                    # Only until in future -> remove it, API will use 'now' implicitly
-                    logging.warning(f"Removing future 'until'={params.get('until')}. URL: {url}")
-                    params.pop("until", None)
+            # Adjust params if needed (e.g., remove future 'until')
+            params = PaginationHandler.adjust_params(params)
 
             response = self.client.get(endpoint_path=path, params=params)
-
             return response if response else {"data": []}
 
         except HTTPError as e:
+            # Check for recoverable errors
+            is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
+            if is_recoverable:
+                logger.warning(f"Skipping account: {error_desc}")
+                return {"data": []}
+
+            # Non-recoverable error
             status_code = getattr(getattr(e, "response", None), "status_code", None)
-            logging.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
-            if hasattr(e, "response") and e.response is not None:
-                logging.error(f"Facebook API error response: {e.response.text}")
+            logger.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
+            response = getattr(e, "response", None)
+            if response is not None:
+                logger.error(f"Facebook API error response: {response.text}")
             raise
 
         except Exception as e:
-            logging.error(f"Failed to load paginated data from URL {url}: {str(e)}")
+            logger.error(f"Failed to load paginated data from URL {url}: {str(e)}")
             raise
-
-    def _parse_unix_ts(self, value: Any) -> int | None:
-        """Parse a 10-digit Unix timestamp, return None if not valid."""
-        if value is None:
-            return None
-        s = str(value)
-        if s.isdigit() and len(s) == 10:
-            return int(s)
-        return None

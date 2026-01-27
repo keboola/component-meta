@@ -31,3 +31,6 @@ filterwarnings = [
     "ignore:Parsing dates involving a day of month:DeprecationWarning",
 ]
 
+[tool.ruff]
+line-length = 120
+

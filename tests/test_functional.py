@@ -68,11 +68,7 @@ def load_configs():
             secrets_placeholder = copy.deepcopy(secrets)
             if "authorization" in secrets_placeholder:
                 # We want the test runner to use 'token' as the value so it matches the recorded VCR filter
-                creds = (
-                    secrets_placeholder["authorization"]
-                    .get("oauth_api", {})
-                    .get("credentials", {})
-                )
+                creds = secrets_placeholder["authorization"].get("oauth_api", {}).get("credentials", {})
                 if "token" in creds:
                     creds["token"] = "token"
                 if "access_token" in creds:
@@ -101,9 +97,7 @@ def load_configs():
                         q = json.loads(json_str)
 
                         # Normalize query object (matching generate_tests.py logic)
-                        real_query_params = (
-                            q.get("query", q) if isinstance(q.get("query"), dict) else q
-                        )
+                        real_query_params = q.get("query", q) if isinstance(q.get("query"), dict) else q
                         if "limit" in real_query_params and real_query_params["limit"]:
                             real_query_params["limit"] = str(real_query_params["limit"])
 
@@ -197,9 +191,7 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
 
     # Ensure authorization exists for the Component to be happy
     if "authorization" not in params:
-        params["authorization"] = {
-            "oauth_api": {"credentials": {"token": "token", "access_token": "token"}}
-        }
+        params["authorization"] = {"oauth_api": {"credentials": {"token": "token", "access_token": "token"}}}
 
     with open(tmpdir.join("config.json"), "w") as f:
         json.dump(params, f)
@@ -233,9 +225,7 @@ def test_functional_component(config_data, tmpdir, monkeypatch):
     # Verification: Ensure some data was written to tables
     out_tables_dir = Path(tmpdir) / "out" / "tables"
     found_tables = list(out_tables_dir.glob("*.csv"))
-    assert len(found_tables) > 0 or config_data.get("action") != "run", (
-        "Component produced no output tables"
-    )
+    assert len(found_tables) > 0 or config_data.get("action") != "run", "Component produced no output tables"
 
     # Validate outputs against snapshot
     test_name = config_data["name"]
@@ -275,12 +265,8 @@ def test_snapshot_capture_and_validation(tmpdir):
         with open(sample_csv, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["id", "name", "impressions"])
             writer.writeheader()
-            writer.writerow(
-                {"id": "123", "name": "Test Campaign", "impressions": "1000"}
-            )
-            writer.writerow(
-                {"id": "456", "name": "Another Campaign", "impressions": "2000"}
-            )
+            writer.writerow({"id": "123", "name": "Test Campaign", "impressions": "1000"})
+            writer.writerow({"id": "456", "name": "Another Campaign", "impressions": "2000"})
 
         # Create a sample manifest
         manifest_file = tables_dir / "campaigns.csv.manifest"
@@ -316,9 +302,7 @@ def test_snapshot_capture_and_validation(tmpdir):
 
         # Test 2: Validation passes with same data
         errors = snapshot.validate_against(captured)
-        assert errors == [], (
-            f"Validation should pass with same data, but got errors: {errors}"
-        )
+        assert errors == [], f"Validation should pass with same data, but got errors: {errors}"
 
         # Test 3: Validation detects changes
         modified_snapshot = copy.deepcopy(captured)
