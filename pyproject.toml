@@ -14,6 +14,7 @@ dependencies = [
     "keboola-utils>=1.1.0",
     "mock>=5.1.0",
     "pydantic>=2.11.7",
+    "vcrpy>=8.1.1",
 ]
 
 [tool.uv.sources]

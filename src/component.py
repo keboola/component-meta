@@ -251,17 +251,48 @@ class Component(ComponentBase):
         return result
 
 
+def _get_access_token_from_oauth(oauth_credentials) -> str | None:
+    """Extract access token from OAuth credentials for VCR sanitization."""
+    if not oauth_credentials:
+        return None
+    try:
+        if hasattr(oauth_credentials, "data") and oauth_credentials.data:
+            return oauth_credentials.data.get("access_token")
+        if hasattr(oauth_credentials, "access_token"):
+            return oauth_credentials.access_token
+    except Exception:
+        pass
+    return None
+
+
 """
         Main entrypoint
 """
 if __name__ == "__main__":
-    try:
-        comp = Component()
-        # this triggers the run method by default and is controlled by the configuration.action parameter
-        comp.execute_action()
-    except UserException as exc:
-        logger.exception(exc)
-        exit(1)
-    except Exception as exc:
-        logger.exception(exc)
-        exit(2)
+    from vcr_recorder import is_debug_mode, vcr_debug_context
+
+    if is_debug_mode():
+        logger.info("Debug mode detected - VCR recording enabled")
+        try:
+            comp = Component()
+            access_token = _get_access_token_from_oauth(comp.configuration.oauth_credentials)
+            with vcr_debug_context(access_token=access_token) as cassette_path:
+                if cassette_path:
+                    logger.info(f"Recording HTTP interactions to: {cassette_path}")
+                comp.execute_action()
+        except UserException as exc:
+            logger.exception(exc)
+            exit(1)
+        except Exception as exc:
+            logger.exception(exc)
+            exit(2)
+    else:
+        try:
+            comp = Component()
+            comp.execute_action()
+        except UserException as exc:
+            logger.exception(exc)
+            exit(1)
+        except Exception as exc:
+            logger.exception(exc)
+            exit(2)
