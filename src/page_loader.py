@@ -194,12 +194,14 @@ class PageLoader:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
         endpoint_path = f"/{self.api_version}/{page_id}/insights"
 
-        # Extract query parameters if present
-        if getattr(query_config, "parameters", None):
-            param_pairs = (p.split("=", 1) for p in query_config.parameters.split("&") if "=" in p)
-            params.update({k.strip(): v.strip() for k, v in param_pairs})
+        # Build parameters using the same logic as regular page loading
+        # This ensures all DSL parameters are properly parsed
+        base_params = self._build_params(query_config)
+        base_params.update(params)
+        params = base_params
 
         logger.info(f"Starting async insights request: {endpoint_path}")
+        logger.debug(f"Async insights params: {params}")
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
@@ -327,6 +329,45 @@ class PageLoader:
             if ".until(" in fields:
                 until_part = fields.split(".until(")[1].split(")")[0]
                 params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
+
+            # Extract 'level' from the 'fields' string (e.g., "insights.level(ad)")
+            if ".level(" in fields:
+                level_part = fields.split(".level(")[1].split(")")[0]
+                params["level"] = level_part.strip()
+
+            # Extract 'action_breakdowns' from the 'fields' string (e.g., "insights.action_breakdowns(action_type)")
+            if ".action_breakdowns(" in fields:
+                action_breakdowns_part = fields.split(".action_breakdowns(")[1].split(")")[0]
+                params["action_breakdowns"] = action_breakdowns_part.strip()
+
+            # Extract 'date_preset' from the 'fields' string (e.g., "insights.date_preset(last_3d)")
+            if ".date_preset(" in fields:
+                date_preset_part = fields.split(".date_preset(")[1].split(")")[0]
+                params["date_preset"] = date_preset_part.strip()
+
+            # Extract 'time_increment' from the 'fields' string (e.g., "insights.time_increment(1)")
+            if ".time_increment(" in fields:
+                time_increment_part = fields.split(".time_increment(")[1].split(")")[0]
+                params["time_increment"] = time_increment_part.strip()
+
+            # Extract 'breakdowns' from the 'fields' string (e.g., "insights.breakdowns(age,gender)")
+            if ".breakdowns(" in fields:
+                breakdowns_part = fields.split(".breakdowns(")[1].split(")")[0]
+                params["breakdowns"] = breakdowns_part.strip()
+
+            # Extract fields from curly braces (e.g., "insights.level(ad){ad_id,ad_name,spend}")
+            if "{" in fields and "}" in fields:
+                # Extract content between curly braces
+                fields_part = fields.split("{")[1].split("}")[0]
+                # Parse comma-separated field names
+                field_list = [f.strip() for f in fields_part.replace("\n", "").split(",") if f.strip()]
+
+                # Ensure account_id is always included for backwards compatibility
+                if field_list and "account_id" not in field_list:
+                    field_list.append("account_id")
+
+                if field_list:
+                    params["fields"] = ",".join(field_list)
 
         else:
             # Regular queries use the 'fields' parameter directly
