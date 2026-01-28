@@ -286,6 +286,37 @@ class TestDSLParameterParsing(unittest.TestCase):
         self.assertIn("actions", fields)
         self.assertIn("account_id", fields)
 
+    def test_parse_dsl_with_path_set(self):
+        """Test parsing DSL syntax when path is set (nested queries with custom path)"""
+        query_config = MagicMock()
+        query_config.limit = 100
+        query_config.path = "ads"  # Custom path set
+        query_config.fields = (
+            "insights.level(ad).breakdowns(publisher_platform)"
+            ".date_preset(last_90d).time_increment(1)"
+            "{ad_id,impressions,reach,clicks,spend}"
+        )
+        query_config.since = ""
+        query_config.until = ""
+        query_config.parameters = None
+
+        params = self.loader._build_params(query_config)
+
+        # DSL parameters should still be parsed even though path is set
+        self.assertEqual(params["level"], "ad")
+        self.assertEqual(params["breakdowns"], "publisher_platform")
+        self.assertEqual(params["date_preset"], "last_90d")
+        self.assertEqual(params["time_increment"], "1")
+
+        # Verify fields are extracted
+        fields = params["fields"].split(",")
+        self.assertIn("ad_id", fields)
+        self.assertIn("impressions", fields)
+        self.assertIn("reach", fields)
+        self.assertIn("clicks", fields)
+        self.assertIn("spend", fields)
+        self.assertIn("account_id", fields)
+
 
 if __name__ == "__main__":
     unittest.main()

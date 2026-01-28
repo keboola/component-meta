@@ -307,7 +307,8 @@ class PageLoader:
 
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
-        if not query_config.path and fields.startswith("insights"):
+        # Parse DSL syntax regardless of path (nested queries can have both path and DSL)
+        if fields.startswith("insights"):
             # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
             if ".metric(" in fields:
                 metric_part = fields.split(".metric(")[1].split(")")[0]
