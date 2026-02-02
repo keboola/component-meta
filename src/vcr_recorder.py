@@ -155,6 +155,148 @@ def before_record_request(request: Any, replacements: dict[str, str]) -> Any:
     return request
 
 
+class IncrementalJSONPersister:
+    """
+    Custom VCR persister that writes interactions incrementally to disk.
+
+    Instead of buffering all interactions in memory and writing at the end,
+    this persister appends each interaction to the JSON file as it's recorded.
+    This prevents OOM errors on large runs with many HTTP requests.
+    """
+
+    def __init__(self, cassette_library_dir: str):
+        self.cassette_library_dir = cassette_library_dir
+        self._file_handle = None
+        self._is_first_interaction = True
+        self._written_count = 0  # Track how many interactions we've written
+
+    def _serialize_body(self, body: Any) -> Any:
+        """Convert bytes in body to JSON-serializable format."""
+        if isinstance(body, bytes):
+            try:
+                return body.decode("utf-8")
+            except UnicodeDecodeError:
+                # If it's binary data, encode as base64
+                import base64
+
+                return {"encoding": "base64", "string": base64.b64encode(body).decode("ascii")}
+        elif isinstance(body, dict):
+            # Recursively handle nested structures
+            return {k: self._serialize_body(v) for k, v in body.items()}
+        elif isinstance(body, list):
+            return [self._serialize_body(item) for item in body]
+        return body
+
+    def _serialize_request(self, request: Any) -> dict:
+        """Convert VCR Request object to dictionary."""
+        if isinstance(request, dict):
+            return {k: self._serialize_body(v) for k, v in request.items()}
+
+        return {
+            "uri": request.uri,
+            "method": request.method,
+            "body": self._serialize_body(request.body),
+            "headers": dict(request.headers) if hasattr(request.headers, "items") else request.headers,
+        }
+
+    def _serialize_response(self, response: Any) -> dict:
+        """Convert response to JSON-serializable format, handling bytes."""
+        if not isinstance(response, dict):
+            response = dict(response)
+
+        # Recursively serialize all values to handle bytes
+        return {k: self._serialize_body(v) for k, v in response.items()}
+
+    def save_cassette(self, cassette_path: str, cassette_dict: dict, serializer: Any = None) -> None:
+        """
+        Save cassette data incrementally.
+
+        VCR calls this method with ALL interactions accumulated so far,
+        so we track how many we've already written and only write new ones.
+
+        Args:
+            cassette_path: Path to the cassette file
+            cassette_dict: Dictionary containing 'requests' and 'responses'
+            serializer: VCR serializer (not used, we handle serialization directly)
+        """
+        cassette_file = Path(cassette_path)
+
+        # Initialize file on first call
+        if self._file_handle is None:
+            cassette_file.parent.mkdir(parents=True, exist_ok=True)
+            self._file_handle = open(cassette_file, "w", encoding="utf-8")
+            # Write JSON header
+            self._file_handle.write('{"version": 1, "interactions": [\n')
+            self._file_handle.flush()
+            self._is_first_interaction = True
+            self._written_count = 0
+
+        # VCR passes data as {'requests': [...], 'responses': [...]}
+        # Requests are VCR Request objects, responses are already dicts
+        requests = cassette_dict.get("requests", [])
+        responses = cassette_dict.get("responses", [])
+
+        # Serialize and combine requests and responses into interactions
+        interactions = []
+        for req, resp in zip(requests, responses):
+            # Convert Request and Response objects to JSON-serializable dicts
+            req_dict = self._serialize_request(req)
+            resp_dict = self._serialize_response(resp)
+
+            interactions.append({"request": req_dict, "response": resp_dict})
+
+        # Write only new interactions (those we haven't written yet)
+        new_interactions = interactions[self._written_count :]
+
+        for interaction in new_interactions:
+            # Add comma before all but the first interaction
+            if not self._is_first_interaction:
+                self._file_handle.write(",\n")
+            else:
+                self._is_first_interaction = False
+
+            # Write the interaction as JSON
+            json.dump(interaction, self._file_handle, indent=2)
+            self._file_handle.flush()  # Ensure it's written to disk immediately
+            self._written_count += 1
+
+    def load_cassette(self, cassette_path: str, serializer: Any = None) -> tuple[list, list]:
+        """
+        Load existing cassette file.
+
+        VCR calls this method to check for existing cassettes.
+        For incremental writing, we return empty lists since we're always recording new.
+        """
+        cassette_file = Path(cassette_path)
+
+        # If file doesn't exist, return empty
+        if not cassette_file.exists():
+            return [], []
+
+        # If file exists and we're in incremental mode, we should read it
+        # to get existing interactions (in case of append mode)
+        try:
+            with open(cassette_file, encoding="utf-8") as f:
+                data = json.load(f)
+                interactions = data.get("interactions", [])
+
+                # VCR expects tuple of (requests, responses) but we return interactions
+                # The serializer will handle converting them
+                return interactions, []
+        except (json.JSONDecodeError, FileNotFoundError):
+            return [], []
+
+    def close(self, cassette_path: str) -> None:
+        """Close the cassette file properly."""
+        if self._file_handle is not None:
+            # Close the JSON array and object
+            self._file_handle.write("\n]}")
+            self._file_handle.close()
+            self._file_handle = None
+            self._is_first_interaction = True
+            self._written_count = 0
+
+
 class VCRDebugRecorder:
     """VCR recorder for debug mode execution."""
 
@@ -169,6 +311,7 @@ class VCRDebugRecorder:
         self.replacements = {self.access_token: "token"} if access_token else {}
         self.cassette_path: Path | None = None
         self.output_dir = get_output_files_dir()
+        self.persister: IncrementalJSONPersister | None = None
 
     def _generate_cassette_name(self) -> str:
         """Generate a unique cassette filename."""
@@ -179,8 +322,11 @@ class VCRDebugRecorder:
         return f"vcr_debug_{component_name}_{config_id}_{timestamp}.json"
 
     def _create_vcr(self) -> vcr.VCR:
-        """Create a configured VCR instance."""
-        return vcr.VCR(
+        """Create a configured VCR instance with incremental persister."""
+        self.persister = IncrementalJSONPersister(str(self.output_dir))
+
+        # Create a custom VCR config
+        vcr_config = vcr.VCR(
             cassette_library_dir=str(self.output_dir),
             record_mode="new_episodes",
             match_on=["method", "scheme", "host", "port", "path", "query", "body"],
@@ -192,10 +338,14 @@ class VCRDebugRecorder:
             serializer="json",
         )
 
+        # Override the persister
+        vcr_config.persister = self.persister
+        return vcr_config
+
     @contextmanager
     def record(self) -> Generator[Path, None, None]:
         """
-        Context manager for VCR recording.
+        Context manager for VCR recording with incremental disk writes.
 
         Yields:
             Path to the cassette file being recorded
@@ -205,19 +355,24 @@ class VCRDebugRecorder:
             with recorder.record() as cassette_path:
                 # Execute component code
                 pass
-            # Cassette is saved to output_dir
+            # Cassette is saved incrementally to output_dir
         """
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
         cassette_name = self._generate_cassette_name()
         self.cassette_path = self.output_dir / cassette_name
 
-        logger.info(f"VCR Debug Recording enabled - cassette will be saved to: {self.cassette_path}")
+        logger.info(f"VCR Debug Recording enabled - cassette will be saved incrementally to: {self.cassette_path}")
 
         my_vcr = self._create_vcr()
 
-        with my_vcr.use_cassette(cassette_name):
-            yield self.cassette_path
+        try:
+            with my_vcr.use_cassette(cassette_name):
+                yield self.cassette_path
+        finally:
+            # Ensure the persister properly closes the JSON file
+            if self.persister:
+                self.persister.close(str(self.cassette_path))
 
         logger.info(f"VCR Debug Recording complete - cassette saved to: {self.cassette_path}")
 
