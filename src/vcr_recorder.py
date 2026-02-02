@@ -246,7 +246,7 @@ class IncrementalJSONPersister:
             interactions.append({"request": req_dict, "response": resp_dict})
 
         # Write only new interactions (those we haven't written yet)
-        new_interactions = interactions[self._written_count :]
+        new_interactions = interactions[self._written_count:]
 
         for interaction in new_interactions:
             # Add comma before all but the first interaction
