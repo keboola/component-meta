@@ -38,6 +38,16 @@ OBJECT_NOT_FOUND_ERROR = FacebookErrorCode(
 
 DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there cannot be more than 30 days")
 
+# DSL parameters to extract from insights fields string (e.g., ".param_name(value)")
+# These are simple parameters that only need extraction and stripping
+DSL_SIMPLE_PARAMS = [
+    "period", "level", "action_breakdowns", "date_preset", "time_increment",
+    "breakdowns", "action_attribution_windows", "action_report_time",
+    "use_account_attribution_setting", "use_unified_attribution_setting",
+    "filtering", "summary_action_breakdowns", "product_id_limit",
+    "sort", "summary", "default_summary", "time_range", "time_ranges",
+]
+
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
 
 
@@ -194,12 +204,14 @@ class PageLoader:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
         endpoint_path = f"/{self.api_version}/{page_id}/insights"
 
-        # Extract query parameters if present
-        if getattr(query_config, "parameters", None):
-            param_pairs = (p.split("=", 1) for p in query_config.parameters.split("&") if "=" in p)
-            params.update({k.strip(): v.strip() for k, v in param_pairs})
+        # Build parameters using the same logic as regular page loading
+        # This ensures all DSL parameters are properly parsed
+        base_params = self._build_params(query_config)
+        base_params.update(params)
+        params = base_params
 
         logger.info(f"Starting async insights request: {endpoint_path}")
+        logger.debug(f"Async insights params: {params}")
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
@@ -306,27 +318,38 @@ class PageLoader:
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
         if not query_config.path and fields.startswith("insights"):
-            # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
+            # Extract simple parameters (just strip the value)
+            for param_name in DSL_SIMPLE_PARAMS:
+                pattern = f".{param_name}("
+                if pattern in fields:
+                    value = fields.split(pattern)[1].split(")")[0]
+                    params[param_name] = value.strip()
+
+            # Extract 'metric' - special handling: split by comma and join
             if ".metric(" in fields:
                 metric_part = fields.split(".metric(")[1].split(")")[0]
                 metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
                 if metrics:
                     params["metric"] = ",".join(metrics)
 
-            # Extract 'period' from the 'fields' string (e.g., "insights.period(day)")
-            if ".period(" in fields:
-                period_part = fields.split(".period(")[1].split(")")[0]
-                params["period"] = period_part.strip()
+            # Extract date parameters - special handling: convert with get_past_date()
+            for date_param in ["since", "until"]:
+                pattern = f".{date_param}("
+                if pattern in fields:
+                    date_part = fields.split(pattern)[1].split(")")[0]
+                    params[date_param] = get_past_date(date_part.strip()).strftime("%Y-%m-%d")
 
-            # Extract and convert 'since' from the 'fields' string (e.g., "insights.since(90 days ago)")
-            if ".since(" in fields:
-                since_part = fields.split(".since(")[1].split(")")[0]
-                params["since"] = get_past_date(since_part.strip()).strftime("%Y-%m-%d")
+            # Extract fields from curly braces (e.g., "insights.level(ad){ad_id,ad_name,spend}")
+            if "{" in fields and "}" in fields:
+                fields_part = fields.split("{")[1].split("}")[0]
+                field_list = [f.strip() for f in fields_part.replace("\n", "").split(",") if f.strip()]
 
-            # Extract and convert 'until' from the 'fields' string (e.g., "insights.until(2 days ago)")
-            if ".until(" in fields:
-                until_part = fields.split(".until(")[1].split(")")[0]
-                params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
+                # Ensure account_id is always included for backwards compatibility
+                if field_list and "account_id" not in field_list:
+                    field_list.append("account_id")
+
+                if field_list:
+                    params["fields"] = ",".join(field_list)
 
         else:
             # Regular queries use the 'fields' parameter directly
