@@ -38,6 +38,16 @@ OBJECT_NOT_FOUND_ERROR = FacebookErrorCode(
 
 DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there cannot be more than 30 days")
 
+# DSL parameters to extract from insights fields string (e.g., ".param_name(value)")
+# These are simple parameters that only need extraction and stripping
+DSL_SIMPLE_PARAMS = [
+    "period", "level", "action_breakdowns", "date_preset", "time_increment",
+    "breakdowns", "action_attribution_windows", "action_report_time",
+    "use_account_attribution_setting", "use_unified_attribution_setting",
+    "filtering", "summary_action_breakdowns", "product_id_limit",
+    "sort", "summary", "default_summary", "time_range", "time_ranges",
+]
+
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
 
 
@@ -308,58 +318,30 @@ class PageLoader:
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
         if not query_config.path and fields.startswith("insights"):
-            # Extract 'metric' from the 'fields' string (e.g., "insights.metric(page_fans)")
+            # Extract simple parameters (just strip the value)
+            for param_name in DSL_SIMPLE_PARAMS:
+                pattern = f".{param_name}("
+                if pattern in fields:
+                    value = fields.split(pattern)[1].split(")")[0]
+                    params[param_name] = value.strip()
+
+            # Extract 'metric' - special handling: split by comma and join
             if ".metric(" in fields:
                 metric_part = fields.split(".metric(")[1].split(")")[0]
                 metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
                 if metrics:
                     params["metric"] = ",".join(metrics)
 
-            # Extract 'period' from the 'fields' string (e.g., "insights.period(day)")
-            if ".period(" in fields:
-                period_part = fields.split(".period(")[1].split(")")[0]
-                params["period"] = period_part.strip()
-
-            # Extract and convert 'since' from the 'fields' string (e.g., "insights.since(90 days ago)")
-            if ".since(" in fields:
-                since_part = fields.split(".since(")[1].split(")")[0]
-                params["since"] = get_past_date(since_part.strip()).strftime("%Y-%m-%d")
-
-            # Extract and convert 'until' from the 'fields' string (e.g., "insights.until(2 days ago)")
-            if ".until(" in fields:
-                until_part = fields.split(".until(")[1].split(")")[0]
-                params["until"] = get_past_date(until_part.strip()).strftime("%Y-%m-%d")
-
-            # Extract 'level' from the 'fields' string (e.g., "insights.level(ad)")
-            if ".level(" in fields:
-                level_part = fields.split(".level(")[1].split(")")[0]
-                params["level"] = level_part.strip()
-
-            # Extract 'action_breakdowns' from the 'fields' string (e.g., "insights.action_breakdowns(action_type)")
-            if ".action_breakdowns(" in fields:
-                action_breakdowns_part = fields.split(".action_breakdowns(")[1].split(")")[0]
-                params["action_breakdowns"] = action_breakdowns_part.strip()
-
-            # Extract 'date_preset' from the 'fields' string (e.g., "insights.date_preset(last_3d)")
-            if ".date_preset(" in fields:
-                date_preset_part = fields.split(".date_preset(")[1].split(")")[0]
-                params["date_preset"] = date_preset_part.strip()
-
-            # Extract 'time_increment' from the 'fields' string (e.g., "insights.time_increment(1)")
-            if ".time_increment(" in fields:
-                time_increment_part = fields.split(".time_increment(")[1].split(")")[0]
-                params["time_increment"] = time_increment_part.strip()
-
-            # Extract 'breakdowns' from the 'fields' string (e.g., "insights.breakdowns(age,gender)")
-            if ".breakdowns(" in fields:
-                breakdowns_part = fields.split(".breakdowns(")[1].split(")")[0]
-                params["breakdowns"] = breakdowns_part.strip()
+            # Extract date parameters - special handling: convert with get_past_date()
+            for date_param in ["since", "until"]:
+                pattern = f".{date_param}("
+                if pattern in fields:
+                    date_part = fields.split(pattern)[1].split(")")[0]
+                    params[date_param] = get_past_date(date_part.strip()).strftime("%Y-%m-%d")
 
             # Extract fields from curly braces (e.g., "insights.level(ad){ad_id,ad_name,spend}")
             if "{" in fields and "}" in fields:
-                # Extract content between curly braces
                 fields_part = fields.split("{")[1].split("}")[0]
-                # Parse comma-separated field names
                 field_list = [f.strip() for f in fields_part.replace("\n", "").split(",") if f.strip()]
 
                 # Ensure account_id is always included for backwards compatibility
@@ -368,66 +350,6 @@ class PageLoader:
 
                 if field_list:
                     params["fields"] = ",".join(field_list)
-
-            # Extract 'action_attribution_windows' (e.g., "insights.action_attribution_windows(7d_click,1d_view)")
-            if ".action_attribution_windows(" in fields:
-                action_attr_windows_part = fields.split(".action_attribution_windows(")[1].split(")")[0]
-                params["action_attribution_windows"] = action_attr_windows_part.strip()
-
-            # Extract 'action_report_time' (e.g., "insights.action_report_time(impression)")
-            if ".action_report_time(" in fields:
-                action_report_time_part = fields.split(".action_report_time(")[1].split(")")[0]
-                params["action_report_time"] = action_report_time_part.strip()
-
-            # Extract 'use_account_attribution_setting' (e.g., "insights.use_account_attribution_setting(true)")
-            if ".use_account_attribution_setting(" in fields:
-                use_account_attr_part = fields.split(".use_account_attribution_setting(")[1].split(")")[0]
-                params["use_account_attribution_setting"] = use_account_attr_part.strip()
-
-            # Extract 'use_unified_attribution_setting' (e.g., "insights.use_unified_attribution_setting(true)")
-            if ".use_unified_attribution_setting(" in fields:
-                use_unified_attr_part = fields.split(".use_unified_attribution_setting(")[1].split(")")[0]
-                params["use_unified_attribution_setting"] = use_unified_attr_part.strip()
-
-            # Extract 'filtering' (e.g., "insights.filtering([{...}])")
-            if ".filtering(" in fields:
-                filtering_part = fields.split(".filtering(")[1].split(")")[0]
-                params["filtering"] = filtering_part.strip()
-
-            # Extract 'summary_action_breakdowns' (e.g., "insights.summary_action_breakdowns(action_type)")
-            if ".summary_action_breakdowns(" in fields:
-                summary_action_breakdowns_part = fields.split(".summary_action_breakdowns(")[1].split(")")[0]
-                params["summary_action_breakdowns"] = summary_action_breakdowns_part.strip()
-
-            # Extract 'product_id_limit' (e.g., "insights.product_id_limit(10)")
-            if ".product_id_limit(" in fields:
-                product_id_limit_part = fields.split(".product_id_limit(")[1].split(")")[0]
-                params["product_id_limit"] = product_id_limit_part.strip()
-
-            # Extract 'sort' (e.g., "insights.sort(field_name)")
-            if ".sort(" in fields:
-                sort_part = fields.split(".sort(")[1].split(")")[0]
-                params["sort"] = sort_part.strip()
-
-            # Extract 'summary' (e.g., "insights.summary(actions,impressions)")
-            if ".summary(" in fields:
-                summary_part = fields.split(".summary(")[1].split(")")[0]
-                params["summary"] = summary_part.strip()
-
-            # Extract 'default_summary' (e.g., "insights.default_summary(true)")
-            if ".default_summary(" in fields:
-                default_summary_part = fields.split(".default_summary(")[1].split(")")[0]
-                params["default_summary"] = default_summary_part.strip()
-
-            # Extract 'time_range' (e.g., "insights.time_range(since:2024-01-01,until:2024-01-31)")
-            if ".time_range(" in fields:
-                time_range_part = fields.split(".time_range(")[1].split(")")[0]
-                params["time_range"] = time_range_part.strip()
-
-            # Extract 'time_ranges' (e.g., "insights.time_ranges([...])")
-            if ".time_ranges(" in fields:
-                time_ranges_part = fields.split(".time_ranges(")[1].split(")")[0]
-                params["time_ranges"] = time_ranges_part.strip()
 
         else:
             # Regular queries use the 'fields' parameter directly
