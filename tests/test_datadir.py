@@ -1,6 +1,4 @@
 import logging
-import os
-import sys
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -60,6 +58,9 @@ class _SafeVCRTestDataDir:
             self.vcr_recorder._vcr.register_matcher("query_without_dates", _query_without_dates)
 
     def run_component(self):
+        # Ensure output directories exist (git doesn't track empty dirs)
+        out_dir = Path(self.source_data_dir) / "out" / "tables"
+        out_dir.mkdir(parents=True, exist_ok=True)
         try:
             super().run_component()
         except SystemExit as e:
