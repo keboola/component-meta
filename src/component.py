@@ -267,9 +267,14 @@ if __name__ == "__main__":
     import os
 
     if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
+        import logging as _logging
         from pathlib import Path
         from datetime import datetime as _dt
         from datadirtest.vcr import VCRRecorder
+
+        # Suppress VCR and HTTP debug logging — they print full URIs including access tokens
+        for _logger_name in ("vcr", "urllib3"):
+            _logging.getLogger(_logger_name).setLevel(_logging.WARNING)
 
         data_dir = os.environ.get("KBC_DATADIR", "/data")
         output_dir = Path(data_dir) / "out" / "files"
