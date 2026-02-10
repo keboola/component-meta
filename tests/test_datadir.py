@@ -1,5 +1,9 @@
+import logging
 import pytest
 from pathlib import Path
+
+# Suppress verbose VCR cassette replay logging
+logging.getLogger("vcr").setLevel(logging.WARNING)
 
 FUNCTIONAL_DIR = Path(__file__).parent / "functional"
 COMPONENT_SCRIPT = str(Path(__file__).parent.parent / "src" / "component.py")
