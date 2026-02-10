@@ -254,14 +254,49 @@ class Component(ComponentBase):
 """
         Main entrypoint
 """
+
+
+def _get_access_token_from_oauth(oauth_credentials) -> str | None:
+    """Extract access token from OAuth credentials for sanitization."""
+    if oauth_credentials and oauth_credentials.data:
+        return oauth_credentials.data.get("access_token") or oauth_credentials.data.get("token")
+    return None
+
+
 if __name__ == "__main__":
-    try:
+    import os
+
+    if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
+        from pathlib import Path
+        from datetime import datetime as _dt
+        from datadirtest.vcr import VCRRecorder
+
+        data_dir = os.environ.get("KBC_DATADIR", "/data")
+        output_dir = Path(data_dir) / "out" / "files"
+        config_id = os.environ.get("KBC_CONFIGID", "unknown")
+        component_id = os.environ.get("KBC_COMPONENTID", "component").replace(".", "-")
+        timestamp = _dt.now().strftime("%Y%m%d_%H%M%S")
+        cassette_name = f"vcr_debug_{component_id}_{config_id}_{timestamp}.json"
+
         comp = Component()
-        # this triggers the run method by default and is controlled by the configuration.action parameter
-        comp.execute_action()
-    except UserException as exc:
-        logger.exception(exc)
-        exit(1)
-    except Exception as exc:
-        logger.exception(exc)
-        exit(2)
+        access_token = _get_access_token_from_oauth(comp.configuration.oauth_credentials)
+        secrets = {"access_token": access_token} if access_token else {}
+
+        recorder = VCRRecorder(
+            cassette_dir=output_dir,
+            secrets=secrets,
+            record_mode="all",
+            freeze_time_at=None,
+            cassette_file=cassette_name,
+        )
+        recorder.record(comp.execute_action)
+    else:
+        try:
+            comp = Component()
+            comp.execute_action()
+        except UserException as exc:
+            logger.exception(exc)
+            exit(1)
+        except Exception as exc:
+            logger.exception(exc)
+            exit(2)

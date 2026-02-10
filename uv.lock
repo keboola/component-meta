@@ -82,6 +82,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aiolimiter" },
+    { name = "datadirtest", extra = ["vcr"] },
     { name = "flake8" },
     { name = "freezegun" },
     { name = "keboola-component" },
@@ -94,13 +95,13 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "datadirtest", extra = ["vcr"] },
     { name = "pytest" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "aiolimiter", specifier = ">=1.1.0" },
+    { name = "datadirtest", extras = ["vcr"], git = "https://github.com/keboola/datadirtest.git?rev=feature%2Fvcr-testing" },
     { name = "flake8", specifier = ">=7.3.0" },
     { name = "freezegun", specifier = ">=1.5.2" },
     { name = "keboola-component", specifier = ">=1.6.10" },
@@ -112,10 +113,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [
-    { name = "datadirtest", extras = ["vcr"], git = "https://github.com/keboola/datadirtest.git?rev=feature%2Fvcr-testing" },
-    { name = "pytest", specifier = ">=9.0.2" },
-]
+dev = [{ name = "pytest", specifier = ">=9.0.2" }]
 
 [[package]]
 name = "datadirtest"
