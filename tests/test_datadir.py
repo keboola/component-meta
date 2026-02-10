@@ -1,4 +1,8 @@
 import logging
+import os
+import sys
+from urllib.parse import parse_qs, urlparse
+
 import pytest
 from pathlib import Path
 
@@ -6,6 +10,23 @@ FUNCTIONAL_DIR = Path(__file__).parent / "functional"
 COMPONENT_SCRIPT = str(Path(__file__).parent.parent / "src" / "component.py")
 
 logger = logging.getLogger(__name__)
+
+# Date-related query params that change based on current time.
+# Cassettes were recorded at a real date; replay uses freeze_time.
+# Ignoring these in matching prevents mismatches.
+IGNORED_QUERY_PARAMS = {"since", "until", "time_increment"}
+
+
+def _query_without_dates(r1, r2):
+    """Custom VCR matcher: compare query params ignoring date-related ones."""
+    def _filtered_params(uri):
+        return sorted(
+            (k, v)
+            for k, vals in parse_qs(urlparse(uri).query).items()
+            if k not in IGNORED_QUERY_PARAMS
+            for v in vals
+        )
+    return _filtered_params(r1.uri) == _filtered_params(r2.uri)
 
 
 def get_test_cases():
@@ -17,15 +38,26 @@ def get_test_cases():
 
 
 class _SafeVCRTestDataDir:
-    """Mixin that catches SystemExit from component's exit() calls during VCR replay.
+    """Mixin: custom query matcher + SystemExit safety for VCR replay.
 
-    During VCR replay, some requests may not match the cassette (e.g. date-dependent
-    URLs recorded at a different time). VCR raises CannotSendRequest, which may
-    propagate to the component's top-level handler that calls exit().
-
-    By catching SystemExit in run_component, the output comparison still executes,
-    which is the real assertion.
+    - Registers a query matcher that ignores date params (since, until, time_increment)
+      so cassettes recorded at real time still match during freeze_time replay.
+    - Catches SystemExit from the component's exit() calls so the output
+      comparison (the real assertion) still executes.
     """
+
+    def _setup_vcr(self):
+        super()._setup_vcr()
+        if self.vcr_recorder and self.vcr_recorder._vcr:
+            vcr_instance = self.vcr_recorder._vcr
+            vcr_instance.register_matcher("query_without_dates", _query_without_dates)
+            self.vcr_recorder.match_on = [
+                "method", "scheme", "host", "port", "path", "query_without_dates",
+            ]
+            # Rebuild VCR instance with updated match_on
+            self.vcr_recorder._vcr = self.vcr_recorder._create_vcr_instance()
+            # Re-register custom matcher on the new instance
+            self.vcr_recorder._vcr.register_matcher("query_without_dates", _query_without_dates)
 
     def run_component(self):
         try:
@@ -39,7 +71,6 @@ class _SafeVCRTestDataDir:
 def test_vcr_functional(test_name):
     from datadirtest.vcr import VCRTestDataDir
 
-    # Create a subclass with safe SystemExit handling
     SafeVCRTestDataDir = type("SafeVCRTestDataDir", (_SafeVCRTestDataDir, VCRTestDataDir), {})
 
     test = SafeVCRTestDataDir(
