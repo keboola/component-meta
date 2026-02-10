@@ -256,52 +256,25 @@ class Component(ComponentBase):
 """
 
 
-def _get_access_token_from_oauth(oauth_credentials) -> str | None:
-    """Extract access token from OAuth credentials for sanitization."""
-    if oauth_credentials and oauth_credentials.data:
-        return oauth_credentials.data.get("access_token") or oauth_credentials.data.get("token")
-    return None
-
-
 if __name__ == "__main__":
     import os
 
-    if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
-        import logging as _logging
-        from pathlib import Path
-        from datetime import datetime as _dt
-        from datadirtest.vcr import VCRRecorder
-
-        # Suppress VCR and HTTP debug logging — they print full URIs including access tokens
-        for _logger_name in ("vcr", "urllib3"):
-            _logging.getLogger(_logger_name).setLevel(_logging.WARNING)
-
-        data_dir = os.environ.get("KBC_DATADIR", "/data")
-        output_dir = Path(data_dir) / "out" / "files"
-        config_id = os.environ.get("KBC_CONFIGID", "unknown")
-        component_id = os.environ.get("KBC_COMPONENTID", "component").replace(".", "-")
-        timestamp = _dt.now().strftime("%Y%m%d_%H%M%S")
-        cassette_name = f"vcr_debug_{component_id}_{config_id}_{timestamp}.json"
-
+    try:
         comp = Component()
-        access_token = _get_access_token_from_oauth(comp.configuration.oauth_credentials)
-        secrets = {"access_token": access_token} if access_token else {}
+        if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
+            from datadirtest.vcr import VCRRecorder
 
-        recorder = VCRRecorder(
-            cassette_dir=output_dir,
-            secrets=secrets,
-            record_mode="all",
-            freeze_time_at=None,
-            cassette_file=cassette_name,
-        )
-        recorder.record(comp.execute_action)
-    else:
-        try:
-            comp = Component()
+            token = (comp.configuration.oauth_credentials.data or {}).get("access_token") \
+                if comp.configuration.oauth_credentials else None
+            VCRRecorder.record_debug_run(
+                comp.execute_action,
+                secrets={"access_token": token} if token else {},
+            )
+        else:
             comp.execute_action()
-        except UserException as exc:
-            logger.exception(exc)
-            exit(1)
-        except Exception as exc:
-            logger.exception(exc)
-            exit(2)
+    except UserException as exc:
+        logger.exception(exc)
+        exit(1)
+    except Exception as exc:
+        logger.exception(exc)
+        exit(2)
