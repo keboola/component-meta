@@ -17,22 +17,25 @@ IGNORED_QUERY_PARAMS = {"since", "until", "time_increment"}
 
 def _query_without_dates(r1, r2):
     """Custom VCR matcher: compare query params ignoring date-related ones."""
+
     def _filtered_params(uri):
         return sorted(
-            (k, v)
-            for k, vals in parse_qs(urlparse(uri).query).items()
-            if k not in IGNORED_QUERY_PARAMS
-            for v in vals
+            (k, v) for k, vals in parse_qs(urlparse(uri).query).items() if k not in IGNORED_QUERY_PARAMS for v in vals
         )
+
     return _filtered_params(r1.uri) == _filtered_params(r2.uri)
 
 
 def get_test_cases():
     if not FUNCTIONAL_DIR.exists():
         return []
-    return [d.name for d in sorted(FUNCTIONAL_DIR.iterdir())
-            if d.is_dir() and not d.name.startswith("_")
-            and (d / "source" / "data" / "cassettes" / "requests.json").exists()]
+    return [
+        d.name
+        for d in sorted(FUNCTIONAL_DIR.iterdir())
+        if d.is_dir()
+        and not d.name.startswith("_")
+        and (d / "source" / "data" / "cassettes" / "requests.json").exists()
+    ]
 
 
 class _SafeVCRTestDataDir:
@@ -50,7 +53,12 @@ class _SafeVCRTestDataDir:
             vcr_instance = self.vcr_recorder._vcr
             vcr_instance.register_matcher("query_without_dates", _query_without_dates)
             self.vcr_recorder.match_on = [
-                "method", "scheme", "host", "port", "path", "query_without_dates",
+                "method",
+                "scheme",
+                "host",
+                "port",
+                "path",
+                "query_without_dates",
             ]
             # Rebuild VCR instance with updated match_on
             self.vcr_recorder._vcr = self.vcr_recorder._create_vcr_instance()

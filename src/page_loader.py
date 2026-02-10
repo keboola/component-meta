@@ -41,11 +41,24 @@ DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there ca
 # DSL parameters to extract from insights fields string (e.g., ".param_name(value)")
 # These are simple parameters that only need extraction and stripping
 DSL_SIMPLE_PARAMS = [
-    "period", "level", "action_breakdowns", "date_preset", "time_increment",
-    "breakdowns", "action_attribution_windows", "action_report_time",
-    "use_account_attribution_setting", "use_unified_attribution_setting",
-    "filtering", "summary_action_breakdowns", "product_id_limit",
-    "sort", "summary", "default_summary", "time_range", "time_ranges",
+    "period",
+    "level",
+    "action_breakdowns",
+    "date_preset",
+    "time_increment",
+    "breakdowns",
+    "action_attribution_windows",
+    "action_report_time",
+    "use_account_attribution_setting",
+    "use_unified_attribution_setting",
+    "filtering",
+    "summary_action_breakdowns",
+    "product_id_limit",
+    "sort",
+    "summary",
+    "default_summary",
+    "time_range",
+    "time_ranges",
 ]
 
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")

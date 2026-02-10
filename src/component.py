@@ -2,6 +2,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
+import os
 
 from keboola.component.base import ComponentBase, sync_action
 from keboola.component.dao import TableDefinition
@@ -257,12 +258,11 @@ class Component(ComponentBase):
 
 
 if __name__ == "__main__":
-    import os
-
     try:
         comp = Component()
         if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
             from datadirtest.vcr import VCRRecorder
+
             VCRRecorder.record_debug_run(comp.execute_action)
         else:
             comp.execute_action()
