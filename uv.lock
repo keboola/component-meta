@@ -94,8 +94,8 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "datadirtest", extra = ["vcr"] },
     { name = "pytest" },
-    { name = "vcrpy" },
 ]
 
 [package.metadata]
@@ -113,8 +113,19 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "datadirtest", extras = ["vcr"], git = "https://github.com/keboola/datadirtest.git?rev=feature%2Fvcr-testing" },
     { name = "pytest", specifier = ">=9.0.2" },
-    { name = "vcrpy", specifier = ">=8.1.1" },
+]
+
+[[package]]
+name = "datadirtest"
+version = "1.9.0"
+source = { git = "https://github.com/keboola/datadirtest.git?rev=feature%2Fvcr-testing#08307c61eb0cb07191c19de839dbd3068f449f4b" }
+
+[package.optional-dependencies]
+vcr = [
+    { name = "freezegun" },
+    { name = "vcrpy" },
 ]
 
 [[package]]

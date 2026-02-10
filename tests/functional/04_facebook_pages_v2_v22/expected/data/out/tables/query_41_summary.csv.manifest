@@ -1,0 +1,1 @@
+{"destination": "in.c-keboola-ex-meta-20250101120000.query_41_summary", "incremental": true, "primary_key": ["parent_id"], "write_always": false, "delimiter": ",", "enclosure": "\""}

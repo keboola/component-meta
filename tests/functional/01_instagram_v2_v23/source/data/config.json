@@ -1,0 +1,337 @@
+{
+  "authorization": {
+    "oauth_api": {
+      "credentials": {
+        "token": "token",
+        "access_token": "token",
+        "#data": "{\"access_token\": \"token\"}"
+      }
+    }
+  },
+  "parameters": {
+    "accounts": {
+      "17841403584244541": {
+        "id": "17841403584244541",
+        "fb_page_id": "177057932317550",
+        "name": "Keboola",
+        "category": "Information technology company"
+      }
+    },
+    "api-version": "v23.0",
+    "queries": [
+      {
+        "id": 1,
+        "type": "nested-query",
+        "name": "query_1",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights\n  .metric(engaged_audience_demographics)\n  .period(lifetime)\n  .timeframe(this_month)\n  .metric_type(total_value)\n  .breakdown(country)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 2,
+        "type": "nested-query",
+        "name": "query_2",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.period(lifetime).metric(follower_demographics).metric_type(total_value).breakdown(country)",
+          "ids": "17841403584244541",
+          "limit": "100",
+          "path": ""
+        }
+      },
+      {
+        "id": 3,
+        "type": "nested-query",
+        "name": "query_3",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(30 days ago).until(now).period(day).metric_type(total_value).breakdown(media_product_type).metric(reach, total_interactions, likes , comments, saved, shares, accounts_engaged)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 4,
+        "type": "nested-query",
+        "name": "query_4",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.period(day).time_increment(1).breakdown(media_product_type).metric(comments,reach,total_interactions,views)",
+          "ids": "17841403584244541",
+          "limit": "99",
+          "path": "",
+          "since": "15 days ago",
+          "until": "3 days ago"
+        }
+      },
+      {
+        "id": 5,
+        "type": "nested-query",
+        "name": "query_5",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(30 days ago).period(day).metric(reach,impressions,follower_count,email_contacts,text_message_clicks,get_directions_clicks,phone_call_clicks,website_clicks,profile_views)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 6,
+        "type": "nested-query",
+        "name": "query_6",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.period(lifetime).metric(audience_gender_age, audience_locale, audience_country, audience_city, online_followers)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 7,
+        "type": "nested-query",
+        "name": "query_7",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(29 days ago).period(day).metric(reach,impressions,follower_count)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "",
+          "since": " 2009-01-01",
+          "until": "2025-01-01"
+        }
+      },
+      {
+        "id": 8,
+        "type": "nested-query",
+        "name": "query_8",
+        "run-by-id": false,
+        "query": {
+          "fields": "id,biography,followers_count,media_count,username,website",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "",
+          "since": "2020-06-01",
+          "until": "2025-06-01"
+        }
+      },
+      {
+        "id": 9,
+        "type": "nested-query",
+        "name": "query_9",
+        "run-by-id": false,
+        "query": {
+          "fields": "id,followers_count,username,website",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 10,
+        "type": "nested-query",
+        "name": "query_10",
+        "run-by-id": false,
+        "query": {
+          "fields": "id,name, biography,followers_count,media_count,username,website,follows_count, profile_picture_url",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 11,
+        "type": "nested-query",
+        "name": "query_11",
+        "run-by-id": false,
+        "query": {
+          "fields": "message,created_time,likes,comments{message,from}",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "feed",
+          "since": "30 days ago"
+        }
+      },
+      {
+        "id": 12,
+        "type": "nested-query",
+        "name": "query_12",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.metric(impressions,reach,engagement,saved)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "media",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 13,
+        "type": "nested-query",
+        "name": "query_13",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.metric(impressions,reach,total_interactions,saved)",
+          "ids": "17841403584244541",
+          "limit": "100",
+          "path": "media",
+          "since": "yesterday",
+          "until": "today"
+        }
+      },
+      {
+        "id": 14,
+        "type": "nested-query",
+        "name": "query_14",
+        "run-by-id": false,
+        "query": {
+          "fields": "created_at,id,caption,media_url,insights.metric(impressions,reach,video_views,total_interactions)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "media",
+          "since": "7 days ago",
+          "until": "yesterday"
+        }
+      },
+      {
+        "id": 15,
+        "type": "nested-query",
+        "name": "query_15",
+        "run-by-id": false,
+        "query": {
+          "fields": "id,caption,media_type,like_count,ig_id,comments_count",
+          "ids": "17841403584244541",
+          "limit": "100",
+          "path": "media"
+        }
+      },
+      {
+        "id": 16,
+        "type": "nested-query",
+        "name": "query_16",
+        "run-by-id": false,
+        "query": {
+          "fields": "id,caption,media_type,like_count,ig_id,comments_count,is_comment_enabled,media_url,owner,permalink,shortcode,timestamp,thumbnail_url,comments,from_id,from_full_name",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "media",
+          "since": "2009-01-01",
+          "until": "1 day ago"
+        }
+      },
+      {
+        "id": 17,
+        "type": "nested-query",
+        "name": "query_17",
+        "run-by-id": false,
+        "query": {
+          "fields": "comments{replies{timestamp,like_count,user,text}}",
+          "ids": "17841403584244541",
+          "limit": "100",
+          "path": "media",
+          "since": "7 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 18,
+        "type": "nested-query",
+        "name": "query_18",
+        "run-by-id": false,
+        "query": {
+          "fields": "",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "navigation",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
+        "id": 19,
+        "type": "nested-query",
+        "name": "query_19",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.metric(impressions, reach, total_interactions)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "stories",
+          "since": ""
+        }
+      },
+      {
+        "id": 20,
+        "type": "nested-query",
+        "name": "query_20",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.metric(impressions, reach, total_interactions)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "stories"
+        }
+      },
+      {
+        "id": 21,
+        "type": "nested-query",
+        "name": "query_21",
+        "run-by-id": false,
+        "query": {
+          "fields": "",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "stories"
+        }
+      },
+      {
+        "id": 22,
+        "type": "nested-query",
+        "name": "query_22",
+        "run-by-id": false,
+        "query": {
+          "fields": "",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "stories"
+        }
+      },
+      {
+        "id": 23,
+        "type": "nested-query",
+        "name": "query_23",
+        "run-by-id": false,
+        "query": {
+          "fields": "id, timestamp",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "stories"
+        }
+      },
+      {
+        "id": 24,
+        "type": "nested-query",
+        "name": "query_24",
+        "run-by-id": false,
+        "query": {
+          "fields": "timestamp,id",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "tags",
+          "since": "15 days ago",
+          "until": "yesterday"
+        }
+      }
+    ]
+  },
+  "action": "run"
+}

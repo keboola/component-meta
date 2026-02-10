@@ -11,6 +11,6 @@ __pycache__/
 /data
 /venv
 /.venv
-tests/fixtures/config.secrets.json
-tests/fixtures/queries.csv
 .planning
+tests/functional/*/source/data/out/
+vcr_keboola_platform_testing

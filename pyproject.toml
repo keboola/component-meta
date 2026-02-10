@@ -18,11 +18,12 @@ dependencies = [
 
 [tool.uv.sources]
 keboola-http-client = { git = "https://github.com/keboola/python-http-client.git", rev = "feature/async" }
+datadirtest = { git = "https://github.com/keboola/datadirtest.git", rev = "feature/vcr-testing" }
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
-    "vcrpy>=8.1.1",
+    "datadirtest[vcr]",
 ]
 
 [tool.pytest.ini_options]
