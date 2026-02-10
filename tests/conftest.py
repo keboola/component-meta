@@ -1,3 +1,4 @@
+import logging
 import sys
 from pathlib import Path
 
@@ -5,3 +6,6 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "src"))
 sys.path.insert(0, str(project_root / "tests"))
+
+# Suppress verbose VCR cassette replay logging (produces 30k+ lines per test)
+logging.getLogger("vcr").setLevel(logging.WARNING)

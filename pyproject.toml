@@ -27,6 +27,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
+log_cli_level = "WARNING"
 filterwarnings = [
     "ignore:Primary key is set but columns are not:DeprecationWarning",
     "ignore:Parsing dates involving a day of month:DeprecationWarning",
