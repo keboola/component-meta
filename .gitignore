@@ -13,4 +13,5 @@ __pycache__/
 /.venv
 .planning
 tests/functional/*/source/data/out/
+tests/functional/*/source/data/in/
 vcr_keboola_platform_testing

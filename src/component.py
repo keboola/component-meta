@@ -262,8 +262,9 @@ if __name__ == "__main__":
         comp = Component()
         if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
             from datadirtest.vcr import VCRRecorder
+            from test_functional import VCR_SANITIZERS
 
-            VCRRecorder.record_debug_run(comp.execute_action)
+            VCRRecorder.record_debug_run(comp.execute_action, sanitizers=VCR_SANITIZERS)
         else:
             comp.execute_action()
     except UserException as exc:
