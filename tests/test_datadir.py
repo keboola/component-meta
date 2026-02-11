@@ -4,7 +4,7 @@ from urllib.parse import parse_qs, urlparse
 import pytest
 from pathlib import Path
 
-from datadirtest.vcr import ResponseUrlSanitizer, QueryParameterTokenSanitizer
+from datadirtest.vcr import DefaultSanitizer, ResponseUrlSanitizer
 
 FUNCTIONAL_DIR = Path(__file__).parent / "functional"
 COMPONENT_SCRIPT = str(Path(__file__).parent.parent / "src" / "component.py")
@@ -14,9 +14,10 @@ FB_CDN_SANITIZER = ResponseUrlSanitizer(
     url_domains=["fbcdn.net", "facebook.com", "cdninstagram.com"],
 )
 
-# QueryParameterTokenSanitizer is required for VCR replay matching
-# (normalizes access_token params in both live and cassette requests)
-VCR_SANITIZERS = [QueryParameterTokenSanitizer(), FB_CDN_SANITIZER]
+VCR_SANITIZERS = [
+    DefaultSanitizer(additional_sensitive_fields=["page_token"]),
+    FB_CDN_SANITIZER,
+]
 
 logger = logging.getLogger(__name__)
 
