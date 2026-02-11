@@ -118,7 +118,7 @@ dev = [{ name = "pytest", specifier = ">=9.0.2" }]
 [[package]]
 name = "datadirtest"
 version = "1.9.0"
-source = { git = "https://github.com/keboola/datadirtest.git?rev=feature%2Fvcr-testing#f7c3d6573ff5340e77857ab7c548c5e7f3ec5718" }
+source = { git = "https://github.com/keboola/datadirtest.git?rev=feature%2Fvcr-testing#ca6f624075b80859e9a475000c304cb305562b3a" }
 
 [package.optional-dependencies]
 vcr = [
