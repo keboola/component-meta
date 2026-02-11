@@ -67,6 +67,7 @@ def sanitize_url(url):
         "_nc_gid",  # Session/group ID
         "_nc_tpa",  # Tracking parameter
         "_nc_oc",  # Cache parameter
+        "_nc_ohc",  # Content hash parameter
         "oh",  # Hash/signature
         "oe",  # Expiry timestamp
     ]
