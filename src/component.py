@@ -2,15 +2,23 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
-import os
 
 from keboola.component.base import ComponentBase, sync_action
 from keboola.component.dao import TableDefinition
 from keboola.component.exceptions import UserException
 from keboola.csvwriter import ElasticDictWriter
+from keboola.vcr import DefaultSanitizer, ResponseUrlSanitizer
 
 from client import FacebookClient
 from configuration import Configuration
+
+VCR_SANITIZERS = [
+    DefaultSanitizer(additional_sensitive_fields=["page_token"]),
+    ResponseUrlSanitizer(
+        dynamic_params=["_nc_gid", "_nc_tpa", "_nc_oc", "_nc_ohc", "oh", "oe"],
+        url_domains=["fbcdn.net", "facebook.com", "cdninstagram.com"],
+    ),
+]
 
 logger = logging.getLogger(__name__)
 
@@ -260,13 +268,7 @@ class Component(ComponentBase):
 if __name__ == "__main__":
     try:
         comp = Component()
-        if os.environ.get("KBC_COMPONENT_RUN_MODE", "").lower() == "debug":
-            from datadirtest.vcr import VCRRecorder
-            from test_functional import VCR_SANITIZERS
-
-            VCRRecorder.record_debug_run(comp.execute_action, sanitizers=VCR_SANITIZERS)
-        else:
-            comp.execute_action()
+        comp.execute_action()
     except UserException as exc:
         logger.exception(exc)
         exit(1)

@@ -1,7 +1,8 @@
 from pathlib import Path
 
 import pytest
-from datadirtest.vcr import get_test_cases, DefaultSanitizer, ResponseUrlSanitizer
+from datadirtest.vcr import get_test_cases, VCRTestDataDir
+from keboola.vcr import DefaultSanitizer, ResponseUrlSanitizer
 
 FUNCTIONAL_DIR = Path(__file__).parent / "functional"
 COMPONENT_SCRIPT = str(Path(__file__).parent.parent / "src" / "component.py")

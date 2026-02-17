@@ -6,7 +6,6 @@ readme = "README.md"
 requires-python = "~=3.13.0"
 dependencies = [
     "aiolimiter>=1.1.0",
-    "datadirtest[vcr]",
     "flake8>=7.3.0",
     "freezegun>=1.5.2",
     "keboola-component>=1.6.10",
@@ -23,6 +22,7 @@ datadirtest = { git = "https://github.com/keboola/datadirtest.git", rev = "featu
 
 [dependency-groups]
 dev = [
+    "datadirtest[vcr]",
     "pytest>=9.0.2",
 ]
 
