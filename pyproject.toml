@@ -22,7 +22,7 @@ datadirtest = { git = "https://github.com/keboola/datadirtest.git", rev = "featu
 
 [dependency-groups]
 dev = [
-    "datadirtest[vcr]",
+    "datadirtest",
     "pytest>=9.0.2",
 ]
 
