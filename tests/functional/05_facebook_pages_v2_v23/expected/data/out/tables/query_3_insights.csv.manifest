@@ -1,1 +1,0 @@
-{"destination": "in.c-keboola-ex-meta-20250101120000.query_3_insights", "incremental": true, "primary_key": ["id", "parent_id", "key1", "key2", "end_time"], "write_always": false, "delimiter": ",", "enclosure": "\""}
