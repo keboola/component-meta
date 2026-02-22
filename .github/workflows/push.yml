@@ -129,7 +129,7 @@ jobs:
           echo "Running unit-tests..."
           docker run ${{ env.KBC_DEVELOPERPORTAL_APP }}:latest python -m unittest discover
           echo "Running functional VCR tests..."
-          docker run ${{ env.KBC_DEVELOPERPORTAL_APP }}:latest pytest tests/test_datadir.py --tb=short -q
+          docker run ${{ env.KBC_DEVELOPERPORTAL_APP }}:latest pytest tests/test_functional.py --tb=short -q
 
   tests-kbc:
     name: Run KBC Tests
