@@ -68,18 +68,24 @@ class PageTokenResolver:
         page_tokens = {}
 
         try:
-            # Fetch page tokens from API
-            response = client.get(
-                endpoint_path=f"/{api_version}/me/accounts",
-                params={"access_token": user_token, "fields": "id,access_token"},
-            )
+            # Fetch page tokens from API with pagination
+            page_token_map = {}
+            endpoint_path = f"/{api_version}/me/accounts"
+            params = {"access_token": user_token, "fields": "id,access_token"}
 
-            # Build lookup map
-            page_token_map = {
-                page["id"]: page["access_token"]
-                for page in response.get("data", [])
-                if "id" in page and "access_token" in page
-            }
+            while endpoint_path:
+                response = client.get(endpoint_path=endpoint_path, params=params)
+                if not response:
+                    break
+
+                # Add tokens from this page to the map
+                for page in response.get("data", []):
+                    if "id" in page and "access_token" in page:
+                        page_token_map[page["id"]] = page["access_token"]
+
+                # Get next page URL (params included in URL for subsequent requests)
+                endpoint_path = response.get("paging", {}).get("next")
+                params = {}  # Clear params as they're in the next URL
 
             # Assign tokens to accounts
             for account in accounts:
