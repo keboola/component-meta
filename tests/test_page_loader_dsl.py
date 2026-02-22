@@ -226,7 +226,9 @@ class TestDSLParameterParsing(unittest.TestCase):
         query_config = MagicMock()
         query_config.limit = 500
         query_config.path = None
-        query_config.fields = 'insights.filtering([{"field":"action_type","operator":"IN","value":["offsite_conversion"]}])'
+        query_config.fields = (
+            'insights.filtering([{"field":"action_type","operator":"IN","value":["offsite_conversion"]}])'
+        )
         query_config.since = ""
         query_config.until = ""
         query_config.parameters = None

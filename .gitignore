@@ -14,3 +14,4 @@ __pycache__/
 tests/fixtures/config.secrets.json
 tests/fixtures/queries.csv
 .planning
+vcr_keboola_platform_testing
