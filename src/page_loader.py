@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -41,11 +42,24 @@ DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there ca
 # DSL parameters to extract from insights fields string (e.g., ".param_name(value)")
 # These are simple parameters that only need extraction and stripping
 DSL_SIMPLE_PARAMS = [
-    "period", "level", "action_breakdowns", "date_preset", "time_increment",
-    "breakdowns", "action_attribution_windows", "action_report_time",
-    "use_account_attribution_setting", "use_unified_attribution_setting",
-    "filtering", "summary_action_breakdowns", "product_id_limit",
-    "sort", "summary", "default_summary", "time_range", "time_ranges",
+    "period",
+    "level",
+    "action_breakdowns",
+    "date_preset",
+    "time_increment",
+    "breakdowns",
+    "action_attribution_windows",
+    "action_report_time",
+    "use_account_attribution_setting",
+    "use_unified_attribution_setting",
+    "filtering",
+    "summary_action_breakdowns",
+    "product_id_limit",
+    "sort",
+    "summary",
+    "default_summary",
+    "time_range",
+    "time_ranges",
 ]
 
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
@@ -320,24 +334,22 @@ class PageLoader:
         if not query_config.path and fields.startswith("insights"):
             # Extract simple parameters (just strip the value)
             for param_name in DSL_SIMPLE_PARAMS:
-                pattern = f".{param_name}("
-                if pattern in fields:
-                    value = fields.split(pattern)[1].split(")")[0]
-                    params[param_name] = value.strip()
+                match = re.search(rf"\.{param_name}\(([^)]*)\)", fields)
+                if match:
+                    params[param_name] = match.group(1).strip()
 
             # Extract 'metric' - special handling: split by comma and join
-            if ".metric(" in fields:
-                metric_part = fields.split(".metric(")[1].split(")")[0]
-                metrics = [m.strip() for m in metric_part.replace("\n", "").split(",") if m.strip()]
+            match = re.search(r"\.metric\(([^)]*)\)", fields)
+            if match:
+                metrics = [m.strip() for m in match.group(1).replace("\n", "").split(",") if m.strip()]
                 if metrics:
                     params["metric"] = ",".join(metrics)
 
             # Extract date parameters - special handling: convert with get_past_date()
             for date_param in ["since", "until"]:
-                pattern = f".{date_param}("
-                if pattern in fields:
-                    date_part = fields.split(pattern)[1].split(")")[0]
-                    params[date_param] = get_past_date(date_part.strip()).strftime("%Y-%m-%d")
+                match = re.search(rf"\.{date_param}\(([^)]*)\)", fields)
+                if match:
+                    params[date_param] = get_past_date(match.group(1).strip()).strftime("%Y-%m-%d")
 
             # Extract fields from curly braces (e.g., "insights.level(ad){ad_id,ad_name,spend}")
             if "{" in fields and "}" in fields:
