@@ -332,6 +332,8 @@ class PageLoader:
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
         if not query_config.path and fields.startswith("insights"):
+            # TODO: these regexes could also be used to validate DSL fields in sync actions
+            #       (accounts, adaccounts, igaccounts) before a job is run.
             # Extract simple parameters (just strip the value)
             for param_name in DSL_SIMPLE_PARAMS:
                 match = re.search(rf"\.{param_name}\(([^)]*)\)", fields)
