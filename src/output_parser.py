@@ -1,7 +1,7 @@
 import json
 import logging
-from typing import Any, Optional
 from collections.abc import Iterator
+from typing import Any
 
 
 class OutputParser:
@@ -56,7 +56,7 @@ class OutputParser:
         response: dict,
         fb_node: str,
         parent_id: str,
-        table_name: Optional[str] = None,
+        table_name: str | None = None,
     ) -> dict:
         result = {}
 
@@ -101,7 +101,7 @@ class OutputParser:
         row: dict[str, Any],
         fb_graph_node: str,
         parent_id: str,
-        table_name: Optional[str],
+        table_name: str | None,
         result: dict[str, list[dict[str, Any]]],
     ) -> None:
         """Process a single row from the API response."""

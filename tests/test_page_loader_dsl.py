@@ -134,9 +134,7 @@ class TestDSLParameterParsing(unittest.TestCase):
 
     def test_parse_use_account_attribution_setting_parameter(self):
         """Test parsing .use_account_attribution_setting(true) from DSL syntax"""
-        params = self.loader._build_params(
-            self._make_query_config("insights.use_account_attribution_setting(true)")
-        )
+        params = self.loader._build_params(self._make_query_config("insights.use_account_attribution_setting(true)"))
 
         self.assertEqual(params["use_account_attribution_setting"], "true")
 
@@ -154,9 +152,7 @@ class TestDSLParameterParsing(unittest.TestCase):
 
     def test_parse_summary_action_breakdowns_parameter(self):
         """Test parsing .summary_action_breakdowns(action_type) from DSL syntax"""
-        params = self.loader._build_params(
-            self._make_query_config("insights.summary_action_breakdowns(action_type)")
-        )
+        params = self.loader._build_params(self._make_query_config("insights.summary_action_breakdowns(action_type)"))
 
         self.assertEqual(params["summary_action_breakdowns"], "action_type")
 

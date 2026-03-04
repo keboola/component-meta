@@ -1,12 +1,13 @@
-import sys
-import os
+import argparse
+import csv
 import json
 import logging
-import csv
+import os
 import re
-import argparse
+import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
 import vcr
 from freezegun import freeze_time
 
@@ -17,8 +18,9 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 sys.path.insert(0, str(PROJECT_ROOT / "tests"))
 
 # Import after path modification - flake8: noqa
-from component import Component  # noqa: E402
 from output_validator import SnapshotManager  # noqa: E402
+
+from component import Component  # noqa: E402
 
 # Constants
 TEST_DIR = Path("tests/fixtures")
@@ -361,7 +363,7 @@ def sanitize_output_csvs(output_dir, replacements):
     for csv_file in tables_dir.glob("*.csv"):
         try:
             # Read the CSV properly
-            with open(csv_file, "r", encoding="utf-8", newline="") as f:
+            with open(csv_file, encoding="utf-8", newline="") as f:
                 reader = csv_module.DictReader(f)
                 rows = list(reader)
                 fieldnames = reader.fieldnames
