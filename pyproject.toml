@@ -6,9 +6,8 @@ readme = "README.md"
 requires-python = "~=3.13.0"
 dependencies = [
     "aiolimiter>=1.1.0",
-    "flake8>=7.3.0",
     "freezegun>=1.5.2",
-    "keboola-component>=1.6.10",
+    "keboola-component>=1.9.0",
     "keboola-csvwriter>=1.0.1",
     "keboola-http-client",
     "keboola-utils>=1.1.0",
@@ -16,16 +15,15 @@ dependencies = [
     "pydantic>=2.11.7",
 ]
 
-[tool.uv.sources]
-keboola-http-client = { git = "https://github.com/keboola/python-http-client.git", rev = "feature/async" }
-
 [dependency-groups]
 dev = [
+    "keboola.datadirtest>=2.0.0",
     "pytest>=9.0.2",
-    "vcrpy>=8.1.1",
+    "ruff>=0.15.2",
 ]
 
 [tool.pytest.ini_options]
+log_cli_level = "WARNING"
 filterwarnings = [
     "ignore:Primary key is set but columns are not:DeprecationWarning",
     "ignore:Parsing dates involving a day of month:DeprecationWarning",
@@ -34,3 +32,5 @@ filterwarnings = [
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.lint]
+extend-select = ["I", "UP"]

@@ -17,7 +17,7 @@ import csv
 import json
 import re
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any
 
 # Simple 1-1 component ID to test account mapping
 # Each component type gets exactly one test account ID
@@ -45,7 +45,7 @@ def get_replacement_id(component_id: str) -> str:
     return COMPONENT_TEST_IDS.get(component_id, "act_186649832776475")
 
 
-def sanitize_query_json(query_obj: Dict[str, Any], component_id: str) -> Dict[str, Any]:
+def sanitize_query_json(query_obj: dict[str, Any], component_id: str) -> dict[str, Any]:
     """
     Sanitize a query object by replacing customer-specific IDs with the test ID for this component.
 
@@ -157,7 +157,7 @@ def main():
 
     groups = {}
     row_count = 0
-    with open(input_file, "r", encoding="utf-8") as f_in:
+    with open(input_file, encoding="utf-8") as f_in:
         reader = csv.DictReader(f_in)
         for row in reader:
             row_count += 1
