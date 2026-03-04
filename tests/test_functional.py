@@ -1,10 +1,12 @@
+"""Functional tests for component using VCR cassettes."""
+
 from pathlib import Path
 
 import pytest
-from datadirtest.vcr import get_test_cases
+from keboola.datadirtest.vcr import VCRDataDirTester, get_test_cases
 from keboola.vcr import DefaultSanitizer, ResponseUrlSanitizer
 
-FUNCTIONAL_DIR = Path(__file__).parent / "functional"
+FUNCTIONAL_DIR = str(Path(__file__).parent / "functional")
 COMPONENT_SCRIPT = str(Path(__file__).parent.parent / "src" / "component.py")
 
 VCR_SANITIZERS = [
@@ -16,18 +18,13 @@ VCR_SANITIZERS = [
 ]
 
 
-@pytest.mark.parametrize("test_name", get_test_cases(str(FUNCTIONAL_DIR)))
+@pytest.mark.parametrize("test_name", get_test_cases(FUNCTIONAL_DIR))
 def test_functional(test_name):
-    from datadirtest.vcr import VCRTestDataDir
-
-    test = VCRTestDataDir(
-        data_dir=str(FUNCTIONAL_DIR / test_name),
+    """Run a single VCR functional test case."""
+    tester = VCRDataDirTester(
+        data_dir=FUNCTIONAL_DIR,
         component_script=COMPONENT_SCRIPT,
-        vcr_mode="replay",
         vcr_sanitizers=VCR_SANITIZERS,
+        selected_tests=[test_name],
     )
-    test.setUp()
-    try:
-        test.compare_source_and_expected()
-    finally:
-        test.tearDown()
+    tester.run()
