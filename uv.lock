@@ -277,7 +277,7 @@ wheels = [
 [[package]]
 name = "keboola-vcr"
 version = "0.1.15"
-source = { git = "https://github.com/keboola/python-vcr-tests.git?rev=fix%2Foom-vcr-sanitizer-overhead#63e5355725a3130cf87577bf9c09d814f1523754" }
+source = { git = "https://github.com/keboola/python-vcr-tests.git?rev=fix%2Foom-vcr-sanitizer-overhead#d4d14d0e6f973d1ac8621c649e296e32507529c3" }
 dependencies = [
     { name = "freezegun" },
     { name = "vcrpy" },
