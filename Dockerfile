@@ -10,6 +10,7 @@ COPY uv.lock .
 
 ENV UV_PROJECT_ENVIRONMENT="/usr/local/"
 ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
+ENV PYTHONMALLOC=malloc
 RUN uv sync --all-groups --frozen
 
 COPY src/ src
