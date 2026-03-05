@@ -93,6 +93,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "keboola-datadirtest" },
+    { name = "keboola-vcr" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -112,6 +113,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "keboola-datadirtest", specifier = ">=2.0.0" },
+    { name = "keboola-vcr", git = "https://github.com/keboola/python-vcr-tests.git?rev=fix%2Foom-vcr-sanitizer-overhead" },
     { name = "pytest", specifier = ">=9.0.2" },
     { name = "ruff", specifier = ">=0.15.2" },
 ]
@@ -274,15 +276,11 @@ wheels = [
 
 [[package]]
 name = "keboola-vcr"
-version = "0.1.5"
-source = { registry = "https://pypi.org/simple" }
+version = "0.1.6"
+source = { git = "https://github.com/keboola/python-vcr-tests.git?rev=fix%2Foom-vcr-sanitizer-overhead#517717c292f49e3ea874c1a6e7cecdd8b2efc9f4" }
 dependencies = [
     { name = "freezegun" },
     { name = "vcrpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b4/d1/f876bd26edf7036ee871d4c228f20eb1036da63385d89c77e1d443f1bef3/keboola_vcr-0.1.5.tar.gz", hash = "sha256:18068e8ceb4a3e4bd239e69b80d8bc5ab0ca61b33fdf1d03775e65955b79a711", size = 24992, upload-time = "2026-03-02T10:50:21.983Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/18/75/59717b3ce675f2273c7063572825910cc0e2c938d9be2d211459d971adfb/keboola_vcr-0.1.5-py3-none-any.whl", hash = "sha256:0c3674daec33a685a76b2bb87ef6309959297bb3fff592c6b368c9fba2d5b701", size = 27806, upload-time = "2026-03-02T10:50:22.778Z" },
 ]
 
 [[package]]
