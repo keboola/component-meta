@@ -2,8 +2,8 @@ import logging
 import re
 import time
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Any, Optional
+from datetime import UTC, datetime
+from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 from keboola.component.exceptions import UserException
@@ -20,8 +20,8 @@ class FacebookErrorCode:
     """Facebook API error code constants."""
 
     code: int
-    subcode: Optional[int] = None
-    message_fragment: Optional[str] = None
+    subcode: int | None = None
+    message_fragment: str | None = None
 
 
 # Known recoverable errors
@@ -151,7 +151,7 @@ class PaginationHandler:
         Check if pagination request should be skipped due to invalid timestamps.
         Returns (should_skip, reason).
         """
-        now_ts = int(datetime.now(timezone.utc).timestamp())
+        now_ts = int(datetime.now(UTC).timestamp())
         since_ts = PaginationHandler._parse_unix_ts(params.get("since"))
         until_ts = PaginationHandler._parse_unix_ts(params.get("until"))
         one_hour_ago = now_ts - 3600
@@ -176,7 +176,7 @@ class PaginationHandler:
         """Remove future 'until' timestamp if present, return adjusted params."""
         until_ts = PaginationHandler._parse_unix_ts(params.get("until"))
         if until_ts is not None:
-            now_ts = int(datetime.now(timezone.utc).timestamp())
+            now_ts = int(datetime.now(UTC).timestamp())
             if until_ts > now_ts:
                 logger.debug("Adjusting pagination window to end at current time")
                 params = params.copy()
@@ -184,7 +184,7 @@ class PaginationHandler:
         return params
 
     @staticmethod
-    def _parse_unix_ts(value: Any) -> Optional[int]:
+    def _parse_unix_ts(value: Any) -> int | None:
         """Parse a 10-digit Unix timestamp, return None if not valid."""
         if value is None:
             return None
@@ -214,7 +214,7 @@ class PageLoader:
         # Poll for completion
         return self.poll_async_job(report_id)
 
-    def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> Optional[str]:
+    def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> str | None:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
         endpoint_path = f"/{self.api_version}/{page_id}/insights"
 
