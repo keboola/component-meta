@@ -214,9 +214,18 @@ class OutputParser:
             self._add_row(result, table_name, row)
 
     def _create_value_row(self, base_row: dict[str, Any], value_data: dict[str, Any]) -> dict[str, Any]:
-        """Create a row from value data."""
+        """Create a row from value data.
+
+        Supports the new Facebook API breakdown format where breakdown fields
+        appear as siblings of 'value' and 'end_time' in the values array entry.
+        These sibling breakdown fields are extracted and mapped to key1/key2.
+        """
         row = base_row.copy()
-        row.update({"key1": "", "key2": "", "value": value_data["value"]})
+        breakdown_fields = self._extract_breakdown_fields(value_data)
+        breakdown_keys = sorted(breakdown_fields.keys())
+        key1 = breakdown_fields[breakdown_keys[0]] if len(breakdown_keys) > 0 else ""
+        key2 = breakdown_fields[breakdown_keys[1]] if len(breakdown_keys) > 1 else ""
+        row.update({"key1": key1, "key2": key2, "value": value_data["value"]})
 
         # Handle end_time for backward compatibility
         if hasattr(self.row_config.query, "fields") and "insights" in str(self.row_config.query.fields):
@@ -225,6 +234,16 @@ class OutputParser:
             row["end_time"] = value_data["end_time"]
 
         return row
+
+    @staticmethod
+    def _extract_breakdown_fields(value_data: dict[str, Any]) -> dict[str, str]:
+        """Extract breakdown fields from a values array entry.
+
+        Breakdown fields are any fields that are not 'value' or 'end_time'.
+        Returns a map of breakdown field names to their string values.
+        """
+        known_keys = {"value", "end_time"}
+        return {k: str(v) for k, v in value_data.items() if k not in known_keys}
 
     def _has_meaningful_value(self, value_data: dict[str, Any]) -> bool:
         """Check if value data contains meaningful content."""
