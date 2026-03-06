@@ -1,9 +1,9 @@
 ex_account_id,fb_graph_node,parent_id,campaign_id,campaign_name,clicks,date_start,date_stop,impressions,spend
 act_361744628296290,page_campaigns_insights,120241721599750604,120241721599750604,dis_mix_file_build-your-own-financial-data-system,9,2026-03-05,2026-03-05,1241,25.62
-act_361744628296290,page_campaigns_insights,120241721599750604,120241721599750604,dis_mix_file_build-your-own-financial-data-system,4,2026-03-06,2026-03-06,753,17.85
+act_361744628296290,page_campaigns_insights,120241721599750604,120241721599750604,dis_mix_file_build-your-own-financial-data-system,7,2026-03-06,2026-03-06,1136,29.38
 act_361744628296290,page_campaigns_insights,120241680109740604,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,11,2026-03-04,2026-03-04,1578,28.5
-act_361744628296290,page_campaigns_insights,120241680109740604,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,14,2026-03-05,2026-03-05,2028,38.45
-act_361744628296290,page_campaigns_insights,120241680109740604,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,6,2026-03-06,2026-03-06,523,10.76
+act_361744628296290,page_campaigns_insights,120241680109740604,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,14,2026-03-05,2026-03-05,2030,38.47
+act_361744628296290,page_campaigns_insights,120241680109740604,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,15,2026-03-06,2026-03-06,1063,24.91
 act_361744628296290,page_campaigns_insights,120240576766360604,120240576766360604,dis_mix_quiz_financial-assessment_conv,47,2026-02-06,2026-02-06,801,12.17
 act_361744628296290,page_campaigns_insights,120240576766360604,120240576766360604,dis_mix_quiz_financial-assessment_conv,19,2026-02-07,2026-02-07,1691,32.31
 act_361744628296290,page_campaigns_insights,120240576766360604,120240576766360604,dis_mix_quiz_financial-assessment_conv,14,2026-02-08,2026-02-08,1746,42.7
@@ -38,7 +38,7 @@ act_361744628296290,page_campaigns_insights,120240576453960604,12024057645396060
 act_361744628296290,page_campaigns_insights,120240576453960604,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,2,2026-03-03,2026-03-03,381,12.12
 act_361744628296290,page_campaigns_insights,120240576453960604,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,2,2026-03-04,2026-03-04,332,8.93
 act_361744628296290,page_campaigns_insights,120240576453960604,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,2,2026-03-05,2026-03-05,306,8.72
-act_361744628296290,page_campaigns_insights,120240576453960604,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,0,2026-03-06,2026-03-06,117,3.88
+act_361744628296290,page_campaigns_insights,120240576453960604,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,1,2026-03-06,2026-03-06,171,5.48
 act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,65,2026-02-06,2026-02-06,1664,31.93
 act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,21,2026-02-07,2026-02-07,1468,42.04
 act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,18,2026-02-08,2026-02-08,2242,64.51
@@ -67,7 +67,7 @@ act_361744628296290,page_campaigns_insights,120240477971130604,12024047797113060
 act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,9,2026-03-03,2026-03-03,652,18.09
 act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,4,2026-03-04,2026-03-04,568,14.9
 act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,5,2026-03-05,2026-03-05,401,12.25
-act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,3,2026-03-06,2026-03-06,135,4.42
+act_361744628296290,page_campaigns_insights,120240477971130604,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,4,2026-03-06,2026-03-06,262,8.02
 act_361744628296290,page_campaigns_insights,120240448532060604,120240448532060604,dis_mix_webinar_why-borad-sees-different-number-than-you-do_lead,3,2026-02-05,2026-02-05,402,3.91
 act_361744628296290,page_campaigns_insights,120240448532060604,120240448532060604,dis_mix_webinar_why-borad-sees-different-number-than-you-do_lead,11,2026-02-06,2026-02-06,1051,12.33
 act_361744628296290,page_campaigns_insights,120240448532060604,120240448532060604,dis_mix_webinar_why-borad-sees-different-number-than-you-do_lead,15,2026-02-07,2026-02-07,1121,11.43
