@@ -1,0 +1,5 @@
+ex_account_id,fb_graph_node,parent_id,account_id,account_name,campaign_id,campaign_name,clicks,date_start,date_stop,impressions,reach,spend
+act_361744628296290,page_campaigns_insights,120241721599750604,361744628296290,Keboola G+S,120241721599750604,dis_mix_file_build-your-own-financial-data-system,9,2026-03-05,2026-03-05,1241,934,25.62
+act_361744628296290,page_campaigns_insights,120241680109740604,361744628296290,Keboola G+S,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,14,2026-03-05,2026-03-05,2028,1294,38.45
+act_361744628296290,page_campaigns_insights,120240576453960604,361744628296290,Keboola G+S,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,2,2026-03-05,2026-03-05,306,258,8.72
+act_361744628296290,page_campaigns_insights,120240477971130604,361744628296290,Keboola G+S,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,5,2026-03-05,2026-03-05,401,331,12.25
