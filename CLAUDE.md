@@ -16,11 +16,11 @@ uv sync --all-groups
 uv run pytest
 
 # Run a single test file
-uv run pytest tests/test_datadir.py
+uv run pytest tests/test_functional.py
 uv run pytest tests/test_page_loader_dsl.py
 
 # Run a specific test by name
-uv run pytest tests/test_datadir.py -k "test_name"
+uv run pytest tests/test_functional.py -k "test_name"
 
 # Lint
 uv run flake8 . --config=flake8.cfg
@@ -53,19 +53,18 @@ Two query types flow through the system differently:
 
 ### Testing (`tests/`)
 
-- **`test_datadir.py`** — VCR-based functional tests. Uses `datadirtest[vcr]` (from branch `feature/vcr-testing`). Each test case is a directory under `tests/functional/` with `source/data/` (input config + cassettes) and `expected/data/` (expected output CSVs/manifests). Tests replay recorded HTTP interactions via vcrpy.
+- **`test_functional.py`** — VCR-based functional tests. Uses `VCRDataDirTester` from `keboola.datadirtest.vcr`. Each test case is a directory under `tests/functional/` with `source/data/` (input config + cassettes) and `expected/data/` (expected output CSVs/manifests). Tests replay recorded HTTP interactions via vcrpy.
 - **`test_component.py`** — Basic unit test (component fails without config).
 - **`test_page_loader_dsl.py`** — Unit tests for DSL parameter parsing in `PageLoader._build_params()`.
 - **`conftest.py`** — Adds `src/` and `tests/` to `sys.path`, suppresses VCR debug logging.
 
 ### VCR Testing Details
 
-VCR cassettes live at `tests/functional/*/source/data/cassettes/requests.json`. The `_SafeVCRTestDataDir` mixin in `test_datadir.py`:
-- Registers a custom `query_without_dates` matcher that ignores `since`, `until`, `time_increment` query params (cassettes recorded at real dates, replay uses `freeze_time`).
-- Catches `SystemExit` from the component so output comparison still runs.
-- Uses `VCR_SANITIZERS` list with `QueryParameterTokenSanitizer()` (required for replay matching) and `ResponseUrlSanitizer` for Facebook CDN URL normalization.
+VCR cassettes live at `tests/functional/*/source/data/cassettes/requests.json`. The `VCRDataDirTester` from `keboola.datadirtest.vcr` handles cassette replay and output comparison.
 
-When passing custom `vcr_sanitizers` to `VCRTestDataDir`, they **replace** (not extend) defaults — always include `QueryParameterTokenSanitizer()`.
+`VCR_SANITIZERS` is defined in both `src/component.py` and `tests/test_functional.py`:
+- `DefaultSanitizer(additional_sensitive_fields=["page_token"])` — sanitizes access tokens and other sensitive fields from cassettes.
+- `ResponseUrlSanitizer(dynamic_params=[...], url_domains=[...])` — normalizes Facebook CDN URLs (`fbcdn.net`, `facebook.com`, `cdninstagram.com`) by stripping dynamic query params.
 
 ### Scripts (`scripts/`)
 
@@ -75,8 +74,9 @@ When passing custom `vcr_sanitizers` to `VCRTestDataDir`, they **replace** (not 
 ## Key Dependencies
 
 - `keboola-component` — Base class, config loading, table definitions, OAuth credentials
-- `keboola-http-client` — HTTP client with retry logic (from git branch `feature/async`)
-- `datadirtest[vcr]` — Functional test framework with VCR support (from git branch `feature/vcr-testing`)
+- `keboola-http-client` — HTTP client with retry logic
+- `keboola.datadirtest` — Functional test framework with VCR support (`VCRDataDirTester`)
+- `keboola-vcr` — VCR sanitizers (`DefaultSanitizer`, `ResponseUrlSanitizer`)
 - `pydantic` — Configuration models
 - `freezegun` — Time freezing for deterministic VCR replay
 - `vcrpy` — HTTP interaction recording/replay
