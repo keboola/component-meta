@@ -1,0 +1,8 @@
+id,ex_account_id,fb_graph_node,parent_id,name,custom_event_type,default_conversion_value,rule
+1832027687504778,act_361744628296290,page_customconversions,act_361744628296290,newsletter_popup_submit,OTHER,0,"{""and"":[{""event"":{""eq"":""newsletter_popup_submit""}},{""or"":[{""URL"":{""i_contains"":""keboola""}}]}]}"
+2049001785656250,act_361744628296290,page_customconversions,act_361744628296290,resource_donwload_form_submit,OTHER,0,"{""and"":[{""event"":{""eq"":""resource_download_form_submit""}},{""or"":[{""URL"":{""i_contains"":""keboola""}}]}]}"
+885467360920826,act_361744628296290,page_customconversions,act_361744628296290,contact_form_open,OTHER,0,"{""and"":[{""event"":{""eq"":""contact_form_open""}},{""or"":[{""URL"":{""i_contains"":""keboola""}}]}]}"
+1612693103103149,act_361744628296290,page_customconversions,act_361744628296290,webinar_form_submit,OTHER,0,"{""and"":[{""event"":{""eq"":""webinar_form_submit""}},{""or"":[{""URL"":{""i_contains"":""keboola""}}]}]}"
+26079576791732920,act_361744628296290,page_customconversions,act_361744628296290,quiz_complete,OTHER,0,"{""and"":[{""event"":{""eq"":""quiz_complete""}},{""or"":[{""URL"":{""i_contains"":""keboola""}}]}]}"
+1247936704115300,act_361744628296290,page_customconversions,act_361744628296290,quiz_lead,OTHER,0,"{""and"":[{""event"":{""eq"":""quiz_lead""}},{""or"":[{""URL"":{""i_contains"":""keboola""}}]}]}"
+254508042801706,act_361744628296290,page_customconversions,act_361744628296290,Freemium Account Lead (in FAM),LEAD,0,"{""event"":{""eq"":""defineProject""}}"

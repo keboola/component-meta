@@ -1,16 +1,16 @@
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
 
 class QueryConfig(BaseModel):
-    path: Optional[str] = ""
-    fields: Optional[str] = ""
-    ids: Optional[str] = ""
-    limit: Optional[str] = "25"
-    since: Optional[str] = ""
-    until: Optional[str] = ""
-    parameters: Optional[str] = None
+    path: str | None = ""
+    fields: str | None = ""
+    ids: str | None = ""
+    limit: str | None = "25"
+    since: str | None = ""
+    until: str | None = ""
+    parameters: str | None = None
 
 
 class QueryRow(BaseModel):
@@ -25,17 +25,17 @@ class QueryRow(BaseModel):
 class Account(BaseModel):
     id: str
     name: str
-    account_id: Optional[str] = None
-    business_name: Optional[str] = None
-    currency: Optional[str] = None
-    category: Optional[str] = None
-    category_list: Optional[list[dict[str, Any]]] = None
-    tasks: Optional[list[str]] = None
-    fb_page_id: Optional[str] = None
+    account_id: str | None = None
+    business_name: str | None = None
+    currency: str | None = None
+    category: str | None = None
+    category_list: list[dict[str, Any]] | None = None
+    tasks: list[str] | None = None
+    fb_page_id: str | None = None
 
 
 class Configuration(BaseModel):
     accounts: dict[str, Account] = Field(default_factory=dict)
     queries: list[QueryRow] = Field(default_factory=list)
     api_version: str = Field(alias="api-version", default="v23.0")
-    bucket_id: Optional[str] = Field(alias="bucket-id", default=None)
+    bucket_id: str | None = Field(alias="bucket-id", default=None)

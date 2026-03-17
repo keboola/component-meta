@@ -180,8 +180,3 @@ The project uses [uv](https://docs.astral.sh/uv/) for Python dependency manageme
 - `src/configuration.py` - Configuration model definitions
 - `src/output_parser.py` - Data parsing and transformation
 - `src/page_loader.py` - API page loading
-
-Integration
-===========
-
-For details about deployment and integration with Keboola, refer to the [deployment section of the developer documentation](https://developers.keboola.com/extend/component/deployment/).

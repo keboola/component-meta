@@ -7,9 +7,18 @@ from keboola.component.base import ComponentBase, sync_action
 from keboola.component.dao import TableDefinition
 from keboola.component.exceptions import UserException
 from keboola.csvwriter import ElasticDictWriter
+from keboola.vcr import DefaultSanitizer, ResponseUrlSanitizer
 
 from client import FacebookClient
 from configuration import Configuration
+
+VCR_SANITIZERS = [
+    DefaultSanitizer(additional_sensitive_fields=["page_token"]),
+    ResponseUrlSanitizer(
+        dynamic_params=["_nc_gid", "_nc_tpa", "_nc_oc", "_nc_ohc", "oh", "oe"],
+        url_domains=["fbcdn.net", "facebook.com", "cdninstagram.com"],
+    ),
+]
 
 logger = logging.getLogger(__name__)
 
@@ -297,10 +306,11 @@ class Component(ComponentBase):
 """
         Main entrypoint
 """
+
+
 if __name__ == "__main__":
     try:
         comp = Component()
-        # this triggers the run method by default and is controlled by the configuration.action parameter
         comp.execute_action()
     except UserException as exc:
         logger.exception(exc)
