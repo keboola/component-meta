@@ -121,6 +121,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Test image is built independently from production — ruff + pytest run at container start via CMD
       - name: Build test image
         uses: docker/build-push-action@v5
         with:
@@ -129,6 +130,9 @@ jobs:
           target: test
           tags: ${{ env.KBC_DEVELOPERPORTAL_APP }}-test:latest
           load: true
+
+      - name: Run Tests
+        run: docker run ${{ env.KBC_DEVELOPERPORTAL_APP }}-test:latest
 
   tests-kbc:
     name: Run KBC Tests

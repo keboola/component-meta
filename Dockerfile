@@ -14,7 +14,7 @@ FROM base AS test
 RUN uv sync --all-groups --frozen
 COPY tests/ tests/
 RUN uv run ruff check
-RUN uv run pytest tests/
+CMD ["uv", "run", "pytest", "tests/", "-v"]
 
 FROM base AS production
 CMD ["python", "-u", "/code/src/component.py"]
