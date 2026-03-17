@@ -17,8 +17,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "keboola-vcr @ git+https://github.com/keboola/python-vcr-tests.git@fix/oom-vcr-sanitizer-overhead",
-    "keboola.datadirtest>=2.0.0",
+    "keboola-vcr>=0.2.0",
+    "keboola.datadirtest>=2.1.0",
     "pytest>=9.0.2",
     "ruff>=0.15.2",
 ]
