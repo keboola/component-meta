@@ -2,4 +2,4 @@
 set -e
 
 ruff check
-python -m unittest discover
+python -m pytest
