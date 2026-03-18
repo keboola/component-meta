@@ -47,6 +47,7 @@ DSL_SIMPLE_PARAMS = [
     "action_breakdowns",
     "date_preset",
     "time_increment",
+    "breakdown",
     "breakdowns",
     "action_attribution_windows",
     "action_report_time",
