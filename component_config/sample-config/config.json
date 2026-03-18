@@ -1,54 +1,79 @@
 {
-  "storage": {
-    "input": {
-      "files": [],
-      "tables": [
-        {
-          "source": "in.c-test.test",
-          "destination": "test.csv",
-          "limit": 50,
-          "columns": [],
-          "where_values": [],
-          "where_operator": "eq"
-        }
-      ]
-    },
-    "output": {
-      "files": [],
-      "tables": []
+  "authorization": {
+    "oauth_api": {
+      "credentials": {
+        "id": "my-oauth-credentials",
+        "authorizedFor": "My Facebook Page",
+        "#data": "{\"access_token\": \"YOUR_ACCESS_TOKEN\"}",
+        "oauthVersion": "facebook",
+        "appKey": "YOUR_APP_ID",
+        "#appSecret": "YOUR_APP_SECRET"
+      }
     }
   },
   "parameters": {
-    "#api_token": "DEMO",
-    "print_hello": true,
-    "period_from": "yesterday",
-    "endpoints": [
-      "deals",
-      "companies"
-    ],
-    "company_properties": "",
-    "deal_properties": "",
-    "debug": true
-  },
-  "image_parameters": {
-    "syrup_url": "https://syrup.keboola.com/"
-  },
-  "authorization": {
-    "oauth_api": {
-      "id": "OAUTH_API_ID",
-      "credentials": {
-        "id": "main",
-        "authorizedFor": "Myself",
-        "creator": {
-          "id": "1234",
-          "description": "me@keboola.com"
-        },
-        "created": "2016-01-31 00:13:30",
-        "#data": "{\"refresh_token\":\"MCWBkfdK9m5YK*Oqahwm6XN6elMAEwcH5kYcK8Ku!bpiOgSDZN9MQIzunpMsh6LyKH0i!7OcwwwajuxPfvm2PrrWYSs*HerDr2ZSJ39pqHJcvwUNIvHdtcgFFr3Em*yhn3GKBwM2p9UrjtgdAriSDny5YgUYGuI3gYJY1ypD*wBaAOzzeeXZx6CdgjruJ7gboTAngbWk3CzO9rORIwXAAlGUH6ZgBQJL3AwkYVMRFV4BvIvDAMF*0DcGDyrcyYDw9X3vYn*Wy!OqgrenKCGowdJk0C0136SUv4PJI383y76UMim6Q7KGDj7Lf!K2N2FDbxsz2iZKZTBr2vHx8pEC1oBc$\"}",
-        "oauthVersion": "2.0",
-        "appKey": "000000004C184A49",
-        "#appSecret": "vBAYak49pVK1zghHAgDH4tCSCNlT-CiN"
+    "accounts": {
+      "123456789": {
+        "id": "123456789",
+        "name": "My Facebook Page",
+        "category": "Company"
       }
-    }
+    },
+    "api-version": "v23.0",
+    "queries": [
+      {
+        "id": 1,
+        "type": "nested-query",
+        "name": "page_insights_daily",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(30 days ago).time_increment(1).metric(page_impressions, page_impressions_unique, page_views_total, page_fans, page_fan_adds, page_fan_removes, page_post_engagements)",
+          "ids": "",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 2,
+        "type": "nested-query",
+        "name": "feed_post_insights",
+        "run-by-id": false,
+        "query": {
+          "fields": "message, created_time, permalink_url, insights.metric(post_impressions, post_impressions_unique, post_clicks, post_reactions_like_total).period(lifetime){name, values}",
+          "ids": "",
+          "limit": "25",
+          "path": "feed",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 3,
+        "type": "nested-query",
+        "name": "feed_post_media_view_by_source",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.metric(post_media_view).breakdown(is_from_ads).period(lifetime)",
+          "ids": "",
+          "limit": "25",
+          "path": "feed",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 4,
+        "type": "nested-query",
+        "name": "page_basic_info",
+        "run-by-id": false,
+        "query": {
+          "fields": "fan_count, followers_count, name",
+          "ids": "",
+          "limit": "25",
+          "path": ""
+        }
+      }
+    ],
+    "bucket-id": "in.c-keboola-ex-facebook-pages"
   }
 }
