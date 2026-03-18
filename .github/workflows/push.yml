@@ -98,7 +98,6 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          target: production
           tags: ${{ env.KBC_DEVELOPERPORTAL_APP }}:latest
           outputs: type=docker,dest=/tmp/${{ env.KBC_DEVELOPERPORTAL_APP }}.tar
 

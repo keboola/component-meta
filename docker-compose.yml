@@ -2,9 +2,7 @@ version: "2"
 services:
   # for development purposes
   dev:
-    build:
-      context: .
-      target: production
+    build: .
     volumes:
         - ./:/code
         - ./data:/data
