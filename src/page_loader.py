@@ -353,6 +353,15 @@ class PageLoader:
                 if match:
                     params[date_param] = get_past_date(match.group(1).strip()).strftime("%Y-%m-%d")
 
+            # Warn about unrecognized DSL parameters
+            known_params = set(DSL_SIMPLE_PARAMS) | {"metric", "since", "until"}
+            for unrecognized in re.findall(r"\.([a-zA-Z_]+)\(", fields):
+                if unrecognized not in known_params:
+                    logger.warning(
+                        f"Unrecognized DSL parameter '.{unrecognized}(...)' in query fields — "
+                        f"it will be ignored. Known parameters: {sorted(known_params)}"
+                    )
+
             # Extract fields from curly braces (e.g., "insights.level(ad){ad_id,ad_name,spend}")
             if "{" in fields and "}" in fields:
                 fields_part = fields.split("{")[1].split("}")[0]
