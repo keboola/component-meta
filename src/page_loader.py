@@ -10,6 +10,7 @@ from keboola.component.exceptions import UserException
 from keboola.http_client import HttpClient
 from keboola.utils.date import get_past_date
 from requests import HTTPError
+from requests.exceptions import RetryError
 
 logger = logging.getLogger(__name__)
 
@@ -315,6 +316,12 @@ class PageLoader:
                 logger.error(f"Facebook API error response: {response.text}")
             raise
 
+        except RetryError as e:
+            raise UserException(
+                "Facebook API is temporarily unavailable (too many server errors). "
+                "Try again later or reduce the number of simultaneous configurations."
+            ) from e
+
         except Exception as e:
             logger.error(f"Failed to load page data: {e}")
             raise
@@ -449,6 +456,12 @@ class PageLoader:
             if response is not None:
                 logger.error(f"Facebook API error response: {response.text}")
             raise
+
+        except RetryError as e:
+            raise UserException(
+                "Facebook API is temporarily unavailable (too many server errors). "
+                "Try again later or reduce the number of simultaneous configurations."
+            ) from e
 
         except Exception as e:
             logger.error(f"Failed to load paginated data from URL {url}: {str(e)}")
