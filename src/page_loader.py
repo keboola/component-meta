@@ -45,6 +45,7 @@ DATE_RANGE_LIMIT_ERROR = FacebookErrorCode(code=None, message_fragment="there ca
 DSL_SIMPLE_PARAMS = [
     "period",
     "level",
+    "metric_type",
     "action_breakdowns",
     "date_preset",
     "time_increment",
@@ -91,19 +92,24 @@ class FacebookErrorHandler:
                 "Account no longer exists or is inaccessible. Remove it or re-run Add Account.",
             )
 
+        return False, ""
+
+    @staticmethod
+    def raise_if_user_actionable(http_error: HTTPError) -> None:
+        """Raise UserException for errors that indicate a misconfiguration in the query."""
         if FacebookErrorHandler._matches_error(http_error, INVALID_METRIC_ERROR):
-            # Extract detailed error message from response
             response = getattr(http_error, "response", None)
-            error_msg = "Invalid metric configuration"
+            api_msg = ""
             if response is not None:
                 try:
-                    error_data = response.json()
-                    error_msg = error_data.get("error", {}).get("message", error_msg)
+                    api_msg = response.json().get("error", {}).get("message", "")
                 except Exception:
                     pass
-            return True, f"Query configuration error: {error_msg}"
-
-        return False, ""
+            raise UserException(
+                f"Invalid metric configuration: {api_msg}. "
+                "Add 'metric_type(total_value)' to your Fields DSL, e.g.: "
+                "insights.period(day).metric_type(total_value).metric(reach,...)"
+            ) from http_error
 
     @staticmethod
     def _matches_error(http_error: HTTPError, error_code: FacebookErrorCode) -> bool:
@@ -303,6 +309,9 @@ class PageLoader:
             return response or {"data": []}
 
         except HTTPError as e:
+            # Raise UserException for misconfigured queries before checking recoverable errors
+            FacebookErrorHandler.raise_if_user_actionable(e)
+
             # Check for recoverable errors
             is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
             if is_recoverable:
@@ -443,6 +452,9 @@ class PageLoader:
             return response if response else {"data": []}
 
         except HTTPError as e:
+            # Raise UserException for misconfigured queries before checking recoverable errors
+            FacebookErrorHandler.raise_if_user_actionable(e)
+
             # Check for recoverable errors
             is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
             if is_recoverable:
