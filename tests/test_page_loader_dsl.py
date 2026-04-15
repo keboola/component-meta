@@ -213,5 +213,98 @@ class TestDSLParameterParsing(unittest.TestCase):
         )
 
 
+class TestTimeRangesDSL(unittest.TestCase):
+    """Tests for time_range / time_ranges DSL parameter extraction (SUPPORT-15990)."""
+
+    def setUp(self):
+        self.client = MagicMock()
+        self.loader = PageLoader(client=self.client, query_type="async-insights-query", api_version="v23.0")
+
+    def _make_query_config(self, fields="", limit=100, path=None, since="", until="", parameters=None):
+        q = MagicMock()
+        q.limit = limit
+        q.path = path
+        q.fields = fields
+        q.since = since
+        q.until = until
+        q.parameters = parameters
+        return q
+
+    def test_time_ranges_extracted_from_dsl(self):
+        """time_ranges DSL value is extracted as a string."""
+        params = self.loader._build_params(
+            self._make_query_config('insights.time_ranges([{"since":"2025-01-01","until":"2025-01-31"}])')
+        )
+        self.assertIn("time_ranges", params)
+        self.assertIn("2025-01-01", params["time_ranges"])
+
+    def test_time_range_extracted_from_dsl(self):
+        """time_range (singular) DSL value is extracted as a string."""
+        params = self.loader._build_params(
+            self._make_query_config('insights.time_range({"since":"2025-01-01","until":"2025-01-31"})')
+        )
+        self.assertIn("time_range", params)
+        self.assertIn("2025-01-01", params["time_range"])
+
+    def test_time_ranges_extracted_from_parameters_string(self):
+        """time_ranges in the parameters string survives &/= splitting."""
+        params = self.loader._build_params(
+            self._make_query_config(
+                "insights{account_id,impressions}",
+                parameters='level=ad&time_ranges=[{"since":"2025-01-01","until":"2025-01-31"}]',
+            )
+        )
+        self.assertIn("time_ranges", params)
+        self.assertIn("2025-01-01", params["time_ranges"])
+
+    def test_coerce_json_params_converts_array_string(self):
+        """_coerce_json_params turns a JSON array string into a Python list."""
+        params = {"time_ranges": '[{"since":"2025-01-01","until":"2025-01-31"}]', "level": "ad"}
+        coerced = PageLoader._coerce_json_params(params)
+        self.assertIsInstance(coerced["time_ranges"], list)
+        self.assertEqual(coerced["time_ranges"][0]["since"], "2025-01-01")
+        self.assertEqual(coerced["level"], "ad")  # non-JSON strings unchanged
+
+    def test_coerce_json_params_converts_object_string(self):
+        """_coerce_json_params turns a JSON object string into a Python dict."""
+        params = {"time_range": '{"since":"2025-01-01","until":"2025-01-31"}'}
+        coerced = PageLoader._coerce_json_params(params)
+        self.assertIsInstance(coerced["time_range"], dict)
+        self.assertEqual(coerced["time_range"]["since"], "2025-01-01")
+
+    def test_coerce_json_params_leaves_invalid_json_as_string(self):
+        """_coerce_json_params leaves unparseable values as strings."""
+        params = {"filtering": "{'field':'action_type'}"}  # single quotes — not valid JSON
+        coerced = PageLoader._coerce_json_params(params)
+        self.assertIsInstance(coerced["filtering"], str)
+
+    def test_coerce_json_params_converts_filtering_array(self):
+        """_coerce_json_params also converts filtering array for async POST."""
+        filtering = '[{"field":"action_type","operator":"IN","value":["lead"]}]'
+        params = {"filtering": filtering}
+        coerced = PageLoader._coerce_json_params(params)
+        self.assertIsInstance(coerced["filtering"], list)
+        self.assertEqual(coerced["filtering"][0]["field"], "action_type")
+
+    def test_customer_config_parameters_string(self):
+        """Reproduces the exact customer config from SUPPORT-15990."""
+        customer_parameters = (
+            "fields=account_id,account_name,campaign_id,campaign_name,ad_id,ad_name,"
+            "impressions,clicks,spend,reach,actions"
+            "&level=ad&time_increment=1&action_breakdowns=action_type"
+            '&time_ranges=[{"since":"2025-01-01","until":"2025-01-31"}]'
+        )
+        params = self.loader._build_params(
+            self._make_query_config("insights{account_id}", parameters=customer_parameters)
+        )
+        # time_ranges extracted correctly from parameters string
+        self.assertIn("time_ranges", params)
+        coerced = PageLoader._coerce_json_params(params)
+        # After coercion it must be a list for correct JSON POST body
+        self.assertIsInstance(coerced["time_ranges"], list)
+        self.assertEqual(coerced["time_ranges"][0]["since"], "2025-01-01")
+        self.assertEqual(coerced["time_ranges"][0]["until"], "2025-01-31")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 import time
@@ -225,6 +226,10 @@ class PageLoader:
         base_params.update(params)
         params = base_params
 
+        # Coerce JSON-like string values (e.g. time_ranges, filtering) to Python objects
+        # so they are serialized correctly in the JSON POST body.
+        params = self._coerce_json_params(params)
+
         logger.info(f"Starting async insights request: {endpoint_path}")
         logger.debug(f"Async insights params: {params}")
 
@@ -392,6 +397,29 @@ class PageLoader:
             elif isinstance(extras, dict):
                 params.update(extras)
         return params
+
+    @staticmethod
+    def _coerce_json_params(params: dict[str, Any]) -> dict[str, Any]:
+        """
+        Convert string values that are JSON arrays or objects to Python objects.
+
+        Required for async POST requests: parameters like time_ranges and filtering
+        must be actual JSON structures (list/dict) in the POST body, not strings.
+        For GET requests the string form is fine (requests URL-encodes it), but
+        json=params would serialize a string as a quoted string instead of an array.
+        """
+        result = {}
+        for k, v in params.items():
+            if isinstance(v, str):
+                stripped = v.strip()
+                if stripped and stripped[0] in ("[", "{"):
+                    try:
+                        result[k] = json.loads(stripped)
+                        continue
+                    except (json.JSONDecodeError, ValueError):
+                        pass
+            result[k] = v
+        return result
 
     def _build_endpoint_path(self, query_config, page_id: str) -> str:
         # Start with the API version
