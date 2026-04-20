@@ -68,6 +68,34 @@ DSL_SIMPLE_PARAMS = [
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
 
 
+def resolve_query_window(query_config) -> tuple[str | None, str | None]:
+    """Return the effective (since, until) YYYY-MM-DD strings that will be sent to the API.
+
+    DSL-level .since()/.until() override the config-level values (matches _build_params).
+    Returns (None, None) for queries without a time window.
+    """
+    since = None
+    until = None
+
+    if getattr(query_config, "since", "").strip():
+        since = get_past_date(query_config.since).strftime("%Y-%m-%d")
+    if getattr(query_config, "until", "").strip():
+        until = get_past_date(query_config.until).strftime("%Y-%m-%d")
+
+    fields = str(getattr(query_config, "fields", ""))
+    if fields.startswith("insights"):
+        for date_param, current in (("since", since), ("until", until)):
+            match = re.search(rf"\.{date_param}\(([^)]*)\)", fields)
+            if match:
+                resolved = get_past_date(match.group(1).strip()).strftime("%Y-%m-%d")
+                if date_param == "since":
+                    since = resolved
+                else:
+                    until = resolved
+
+    return since, until
+
+
 class FacebookErrorHandler:
     """Handles Facebook API error detection and categorization."""
 

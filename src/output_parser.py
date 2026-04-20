@@ -3,6 +3,8 @@ import logging
 from collections.abc import Iterator
 from typing import Any
 
+from page_loader import resolve_query_window
+
 
 class OutputParser:
     # Facebook Ads action stats fields that need special handling
@@ -75,8 +77,17 @@ class OutputParser:
         current = response or {}
         current_url = None
 
+        # For metric_type=total_value queries the first response is the complete aggregate for
+        # the requested window; paging.next shifts the window forward in time and produces
+        # overlapping/duplicate rows (see CFTL-464). Do not follow it.
+        query_fields = str(getattr(getattr(self.row_config, "query", None), "fields", "") or "")
+        skip_pagination = "metric_type(total_value)" in query_fields
+
         while isinstance(current, dict) and current:
             yield current
+
+            if skip_pagination:
+                break
 
             paging = current.get("paging") or {}
             next_url = paging.get("next")
@@ -147,11 +158,25 @@ class OutputParser:
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
-        return {
+        base: dict[str, Any] = {
             "ex_account_id": self.page_id,
             "fb_graph_node": fb_graph_node,
             "parent_id": parent_id,
         }
+
+        # metric_type=total_value responses carry no per-row end_time, so anchor the row to
+        # the requested window. Scoped to total_value to avoid adding columns to existing
+        # time-series insights schemas used by Facebook Pages / Facebook Ads queries.
+        query_config = getattr(self.row_config, "query", None)
+        query_fields = str(getattr(query_config, "fields", "") or "") if query_config is not None else ""
+        if "metric_type(total_value)" in query_fields:
+            since, until = resolve_query_window(query_config)
+            if since:
+                base["date_start"] = since
+            if until:
+                base["date_stop"] = until
+
+        return base
 
     def _process_fields(self, row: dict[str, Any]) -> dict[str, Any]:
         """Process all fields in a row and categorize them."""
@@ -192,7 +217,7 @@ class OutputParser:
             # Handle Facebook Ads action stats fields - these should create separate table entries
             # Return empty dict for regular fields since these will be processed as separate tables
             return {}
-        elif isinstance(value, (dict, list)):
+        elif isinstance(value, dict | list):
             return self._flatten_array(key, value)
         else:
             return {key: value}
@@ -305,7 +330,7 @@ class OutputParser:
 
     def _has_meaningful_data(self, row_data: dict[str, Any]) -> bool:
         """Check if row contains meaningful data beyond basic identifiers."""
-        basic_identifiers = {"id", "parent_id", "ex_account_id", "fb_graph_node"}
+        basic_identifiers = {"id", "parent_id", "ex_account_id", "fb_graph_node", "date_start", "date_stop"}
 
         # If we have any data beyond just the basic identifiers, it's meaningful
         has_additional_data = any(
