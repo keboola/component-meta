@@ -27,8 +27,6 @@ PREFERRED_COLUMNS_ORDER = [
     "ex_account_id",
     "fb_graph_node",
     "parent_id",
-    "date_start",
-    "date_stop",
     "name",
     "key1",
     "key2",
