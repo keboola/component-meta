@@ -14,4 +14,4 @@ __pycache__/
 .planning
 tests/functional/*/source/data/out/
 tests/functional/*/source/data/in/
-vcr_keboola_platform_testing.worktrees
+vcr_keboola_platform_testing
