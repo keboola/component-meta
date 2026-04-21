@@ -71,7 +71,10 @@ INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be s
 def resolve_query_window(query_config) -> tuple[str | None, str | None]:
     """Return the effective (since, until) YYYY-MM-DD strings that will be sent to the API.
 
-    DSL-level .since()/.until() override the config-level values (matches _build_params).
+    DSL-level .since()/.until() override the config-level values only when the query has no
+    explicit path — this mirrors _build_params(): for nested queries (e.g. path='feed' with
+    fields='insights.since(now)...'), the DSL string is sent as-is in 'fields' and the dates
+    are interpreted by Facebook server-side, so we must not extract them into query params.
     Returns (None, None) for queries without a time window.
     """
     since = None
@@ -83,7 +86,8 @@ def resolve_query_window(query_config) -> tuple[str | None, str | None]:
         until = get_past_date(query_config.until).strftime("%Y-%m-%d")
 
     fields = str(getattr(query_config, "fields", ""))
-    if fields.startswith("insights"):
+    path = getattr(query_config, "path", None) or ""
+    if not path and fields.startswith("insights"):
         for date_param in ("since", "until"):
             match = re.search(rf"\.{date_param}\(([^)]*)\)", fields)
             if match:
@@ -130,52 +134,59 @@ class FacebookErrorHandler:
             api_msg = ""
             if response is not None:
                 try:
-                    api_msg = response.json().get("error", {}).get("message", "")
+                    api_msg = response.json().get("error", {}).get("message", "").strip()
                 except Exception:
                     pass
+            detail = f"Invalid metric configuration: {api_msg}." if api_msg else "Invalid metric configuration."
             raise UserException(
-                f"Invalid metric configuration: {api_msg}. "
+                f"{detail} "
                 "Add 'metric_type(total_value)' to your Fields DSL, e.g.: "
                 "insights.period(day).metric_type(total_value).metric(reach,...)"
             ) from http_error
 
     @staticmethod
     def _matches_error(http_error: HTTPError, error_code: FacebookErrorCode) -> bool:
-        """Check if HTTP error matches the given error code definition."""
+        """Check if HTTP error matches the given error code definition.
+
+        When a message_fragment is provided it is REQUIRED to match, even if the code/subcode
+        already do. This avoids catching unrelated Facebook errors that happen to share a code
+        (e.g. generic code=100 permission errors vs our specific 'metric_type' hint).
+        """
         response = getattr(http_error, "response", None)
+        fragment = (error_code.message_fragment or "").lower()
 
-        # Try structured JSON error first
-        if response is not None:
+        # Check code/subcode match from structured JSON error
+        code_matches = False
+        if error_code.code is not None and response is not None:
             try:
-                error_data = response.json()
-                error_info = error_data.get("error", {})
-
-                # Match by code and subcode if both are defined
-                if error_code.code is not None:
-                    if error_info.get("code") == error_code.code:
-                        if error_code.subcode is None or error_info.get("error_subcode") == error_code.subcode:
-                            return True
+                error_info = response.json().get("error", {})
+                if error_info.get("code") == error_code.code:
+                    if error_code.subcode is None or error_info.get("error_subcode") == error_code.subcode:
+                        code_matches = True
             except Exception:
                 pass
 
-        # Fall back to message fragment matching
-        if error_code.message_fragment:
-            # Check response text
+        # Check message_fragment match in response text or exception string
+        fragment_matches = False
+        if fragment:
             if response is not None:
                 try:
-                    if error_code.message_fragment in response.text.lower():
-                        return True
+                    if fragment in response.text.lower():
+                        fragment_matches = True
+                except Exception:
+                    pass
+            if not fragment_matches:
+                try:
+                    if fragment in str(http_error).lower():
+                        fragment_matches = True
                 except Exception:
                     pass
 
-            # Check exception message
-            try:
-                if error_code.message_fragment in str(http_error).lower():
-                    return True
-            except Exception:
-                pass
-
-        return False
+        if fragment:
+            # When fragment is defined it is REQUIRED. Code-only match is not enough.
+            return fragment_matches
+        # No fragment defined → fall back to code-based match
+        return code_matches
 
 
 class PaginationHandler:
@@ -368,11 +379,12 @@ class PageLoader:
             "limit": query_config.limit,
         }
 
-        if getattr(query_config, "since", "").strip():
-            params["since"] = get_past_date(query_config.since).strftime("%Y-%m-%d")
-
-        if getattr(query_config, "until", "").strip():
-            params["until"] = get_past_date(query_config.until).strftime("%Y-%m-%d")
+        # Resolve since/until once from config + DSL overrides (single source of truth).
+        since, until = resolve_query_window(query_config)
+        if since is not None:
+            params["since"] = since
+        if until is not None:
+            params["until"] = until
 
         fields = str(getattr(query_config, "fields", ""))
         # Insights queries have special parameter handling
@@ -391,12 +403,6 @@ class PageLoader:
                 metrics = [m.strip() for m in match.group(1).replace("\n", "").split(",") if m.strip()]
                 if metrics:
                     params["metric"] = ",".join(metrics)
-
-            # Extract date parameters - special handling: convert with get_past_date()
-            for date_param in ["since", "until"]:
-                match = re.search(rf"\.{date_param}\(([^)]*)\)", fields)
-                if match:
-                    params[date_param] = get_past_date(match.group(1).strip()).strftime("%Y-%m-%d")
 
             # Warn about unrecognized DSL parameters
             known_params = set(DSL_SIMPLE_PARAMS) | {"metric", "since", "until"}
