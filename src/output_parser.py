@@ -77,25 +77,8 @@ class OutputParser:
         current = response or {}
         current_url = None
 
-        # For metric_type=total_value queries the first response is the complete aggregate
-        # for the requested window; paging.next shifts the window forward in time and
-        # produces rows with the same PK but different (stale/zero) values, which then
-        # overwrite the real data on incremental load. Do not follow paging.next here.
-        query_config = getattr(self.row_config, "query", None)
-        if query_config is not None:
-            query_fields = str(getattr(query_config, "fields", "") or "")
-            query_parameters = str(getattr(query_config, "parameters", "") or "")
-            skip_pagination = (
-                "metric_type(total_value)" in query_fields or "metric_type=total_value" in query_parameters
-            )
-        else:
-            skip_pagination = False
-
         while isinstance(current, dict) and current:
             yield current
-
-            if skip_pagination:
-                break
 
             paging = current.get("paging") or {}
             next_url = paging.get("next")
