@@ -330,7 +330,7 @@ class OutputParser:
 
     def _has_meaningful_data(self, row_data: dict[str, Any]) -> bool:
         """Check if row contains meaningful data beyond basic identifiers."""
-        basic_identifiers = {"id", "parent_id", "ex_account_id", "fb_graph_node", "date_start", "date_stop"}
+        basic_identifiers = {"id", "parent_id", "ex_account_id", "fb_graph_node"}
 
         # If we have any data beyond just the basic identifiers, it's meaningful
         has_additional_data = any(
