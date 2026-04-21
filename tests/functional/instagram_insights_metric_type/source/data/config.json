@@ -1,0 +1,64 @@
+{
+  "authorization": {
+    "oauth_api": {
+      "credentials": {
+        "id": "69e7d745-2969-48db-b2a2-cd013c4cf3b5",
+        "branchId": null,
+        "authorizedFor": "Keboola Instagram (Karo Access)",
+        "creator": {
+          "id": "3743232",
+          "description": "matyas.jirat@keboola.com external oauth link"
+        },
+        "created": "2026-01-07T09:00:43+00:00",
+        "#data": "{\"access_token\": \"FAKE_ACCESS_TOKEN_FOR_VCR_REPLAY\"}",
+        "oauthVersion": "facebook",
+        "appKey": "144714469570882",
+        "#appSecret": "[hidden]"
+      }
+    },
+    "context": "4214-extractor"
+  },
+  "parameters": {
+    "debug": true,
+    "accounts": {
+      "17841403584244541": {
+        "id": "17841403584244541",
+        "fb_page_id": "177057932317550",
+        "name": "Keboola",
+        "category": "Information technology company"
+      }
+    },
+    "api-version": "v23.0",
+    "bucket-id": "in.c-keboola-ex-instagram-v2-01kpn2wrew4272k20s5zrwym2x",
+    "queries": [
+      {
+        "id": 1,
+        "type": "nested-query",
+        "name": "query_1",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.period(day).metric_type(total_value).metric(reach,views,accounts_engaged,total_interactions,likes,comments,shares,saves,replies,reposts,profile_links_taps,follows_and_unfollows)",
+          "ids": "17841403584244541",
+          "limit": "25",
+          "path": "",
+          "since": "7 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 18827,
+        "type": "nested-query",
+        "name": "query_2",
+        "run-by-id": false,
+        "query": {
+          "path": "",
+          "fields": "insights.period(day).metric_type(time_series).metric(reach)",
+          "ids": "",
+          "limit": "25",
+          "since": "7 days ago",
+          "until": "today"
+        }
+      }
+    ]
+  }
+}
