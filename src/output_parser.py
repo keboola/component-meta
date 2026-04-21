@@ -157,15 +157,19 @@ class OutputParser:
 
         # metric_type=total_value responses carry no per-row end_time, so anchor the row to
         # the requested window. Scoped to total_value to avoid adding columns to existing
-        # time-series insights schemas used by Facebook Pages / Facebook Ads queries.
+        # time-series insights schemas (which carry end_time in each values[] entry).
+        # Covers both DSL form .metric_type(total_value) and URL form metric_type=total_value.
         query_config = getattr(self.row_config, "query", None)
-        query_fields = str(getattr(query_config, "fields", "") or "") if query_config is not None else ""
-        if "metric_type(total_value)" in query_fields:
-            since, until = resolve_query_window(query_config)
-            if since:
-                base["date_start"] = since
-            if until:
-                base["date_stop"] = until
+        if query_config is not None:
+            query_fields = str(getattr(query_config, "fields", "") or "")
+            query_parameters = str(getattr(query_config, "parameters", "") or "")
+            is_total_value = "metric_type(total_value)" in query_fields or "metric_type=total_value" in query_parameters
+            if is_total_value:
+                since, until = resolve_query_window(query_config)
+                if since:
+                    base["date_start"] = since
+                if until:
+                    base["date_stop"] = until
 
         return base
 
