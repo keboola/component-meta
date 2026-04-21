@@ -3,6 +3,8 @@ import logging
 from collections.abc import Iterator
 from typing import Any
 
+from page_loader import resolve_query_window
+
 
 class OutputParser:
     # Facebook Ads action stats fields that need special handling
@@ -147,11 +149,29 @@ class OutputParser:
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
-        return {
+        base: dict[str, Any] = {
             "ex_account_id": self.page_id,
             "fb_graph_node": fb_graph_node,
             "parent_id": parent_id,
         }
+
+        # metric_type=total_value responses carry no per-row end_time, so anchor the row to
+        # the requested window. Scoped to total_value to avoid adding columns to existing
+        # time-series insights schemas (which carry end_time in each values[] entry).
+        # Covers both DSL form .metric_type(total_value) and URL form metric_type=total_value.
+        query_config = getattr(self.row_config, "query", None)
+        if query_config is not None:
+            query_fields = str(getattr(query_config, "fields", "") or "")
+            query_parameters = str(getattr(query_config, "parameters", "") or "")
+            is_total_value = "metric_type(total_value)" in query_fields or "metric_type=total_value" in query_parameters
+            if is_total_value:
+                since, until = resolve_query_window(query_config)
+                if since:
+                    base["date_start"] = since
+                if until:
+                    base["date_stop"] = until
+
+        return base
 
     def _process_fields(self, row: dict[str, Any]) -> dict[str, Any]:
         """Process all fields in a row and categorize them."""
@@ -192,7 +212,7 @@ class OutputParser:
             # Handle Facebook Ads action stats fields - these should create separate table entries
             # Return empty dict for regular fields since these will be processed as separate tables
             return {}
-        elif isinstance(value, (dict, list)):
+        elif isinstance(value, dict | list):
             return self._flatten_array(key, value)
         else:
             return {key: value}
