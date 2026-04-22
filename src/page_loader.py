@@ -67,6 +67,10 @@ DSL_SIMPLE_PARAMS = [
 
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
 
+# Transient "Service temporarily unavailable" — FB code=2 is defined by the API as always retryable
+_FB_CODE2_MAX_RETRIES = 3
+_FB_CODE2_BACKOFF_BASE = 5  # seconds; delays are 5s, 10s, 20s
+
 
 def resolve_query_window(query_config) -> tuple[str | None, str | None]:
     """Return the effective (since, until) YYYY-MM-DD strings that will be sent to the API.
@@ -143,6 +147,17 @@ class FacebookErrorHandler:
                 "Add 'metric_type(total_value)' to your Fields DSL, e.g.: "
                 "insights.period(day).metric_type(total_value).metric(reach,...)"
             ) from http_error
+
+    @staticmethod
+    def is_transient_server_error(http_error: HTTPError) -> bool:
+        """Return True for Facebook code=2 (service temporarily unavailable) errors."""
+        response = getattr(http_error, "response", None)
+        if response is None:
+            return False
+        try:
+            return response.json().get("error", {}).get("code") == 2
+        except Exception:
+            return False
 
     @staticmethod
     def _matches_error(http_error: HTTPError, error_code: FacebookErrorCode) -> bool:
@@ -245,6 +260,27 @@ class PageLoader:
         self.query_type = query_type
         self.api_version = api_version
 
+    def _get_with_transient_retry(self, path: str, params: dict[str, Any]) -> dict[str, Any] | None:
+        """GET request with exponential-backoff retry on Facebook code=2 transient errors.
+
+        All other errors are re-raised immediately so the caller's existing HTTPError
+        handlers remain in control of non-transient failures.
+        """
+        for attempt in range(_FB_CODE2_MAX_RETRIES + 1):
+            try:
+                return self.client.get(endpoint_path=path, params=params)
+            except HTTPError as e:
+                if attempt < _FB_CODE2_MAX_RETRIES and FacebookErrorHandler.is_transient_server_error(e):
+                    wait = _FB_CODE2_BACKOFF_BASE * (2**attempt)
+                    logger.warning(
+                        f"Facebook transient error (code=2), attempt {attempt + 1}/{_FB_CODE2_MAX_RETRIES + 1}, "
+                        f"retrying in {wait}s"
+                    )
+                    time.sleep(wait)
+                else:
+                    raise
+        return None  # unreachable — loop always returns or raises
+
     def load_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
         if self.query_type == "async-insights-query":
             return self._load_async_insights(query_config, page_id, params)
@@ -344,7 +380,7 @@ class PageLoader:
         logger.debug(f"Request params: {base_params}")
 
         try:
-            response = self.client.get(endpoint_path=endpoint_path, params=base_params)
+            response = self._get_with_transient_retry(endpoint_path, base_params)
             return response or {"data": []}
 
         except HTTPError as e:
@@ -482,7 +518,7 @@ class PageLoader:
             # Adjust params if needed (e.g., remove future 'until')
             params = PaginationHandler.adjust_params(params)
 
-            response = self.client.get(endpoint_path=path, params=params)
+            response = self._get_with_transient_retry(path, params)
             return response if response else {"data": []}
 
         except HTTPError as e:
