@@ -67,6 +67,24 @@ DSL_SIMPLE_PARAMS = [
 
 INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be specified with parameter metric_type")
 
+# Facebook API error codes that are transient and safe to retry.
+# See https://developers.facebook.com/docs/graph-api/guides/error-handling/#errorcodes
+# Rate-limit codes (4, 17, 32, 341, 613) would ideally use X-Business-Use-Case-Usage /
+# Retry-After for accurate backoff — a simple exponential retry is still better than failing.
+_FB_TRANSIENT_ERROR_CODES = frozenset(
+    {
+        1,  # API Unknown — possibly temporary, retry
+        2,  # API Service — temporary downtime, retry
+        4,  # App-level rate limit
+        17,  # User-level rate limit
+        32,  # Page-level rate limit
+        341,  # Application limit reached
+        613,  # Rate limit exceeded
+    }
+)
+_FB_TRANSIENT_ERROR_MAX_RETRIES = 3
+_FB_TRANSIENT_ERROR_BACKOFF_BASE = 5  # seconds; delays are 5s, 10s, 20s
+
 
 def resolve_query_window(query_config) -> tuple[str | None, str | None]:
     """Return the effective (since, until) YYYY-MM-DD strings that will be sent to the API.
@@ -143,6 +161,15 @@ class FacebookErrorHandler:
                 "Add 'metric_type(total_value)' to your Fields DSL, e.g.: "
                 "insights.period(day).metric_type(total_value).metric(reach,...)"
             ) from http_error
+
+    @staticmethod
+    def is_transient_error(http_error: HTTPError) -> bool:
+        """Return True for Facebook error codes documented as transient/retryable."""
+        try:
+            code = http_error.response.json().get("error", {}).get("code")
+        except Exception:
+            return False
+        return code in _FB_TRANSIENT_ERROR_CODES
 
     @staticmethod
     def _matches_error(http_error: HTTPError, error_code: FacebookErrorCode) -> bool:
@@ -245,6 +272,27 @@ class PageLoader:
         self.query_type = query_type
         self.api_version = api_version
 
+    def _get_with_transient_retry(self, path: str, params: dict[str, Any]) -> dict[str, Any] | None:
+        """GET request with exponential-backoff retry on documented FB transient errors.
+
+        All other errors are re-raised immediately so the caller's existing HTTPError
+        handlers remain in control of non-transient failures.
+        """
+        for attempt in range(_FB_TRANSIENT_ERROR_MAX_RETRIES + 1):
+            try:
+                return self.client.get(endpoint_path=path, params=params)
+            except HTTPError as e:
+                if attempt < _FB_TRANSIENT_ERROR_MAX_RETRIES and FacebookErrorHandler.is_transient_error(e):
+                    wait = _FB_TRANSIENT_ERROR_BACKOFF_BASE * (2**attempt)
+                    logger.warning(
+                        f"Facebook transient error, attempt {attempt + 1}/{_FB_TRANSIENT_ERROR_MAX_RETRIES + 1}, "
+                        f"retrying in {wait}s"
+                    )
+                    time.sleep(wait)
+                else:
+                    raise
+        return None  # unreachable — loop always returns or raises
+
     def load_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
         if self.query_type == "async-insights-query":
             return self._load_async_insights(query_config, page_id, params)
@@ -344,7 +392,7 @@ class PageLoader:
         logger.debug(f"Request params: {base_params}")
 
         try:
-            response = self.client.get(endpoint_path=endpoint_path, params=base_params)
+            response = self._get_with_transient_retry(endpoint_path, base_params)
             return response or {"data": []}
 
         except HTTPError as e:
@@ -482,7 +530,7 @@ class PageLoader:
             # Adjust params if needed (e.g., remove future 'until')
             params = PaginationHandler.adjust_params(params)
 
-            response = self.client.get(endpoint_path=path, params=params)
+            response = self._get_with_transient_retry(path, params)
             return response if response else {"data": []}
 
         except HTTPError as e:
