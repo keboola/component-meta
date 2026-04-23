@@ -10,15 +10,11 @@ into a single dict before returning. These tests verify that:
   ``actions``/``action_values`` — participates in the threshold-based flushing.
 """
 
-import sys
 import tracemalloc
 import unittest
-from pathlib import Path
 from unittest.mock import MagicMock
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from output_parser import OutputParser  # noqa: E402
+from output_parser import OutputParser
 
 
 class _FakePageLoader:
