@@ -53,14 +53,37 @@ class OutputParser:
         self.page_id = page_id
         self.row_config = row_config
 
-    def parse_data(
+    # Minimum rows buffered before yielding a streaming batch (CFTL-473).
+    # Page-sized yields made test suites ~6x slower because every batch pays
+    # per-yield overhead in the Component's write loop; accumulating across pages
+    # keeps small queries on the old single-yield path while still bounding memory
+    # for insights queries with hourly breakdowns + action-stats expansion, which
+    # inflate well past the threshold within a handful of pages.
+    DEFAULT_STREAM_ROW_THRESHOLD = 5000
+
+    def iter_parsed_data(
         self,
         response: dict,
         fb_node: str,
         parent_id: str,
         table_name: str | None = None,
-    ) -> dict:
-        result = {}
+        row_threshold: int | None = None,
+    ) -> Iterator[dict[str, list[dict[str, Any]]]]:
+        """Stream parsed rows as ``{table: [rows...]}`` batches (CFTL-473 / SUPPORT-15993).
+
+        Rows accumulate across paginated pages until ``row_threshold`` is reached, then
+        the batch is yielded and the buffer resets. Small queries (< threshold total
+        rows) yield exactly once — identical shape to the pre-CFTL-473 ``parse_data``
+        and the same per-account Component write cost. Large queries (hourly
+        breakdowns × many accounts × action-stats expansion) flush in bounded chunks
+        so peak memory is capped at ≈ threshold × row size.
+
+        Nested-field pagination is still resolved synchronously inside each outer
+        row to preserve existing row ordering guarantees.
+        """
+        threshold = row_threshold if row_threshold is not None else self.DEFAULT_STREAM_ROW_THRESHOLD
+        result: dict[str, list[dict[str, Any]]] = {}
+        buffered_rows = 0
 
         for page_response in self._iter_paginated_responses(response):
             rows = self._extract_rows(page_response)
@@ -70,6 +93,35 @@ class OutputParser:
             for row in rows:
                 self._process_row(row, fb_node, parent_id, table_name, result)
 
+            buffered_rows = sum(len(v) for v in result.values())
+            if buffered_rows >= threshold:
+                yield result
+                result = {}
+                buffered_rows = 0
+
+        if result:
+            yield result
+
+    def parse_data(
+        self,
+        response: dict,
+        fb_node: str,
+        parent_id: str,
+        table_name: str | None = None,
+    ) -> dict[str, list[dict[str, Any]]]:
+        """Fully accumulate rows into a single dict (pre-CFTL-473 behavior).
+
+        Kept for recursive nested-field processing, where synchronous accumulation is
+        intentional: nested responses share the outer row's lifetime and must be merged
+        into the page's batch in deterministic order.
+        """
+        result: dict[str, list[dict[str, Any]]] = {}
+        for batch in self.iter_parsed_data(response, fb_node, parent_id, table_name):
+            for k, v in batch.items():
+                if k in result:
+                    result[k].extend(v)
+                else:
+                    result[k] = v
         return result
 
     def _iter_paginated_responses(self, response: dict[str, Any]) -> Iterator[dict[str, Any]]:
@@ -144,7 +196,7 @@ class OutputParser:
         if is_action_breakdown_query:
             self._process_action_stats(processed_data["action_stats"], row, fb_graph_node, result)
 
-        # Process nested tables recursively
+        # Process nested tables recursively — resolved synchronously into the current batch.
         self._process_nested_data(processed_data["nested_tables"], row, fb_graph_node, result)
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
@@ -429,7 +481,7 @@ class OutputParser:
             return f"{self.row_config.name}_{stats_field_name}_insights"
 
     def _process_nested_data(self, nested_tables: dict, original_row: dict, fb_graph_node: str, result: dict) -> None:
-        """Process nested table data recursively."""
+        """Process nested table data recursively into the current batch."""
         for table_name, table_data in nested_tables.items():
             nested_graph_node = f"{fb_graph_node}_{table_name}"
             nested_row_id = original_row.get("id")
