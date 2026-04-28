@@ -82,6 +82,8 @@ class OutputParser:
         row to preserve existing row ordering guarantees.
         """
         threshold = row_threshold if row_threshold is not None else self.DEFAULT_STREAM_ROW_THRESHOLD
+        if not isinstance(threshold, int) or threshold <= 0:
+            raise ValueError("row_threshold must be a positive integer")
         result: dict[str, list[dict[str, Any]]] = {}
         buffered_rows = 0
 
@@ -92,12 +94,11 @@ class OutputParser:
 
             for row in rows:
                 self._process_row(row, fb_node, parent_id, table_name, result)
-
-            buffered_rows = sum(len(v) for v in result.values())
-            if buffered_rows >= threshold:
-                yield result
-                result = {}
-                buffered_rows = 0
+                buffered_rows = sum(len(v) for v in result.values())
+                if buffered_rows >= threshold:
+                    yield result
+                    result = {}
+                    buffered_rows = 0
 
         if result:
             yield result

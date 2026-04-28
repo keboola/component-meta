@@ -129,7 +129,8 @@ class TestThresholdBasedStreaming(unittest.TestCase):
         self.assertEqual(len(batches[0]["my_query_insights"]), 30)
 
         # 3 pages × 10 rows × 3 expansions = 90 rows with threshold=50:
-        # end of page 2 (60 rows) crosses threshold → flush; page 3 (30 rows) goes to final yield.
+        # threshold crossed within page 2 (30 from page 1 + 21 from page 2 = 51) → flush;
+        # remaining rows continue to final yield.
         p1 = _make_insights_page(
             n_rows=10,
             next_url="https://graph.facebook.com/v20.0/act_1/insights?after=A",
@@ -154,7 +155,9 @@ class TestThresholdBasedStreaming(unittest.TestCase):
         row_config = _make_row_config()
         total_pages = 50
         rows_per_page = 200
-        threshold = 1000  # 5x rows_per_page × 3 actions ≈ 3000, flushes roughly every 2 pages
+        threshold = (
+            1000  # row_threshold counts expanded rows; 200 × 3 = 600 per page, so this flushes roughly every 2 pages
+        )
         urls = [f"https://graph.facebook.com/v20.0/act_1/insights?after=P{i}" for i in range(total_pages)]
 
         pages = [
