@@ -224,9 +224,7 @@ class FacebookClient:
                 output_parser = details["output_parser"]
                 fb_graph_node = details["fb_graph_node"]
                 page_id = details["page_id"]
-                res = output_parser.parse_data(page_data, fb_graph_node, page_id)
-                if res:
-                    yield res
+                yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
             except Exception as e:
                 logger.error(f"Failed to process async job result for report_id: {report_id}: {e}")
 
@@ -253,9 +251,7 @@ class FacebookClient:
                 continue
 
             output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
-            parsed_result = output_parser.parse_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
-            if parsed_result:
-                yield parsed_result
+            yield from output_parser.iter_parsed_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
 
     def _process_single_sync_query(self, accounts: list[Account], row_config: QueryRow) -> Iterator[dict[str, Any]]:
         # Determine if a query is eligible for batch processing.
@@ -287,13 +283,11 @@ class FacebookClient:
                                 logger.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
                                 continue
                             output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
-                            parsed_result = output_parser.parse_data(
+                            yield from output_parser.iter_parsed_data(
                                 response=item_data,
                                 fb_node=fb_graph_node,
                                 parent_id=item_id,
                             )
-                            if parsed_result:
-                                yield parsed_result
                         return  # Batch processing successful, exit the function.
 
                 except HTTPError as e:
@@ -362,9 +356,7 @@ class FacebookClient:
             if not page_content:
                 continue
 
-            res = output_parser.parse_data(page_data, fb_graph_node, page_id)
-            if res:
-                yield res
+            yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
 
     def get_accounts(self, url_path: str, fields: str | None) -> list[dict[str, Any]]:
         params = {}
