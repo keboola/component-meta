@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from collections.abc import Iterator
 from typing import Any
 
@@ -162,6 +163,11 @@ class OutputParser:
         """Process a single row from the API response."""
         table_name = self._get_table_name(table_name or getattr(self.row_config.query, "path", ""))
 
+        # Backfill fields the user explicitly requested but that FB omitted from this row.
+        # Stops Storage loads from failing with "Missing columns: impressions" when the
+        # API returns no rows containing a metric for the queried period (CFTL-630).
+        row = self._backfill_declared_fields(row)
+
         # Create base row with metadata
         base_row = self._create_base_row(fb_graph_node, parent_id)
 
@@ -199,6 +205,61 @@ class OutputParser:
 
         # Process nested tables recursively — resolved synchronously into the current batch.
         self._process_nested_data(processed_data["nested_tables"], row, fb_graph_node, result)
+
+    def _backfill_declared_fields(self, row: dict[str, Any]) -> dict[str, Any]:
+        """Return a row that contains every field the user asked for.
+
+        Facebook's API omits a field entirely from the response when there is no data
+        for it in the queried period (e.g. ``impressions`` for an account with zero
+        impressions on the requested date). Downstream Storage loads then fail with
+        ``Missing columns: impressions`` because the destination table already has the
+        column from a previous run. Filling absent declared fields with ``""`` keeps
+        the output CSV schema stable regardless of API response content.
+        """
+        declared = self._extract_declared_fields()
+        if not declared:
+            return row
+        missing = [field for field in declared if field not in row]
+        if not missing:
+            return row
+        filled = dict(row)
+        for field in missing:
+            filled[field] = ""
+        return filled
+
+    def _extract_declared_fields(self) -> list[str]:
+        """Pull the explicit field list the user declared in the query config.
+
+        Recognises:
+        * DSL form ``insights.<...>{a,b,c}`` — the curly-brace list,
+        * regular query ``fields = "a,b,c"`` for non-insights queries,
+        * a ``fields=...`` entry inside ``query.parameters`` (string or dict).
+        """
+        query = getattr(self.row_config, "query", None)
+        if query is None:
+            return []
+
+        fields_attr = str(getattr(query, "fields", "") or "")
+        if fields_attr.startswith("insights"):
+            match = re.search(r"\{([^}]+)\}", fields_attr)
+            if match:
+                return [f.strip() for f in match.group(1).replace("\n", "").split(",") if f.strip()]
+        elif fields_attr:
+            return [f.strip() for f in fields_attr.split(",") if f.strip()]
+
+        parameters = getattr(query, "parameters", None)
+        if isinstance(parameters, str):
+            for pair in parameters.split("&"):
+                if pair.startswith("fields="):
+                    return [f.strip() for f in pair[len("fields=") :].split(",") if f.strip()]
+        elif isinstance(parameters, dict):
+            fields_val = parameters.get("fields")
+            if isinstance(fields_val, str):
+                return [f.strip() for f in fields_val.split(",") if f.strip()]
+            if isinstance(fields_val, list):
+                return [str(f).strip() for f in fields_val if str(f).strip()]
+
+        return []
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
@@ -429,6 +490,21 @@ class OutputParser:
                 self._add_row(result, table_name, action_row)
 
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
+        """Copy fields from the originating insights row onto a per-action row.
+
+        For action-breakdown queries (``extended=True``) every scalar field from the
+        original row is copied so metric columns the user explicitly requested
+        (``ad_name``, ``impressions``, ``clicks``, ``spend``, ``reach``, …) flow into
+        per-action rows instead of being silently dropped (CFTL-630, SUPPORT-16160).
+        Nested action-stat arrays/dicts are skipped — those are unpacked separately
+        by ``_populate_action_row``.
+        """
+        if extended:
+            for key, value in original_row.items():
+                if not isinstance(value, list | dict):
+                    base_row[key] = value
+            return
+
         fields = [
             "account_id",
             "ad_id",
@@ -438,9 +514,6 @@ class OutputParser:
             "date_stop",
             "publisher_platform",
         ]
-        if extended:
-            fields += ["account_name", "campaign_name"]
-
         for field in fields:
             if field in original_row:
                 base_row[field] = original_row[field]
