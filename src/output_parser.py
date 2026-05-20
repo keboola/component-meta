@@ -234,6 +234,12 @@ class OutputParser:
         Mirrors the three formats accepted by ``PageLoader._build_query_params``:
         DSL ``insights.<...>{a,b,c}``, plain CSV ``fields = "a,b,c"``, and a
         ``fields=...`` entry inside ``parameters`` (string or dict).
+
+        The FB Graph DSL supports field expansion (``comments{message,from{name}}``)
+        and modifier calls (``comments.limit(0).summary(true)``) inside a single
+        field token, both of which contain commas that must NOT split the token.
+        We split brace- and paren-aware, then take the base field name so the
+        backfill column matches what flows through the response normalizer.
         """
         if query is None:
             return []
@@ -241,24 +247,65 @@ class OutputParser:
         fields_attr = str(getattr(query, "fields", "") or "")
         if fields_attr.startswith("insights"):
             if "{" in fields_attr and "}" in fields_attr:
-                inner = fields_attr.split("{", 1)[1].split("}", 1)[0]
-                return [f.strip() for f in inner.replace("\n", "").split(",") if f.strip()]
+                inner = fields_attr.split("{", 1)[1].rsplit("}", 1)[0]
+                return OutputParser._split_field_dsl(inner)
         elif fields_attr:
-            return [f.strip() for f in fields_attr.split(",") if f.strip()]
+            return OutputParser._split_field_dsl(fields_attr)
 
         parameters = getattr(query, "parameters", None)
         if isinstance(parameters, str):
             for pair in parameters.split("&"):
                 if pair.startswith("fields="):
-                    return [f.strip() for f in pair[len("fields=") :].split(",") if f.strip()]
+                    return OutputParser._split_field_dsl(pair[len("fields=") :])
         elif isinstance(parameters, dict):
             fields_val = parameters.get("fields")
             if isinstance(fields_val, str):
-                return [f.strip() for f in fields_val.split(",") if f.strip()]
+                return OutputParser._split_field_dsl(fields_val)
             if isinstance(fields_val, list):
-                return [str(f).strip() for f in fields_val if str(f).strip()]
+                return [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
 
         return []
+
+    @staticmethod
+    def _split_field_dsl(fields_str: str) -> list[str]:
+        """Split a FB Graph field DSL list into base field names.
+
+        Splits on commas that sit at depth 0 of both ``{}`` and ``()``, then
+        reduces each token to its base field name (anything before the first
+        ``{``, ``.``, or ``(``).
+        """
+        tokens: list[str] = []
+        depth_brace = 0
+        depth_paren = 0
+        current: list[str] = []
+        for ch in fields_str:
+            if ch == "{":
+                depth_brace += 1
+                current.append(ch)
+            elif ch == "}":
+                depth_brace -= 1
+                current.append(ch)
+            elif ch == "(":
+                depth_paren += 1
+                current.append(ch)
+            elif ch == ")":
+                depth_paren -= 1
+                current.append(ch)
+            elif ch == "," and depth_brace == 0 and depth_paren == 0:
+                tokens.append("".join(current))
+                current = []
+            else:
+                current.append(ch)
+        if current:
+            tokens.append("".join(current))
+        return [name for name in (OutputParser._base_field_name(t) for t in tokens) if name]
+
+    @staticmethod
+    def _base_field_name(field_dsl: str) -> str:
+        """Strip ``{...}`` expansion and ``.modifier(args)`` suffix from a DSL token."""
+        token = field_dsl.replace("\n", "").strip()
+        cuts = [i for i in (token.find(c) for c in "{.(") if i >= 0]
+        return token[: min(cuts)].strip() if cuts else token
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""

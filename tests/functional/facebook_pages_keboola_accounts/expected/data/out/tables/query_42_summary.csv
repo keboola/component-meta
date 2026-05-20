@@ -1,4 +1,4 @@
-ex_account_id,fb_graph_node,parent_id,can_comment,comments.limit(0).summary(true),order,total_count
+ex_account_id,fb_graph_node,parent_id,can_comment,comments,order,total_count
 177057932317550,page_posts_summary,177057932317550_1494547909342025,True,,chronological,0
 177057932317550,page_posts_summary,177057932317550_1485053520291464,True,,chronological,0
 177057932317550,page_posts_summary,177057932317550_1422837319846418,True,,chronological,0
