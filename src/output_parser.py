@@ -1,6 +1,5 @@
 import json
 import logging
-import re
 from collections.abc import Iterator
 from typing import Any
 
@@ -53,6 +52,9 @@ class OutputParser:
         self.page_loader = page_loader
         self.page_id = page_id
         self.row_config = row_config
+        # Parse the declared field list once — used by _backfill_declared_fields to keep
+        # the output CSV schema stable when the FB API omits a field for the period (CFTL-630).
+        self._declared_fields = self._parse_declared_fields(getattr(row_config, "query", None))
 
     # Minimum rows buffered before yielding a streaming batch (CFTL-473).
     # Page-sized yields made test suites ~6x slower because every batch pays
@@ -210,16 +212,14 @@ class OutputParser:
         """Return a row that contains every field the user asked for.
 
         Facebook's API omits a field entirely from the response when there is no data
-        for it in the queried period (e.g. ``impressions`` for an account with zero
-        impressions on the requested date). Downstream Storage loads then fail with
-        ``Missing columns: impressions`` because the destination table already has the
-        column from a previous run. Filling absent declared fields with ``""`` keeps
-        the output CSV schema stable regardless of API response content.
+        for it in the queried period. Downstream Storage loads then fail with
+        ``Missing columns: ...`` because the destination table already has the column
+        from a previous run. Filling absent declared fields with ``""`` keeps the
+        output CSV schema stable regardless of API response content.
         """
-        declared = self._extract_declared_fields()
-        if not declared:
+        if not self._declared_fields:
             return row
-        missing = [field for field in declared if field not in row]
+        missing = [field for field in self._declared_fields if field not in row]
         if not missing:
             return row
         filled = dict(row)
@@ -227,23 +227,22 @@ class OutputParser:
             filled[field] = ""
         return filled
 
-    def _extract_declared_fields(self) -> list[str]:
-        """Pull the explicit field list the user declared in the query config.
+    @staticmethod
+    def _parse_declared_fields(query) -> list[str]:
+        """Return the explicit field list the user declared in the query config.
 
-        Recognises:
-        * DSL form ``insights.<...>{a,b,c}`` — the curly-brace list,
-        * regular query ``fields = "a,b,c"`` for non-insights queries,
-        * a ``fields=...`` entry inside ``query.parameters`` (string or dict).
+        Mirrors the three formats accepted by ``PageLoader._build_query_params``:
+        DSL ``insights.<...>{a,b,c}``, plain CSV ``fields = "a,b,c"``, and a
+        ``fields=...`` entry inside ``parameters`` (string or dict).
         """
-        query = getattr(self.row_config, "query", None)
         if query is None:
             return []
 
         fields_attr = str(getattr(query, "fields", "") or "")
         if fields_attr.startswith("insights"):
-            match = re.search(r"\{([^}]+)\}", fields_attr)
-            if match:
-                return [f.strip() for f in match.group(1).replace("\n", "").split(",") if f.strip()]
+            if "{" in fields_attr and "}" in fields_attr:
+                inner = fields_attr.split("{", 1)[1].split("}", 1)[0]
+                return [f.strip() for f in inner.replace("\n", "").split(",") if f.strip()]
         elif fields_attr:
             return [f.strip() for f in fields_attr.split(",") if f.strip()]
 
@@ -492,19 +491,12 @@ class OutputParser:
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
         """Copy fields from the originating insights row onto a per-action row.
 
-        For action-breakdown queries (``extended=True``) every scalar field from the
-        original row is copied so metric columns the user explicitly requested
-        (``ad_name``, ``impressions``, ``clicks``, ``spend``, ``reach``, …) flow into
-        per-action rows instead of being silently dropped (CFTL-630, SUPPORT-16160).
-        Nested action-stat arrays/dicts are skipped — those are unpacked separately
-        by ``_populate_action_row``.
+        For action-breakdown queries (``extended=True``) the documented metric fields
+        from CFTL-630/SUPPORT-16160 are appended so they flow into per-action rows
+        instead of being silently dropped. The list is deliberately narrow rather than
+        "copy every scalar" to avoid surprising existing V2 customers with unrelated
+        new columns that their destination Storage tables don't have.
         """
-        if extended:
-            for key, value in original_row.items():
-                if not isinstance(value, list | dict):
-                    base_row[key] = value
-            return
-
         fields = [
             "account_id",
             "ad_id",
@@ -514,6 +506,16 @@ class OutputParser:
             "date_stop",
             "publisher_platform",
         ]
+        if extended:
+            fields += [
+                "account_name",
+                "campaign_name",
+                "ad_name",
+                "impressions",
+                "clicks",
+                "spend",
+                "reach",
+            ]
         for field in fields:
             if field in original_row:
                 base_row[field] = original_row[field]
