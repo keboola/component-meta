@@ -1,0 +1,1 @@
+{"destination": "in.c-keboola-ex-facebook-pages-01ks2a50nw20n54c4m4satqz23.query_10", "incremental": true, "primary_key": ["id", "parent_id"], "write_always": false, "delimiter": ",", "enclosure": "\""}

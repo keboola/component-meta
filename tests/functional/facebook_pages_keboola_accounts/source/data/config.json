@@ -1,0 +1,363 @@
+{
+  "authorization": {
+    "oauth_api": {
+      "credentials": {
+        "id": "594b3a44-9499-4145-a532-2fefca99271b",
+        "branchId": null,
+        "authorizedFor": "Keboola Pages (Karo Access)",
+        "creator": {
+          "id": "3743230",
+          "description": "matyas.jirat@keboola.com external oauth link"
+        },
+        "created": "2026-01-07T08:59:32+00:00",
+        "#data": "{\"access_token\": \"FAKE_ACCESS_TOKEN_FOR_VCR_REPLAY\"}",
+        "oauthVersion": "facebook",
+        "appKey": "178012768920721",
+        "#appSecret": "[hidden]"
+      }
+    },
+    "context": "4214-extractor"
+  },
+  "parameters": {
+    "accounts": {
+      "177057932317550": {
+        "id": "177057932317550",
+        "name": "Keboola",
+        "category": "Information technology company"
+      },
+      "473032723088889": {
+        "id": "473032723088889",
+        "name": "Keboola UK",
+        "category": "Software"
+      }
+    },
+    "api-version": "v24.0",
+    "queries": [
+      {
+        "id": 3,
+        "type": "nested-query",
+        "name": "query_3",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(this month).time_increment(1).metric(post_impressions_organic_unique, post_impressions_organic, post_reactions_like_total, page_post_engagements, post_impressions, post_clicks, page_follows)",
+          "ids": "",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 4,
+        "type": "nested-query",
+        "name": "query_4",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(10 days ago).period(day).until(today).metric( \npage_impressions, page_impressions_paid, page_impressions_viral,  page_impressions_nonviral, page_impressions_paid_unique, page_views_total,\npage_fans, page_fan_adds, page_fan_removes, page_follows,\npage_post_engagements, page_posts_impressions, page_posts_impressions_unique, page_posts_impressions_paid, page_video_views, page_video_views_paid, page_video_views_organic )",
+          "ids": "",
+          "limit": "100",
+          "path": "",
+          "since": "",
+          "time-based-pagination": true,
+          "until": ""
+        }
+      },
+      {
+        "id": 7,
+        "type": "nested-query",
+        "name": "query_7",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.period(week).since(5 days ago).until(yesterday).metric(page_impressions_unique)",
+          "ids": "",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 10,
+        "type": "nested-query",
+        "name": "query_10",
+        "run-by-id": false,
+        "query": {
+          "fields": "fan_count, followers_count",
+          "ids": "",
+          "limit": "25",
+          "path": "",
+          "since": "28 days ago",
+          "until": "28 days ago"
+        }
+      },
+      {
+        "id": 13,
+        "type": "nested-query",
+        "name": "query_13",
+        "run-by-id": false,
+        "query": {
+          "fields": "messages{created_time,from,to,message}",
+          "ids": "",
+          "limit": "25",
+          "path": "conversations"
+        }
+      },
+      {
+        "id": 14,
+        "type": "nested-query",
+        "name": "query_14",
+        "run-by-id": false,
+        "query": {
+          "fields": "attachments{caption, type, description},message,created_time,shares",
+          "ids": "",
+          "limit": "25",
+          "path": "feed ",
+          "since": "7000 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 15,
+        "type": "nested-query",
+        "name": "query_15",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.metric(post_media_view).breakdown(is_from_ads).as(post_media_view_from_ads_new).period(lifetime)",
+          "ids": "",
+          "limit": "25",
+          "path": "feed",
+          "since": "60 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 17,
+        "type": "nested-query",
+        "name": "query_17",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(now).metric(post_media_view).breakdown(is_from_ads, is_from_followers, action_type)",
+          "ids": "",
+          "limit": "25",
+          "path": "feed"
+        }
+      },
+      {
+        "id": 18,
+        "type": "nested-query",
+        "name": "query_18",
+        "run-by-id": false,
+        "query": {
+          "fields": "attachments{type, url},\nmessage, created_time, permalink_url, is_published, shares,\ncomments.summary(total_count, can_comment).limit(0),\ninsights\n.since(10 days ago)\n.until(8 das ago)\n.metric(\npost_clicks, post_clicks_by_type,\npost_reactions_like_total, post_reactions_love_total, post_reactions_wow_total, post_reactions_haha_total, post_reactions_sorry_total, post_reactions_anger_total, \npost_video_views_organic, \npost_video_views_paid,\npost_video_views,\npost_video_views_autoplayed, \npage_video_complete_views_30s,\npost_video_complete_views_30s_paid,\npost_video_complete_views_30s_organic, \npost_video_view_time, \npost_video_views_sound_on, \npost_video_avg_time_watched, \npost_video_complete_views_organic, \npost_video_complete_views_paid)\n.period(lifetime)\n{name, period,values}",
+          "ids": "",
+          "limit": "70",
+          "path": "feed",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
+        "id": 22,
+        "type": "nested-query",
+        "name": "query_22",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(2021-01-01).metric(post_negative_feedback, post_engaged_users, post_impressions_fan, post_impressions_paid, post_impressions, page_posts_impressions_organic, page_posts_impressions_paid, page_posts_impressions)",
+          "ids": "",
+          "limit": "100",
+          "path": "feed",
+          "since": "2020-01-01",
+          "until": "yesterday"
+        }
+      },
+      {
+        "id": 23,
+        "type": "nested-query",
+        "name": "query_23",
+        "run-by-id": false,
+        "query": {
+          "fields": "comments{message,created_time,from,comments{message,created_time,from}}",
+          "ids": "",
+          "limit": "25",
+          "path": "feed",
+          "stop-on-empty-response": true
+        }
+      },
+      {
+        "id": 24,
+        "type": "nested-query",
+        "name": "query_24",
+        "run-by-id": false,
+        "query": {
+          "fields": "reactions.type(SAD).summary(total_count).limit(0)",
+          "ids": "",
+          "limit": "100",
+          "path": "feed",
+          "since": "10 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 28,
+        "type": "nested-query",
+        "name": "query_28",
+        "run-by-id": false,
+        "query": {
+          "fields": "likes{name,username}",
+          "ids": "",
+          "limit": "100",
+          "path": "feed",
+          "since": "100 days ago"
+        }
+      },
+      {
+        "id": 30,
+        "type": "nested-query",
+        "name": "query_30",
+        "run-by-id": false,
+        "query": {
+          "fields": "id",
+          "limit": "25",
+          "path": "https://graph.facebook.com/v3.3/AndrejBabis/feed"
+        }
+      },
+      {
+        "id": 31,
+        "type": "nested-query",
+        "name": "query_31",
+        "run-by-id": false,
+        "query": {
+          "fields": "page_fans",
+          "ids": "",
+          "limit": "25",
+          "path": "insights"
+        }
+      },
+      {
+        "id": 34,
+        "type": "nested-query",
+        "name": "query_34",
+        "run-by-id": false,
+        "query": {
+          "fields": "",
+          "ids": "",
+          "limit": "25",
+          "path": "insights?metric=page_impressions&period=day",
+          "since": "30 day ago",
+          "until": "2 days ago"
+        }
+      },
+      {
+        "id": 35,
+        "type": "nested-query",
+        "name": "query_35",
+        "run-by-id": false,
+        "query": {
+          "fields": "created_time,id,message,full_picture,insights.period(lifetime).metric(post_reactions_by_type_total,post_clicks)",
+          "ids": "",
+          "limit": "25",
+          "path": "me/posts",
+          "since": "7 days ago",
+          "until": "yesterday"
+        }
+      },
+      {
+        "id": 36,
+        "type": "nested-query",
+        "name": "query_36",
+        "run-by-id": false,
+        "query": {
+          "fields": "id,message,created_time,permalink_url,permalink_url,shares",
+          "ids": "",
+          "limit": "25",
+          "path": "page_post",
+          "since": "1 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 42,
+        "type": "nested-query",
+        "name": "query_42",
+        "run-by-id": false,
+        "query": {
+          "fields": "comments.limit(0).summary(true)",
+          "ids": "",
+          "limit": "25",
+          "path": "posts"
+        }
+      },
+      {
+        "id": 47,
+        "type": "nested-query",
+        "name": "query_47",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.since(now).metric(post_impressions_fan,post_impressions_paid,post_impressions,page_posts_impressions_organic_unique,page_posts_impressions_paid,page_posts_impressions,post_clicks,post_clicks_by_type,page_post_engagements)",
+          "ids": "",
+          "limit": "25",
+          "path": "published_posts",
+          "since": "Yesterday",
+          "until": "Today"
+        }
+      },
+      {
+        "id": 50,
+        "type": "nested-query",
+        "name": "query_50",
+        "run-by-id": false,
+        "query": {
+          "fields": "created_time,reviewer,rating,review_text,has_review,has_rating",
+          "ids": "",
+          "limit": "25",
+          "path": "ratings",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 53,
+        "type": "nested-query",
+        "name": "query_53",
+        "run-by-id": false,
+        "query": {
+          "fields": "video_insights.since(now).metric(total_video_views, total_video_views_unique, total_video_views_autoplayed, total_video_views_clicked_to_play, total_video_views_organic, total_video_views_paid)",
+          "ids": "",
+          "limit": "25",
+          "path": "video",
+          "since": "Yesterday",
+          "until": "Today"
+        }
+      },
+      {
+        "id": 55,
+        "type": "nested-query",
+        "name": "query_55",
+        "run-by-id": false,
+        "query": {
+          "fields": "video_reels_insights.since(now).metric(blue_reels_play_count, fb_reels_total_plays, post_video_avg_time_watched, post_video_view_time, post_video_followers, post_video_likes_by_reaction_type, post_video_social_actions)",
+          "ids": "",
+          "limit": "25",
+          "path": "video_reels",
+          "since": "Yesterday",
+          "until": "Today"
+        }
+      },
+      {
+        "id": 56,
+        "type": "nested-query",
+        "name": "query_56",
+        "run-by-id": false,
+        "query": {
+          "fields": "created_time,id,description,length,published,views,permalink_url,video_insights.metric(post_video_likes_by_reaction_type,post_video_social_actions,post_video_view_time,post_impressions_unique,blue_reels_play_count,post_video_avg_time_watched,post_video_followers ){name,description,values}",
+          "ids": "",
+          "limit": "25",
+          "path": "video_reels",
+          "since": "4 days ago",
+          "until": "today"
+        }
+      }
+    ],
+    "bucket-id": "in.c-keboola-ex-facebook-pages-01ks2a50nw20n54c4m4satqz23"
+  },
+  "shared_code_row_ids": [],
+  "image_parameters": {},
+  "action": "run",
+  "storage": {}
+}
