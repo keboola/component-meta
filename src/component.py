@@ -179,7 +179,7 @@ class Component(ComponentBase):
         if not queries_to_process:
             return
 
-        logger.info(f"Processing {len(queries_to_process)} queries.")
+        logger.info("Processing %s queries.", len(queries_to_process))
 
         for parsed_data in self.client.process_queries(list(config.accounts.values()), queries_to_process):
             for table_name, rows_list in parsed_data.items():
@@ -187,7 +187,7 @@ class Component(ComponentBase):
                     continue
                 primary_key = self._get_primary_key(rows_list)
                 self._write_rows(table_name, rows_list, primary_key, True)
-                logger.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
+                logger.debug("Wrote batch of %s rows to table %s", len(rows_list), table_name)
 
     def _finalize_tables(self) -> None:
         for cache_record in self._writer_cache.values():
@@ -229,7 +229,7 @@ class Component(ComponentBase):
         remaining_columns = sorted(all_columns_set - set(PREFERRED_COLUMNS_ORDER))
         all_columns = ordered_columns + remaining_columns
 
-        logger.debug(f"Creating table definition for {table_name} with destination {self.bucket_id}.{table_name}")
+        logger.debug("Creating table definition for %s with destination %s.%s", table_name, self.bucket_id, table_name)
         table_def = self.create_out_table_definition(
             f"{table_name}.csv",
             primary_key=primary_key,
@@ -254,7 +254,7 @@ class Component(ComponentBase):
         # This function replace default bucket option in Developer portal with custom implementation.
         # It allows set own bucket.
         if self.config.bucket_id:
-            logger.info(f"Using bucket ID from configuration: {self.config.bucket_id}")
+            logger.info("Using bucket ID from configuration: %s", self.config.bucket_id)
             return f"{self.config.bucket_id}"
         config_id = self.environment_variables.config_id
         component_id = self.environment_variables.component_id
@@ -262,8 +262,9 @@ class Component(ComponentBase):
             config_id = datetime.now().strftime("%Y%m%d%H%M%S")
         if not component_id:
             component_id = "keboola-ex-meta"
-        logger.info(f"Using default bucket: in.c-{component_id.replace('.', '-')}-{config_id}")
-        return f"in.c-{component_id.replace('.', '-')}-{config_id}"
+        bucket_id = f"in.c-{component_id.replace('.', '-')}-{config_id}"
+        logger.info("Using default bucket: %s", bucket_id)
+        return bucket_id
 
     @sync_action("accounts")
     def run_accounts_action(self) -> list[dict[str, Any]]:

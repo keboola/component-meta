@@ -5,6 +5,8 @@ from typing import Any
 
 from page_loader import resolve_query_window
 
+logger = logging.getLogger(__name__)
+
 
 class OutputParser:
     # Facebook Ads action stats fields that need special handling
@@ -141,7 +143,7 @@ class OutputParser:
             if not next_url or next_url == current_url:
                 break
 
-            logging.debug(f"Following pagination URL: {next_url}")
+            logger.debug("Following pagination URL: %s", next_url)
             current_url = next_url
             current = self.page_loader.load_page_from_url(next_url)
 
