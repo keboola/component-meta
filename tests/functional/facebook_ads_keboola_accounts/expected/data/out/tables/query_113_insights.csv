@@ -1,0 +1,6 @@
+ex_account_id,fb_graph_node,parent_id,publisher_platform,account_id,account_name,campaign_id,campaign_name,clicks,date_start,date_stop,impressions,reach,spend
+act_361744628296290,page_insights,act_361744628296290,audience_network,361744628296290,Keboola G+S,,,2,2026-05-19,2026-05-19,11,7,0.090009
+act_361744628296290,page_insights,act_361744628296290,facebook,361744628296290,Keboola G+S,,,82,2026-05-19,2026-05-19,9767,6605,106.090695
+act_361744628296290,page_insights,act_361744628296290,instagram,361744628296290,Keboola G+S,,,34,2026-05-19,2026-05-19,3907,3117,92.15929
+act_361744628296290,page_insights,act_361744628296290,messenger,361744628296290,Keboola G+S,,,0,2026-05-19,2026-05-19,1,1,0
+act_361744628296290,page_insights,act_361744628296290,threads,361744628296290,Keboola G+S,,,0,2026-05-19,2026-05-19,15,15,0.060006
