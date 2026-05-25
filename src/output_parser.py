@@ -262,7 +262,8 @@ class OutputParser:
             if isinstance(fields_val, str):
                 return OutputParser._split_field_dsl(fields_val)
             if isinstance(fields_val, list):
-                return [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
+                names = [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
+                return [name for name in names if name]
 
         return []
 
@@ -302,10 +303,22 @@ class OutputParser:
 
     @staticmethod
     def _base_field_name(field_dsl: str) -> str:
-        """Strip ``{...}`` expansion and ``.modifier(args)`` suffix from a DSL token."""
+        """Return the token if it is a flat scalar field; empty string otherwise.
+
+        Only flat scalar names (``impressions``, ``ad_id``, ``shares``) are columns
+        on the parent row and need backfilling when the API omits them. Tokens with
+        ``{...}`` expansion (``comments{message,from}``) or ``.modifier(...)`` calls
+        (``comments.limit(0).summary(true)``, ``reactions.type(SAD)``) are nested-edge
+        traversals that produce CHILD tables and have no parent-row column — backfilling
+        them as empty strings on the parent injects phantom columns and breaks Storage
+        loads with "Extra columns found" (CFTL-656 / SUPPORT-16397).
+        """
         token = field_dsl.replace("\n", "").strip()
-        cuts = [i for i in (token.find(c) for c in "{.(") if i >= 0]
-        return token[: min(cuts)].strip() if cuts else token
+        if not token:
+            return ""
+        if any(c in token for c in "{.("):
+            return ""
+        return token
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
