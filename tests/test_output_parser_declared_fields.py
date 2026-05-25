@@ -178,3 +178,190 @@ def test_backfill_mixed_fields_only_backfills_flat() -> None:
     assert "attachments" not in out
     assert "comments" not in out
     assert out["shares"] == ""
+
+
+# ---------- PARSER_SYNTHESIZED_FIELDS allowlist (CFTL-656 / SUPPORT-16397) ----------
+
+
+@pytest.mark.parametrize(
+    "synthesized",
+    ["from_id", "from_name", "from_full_name", "from_username"],
+)
+def test_backfill_drops_parser_synthesized_names(synthesized: str) -> None:
+    """The names listed in ``PARSER_SYNTHESIZED_FIELDS`` are produced by the parser's
+    own flattening of nested ``from{...}`` expansions. The FB Graph API never returns
+    them as flat scalar fields — runtime detection therefore can't catch them. Users
+    who declared them as bare tokens in their config field list were copying parser
+    output columns back into request input. The narrow static exclusion list stops
+    backfill from injecting them as phantom empty columns on parent rows."""
+    row_config = _row_config_for(f"id,message,{synthesized}")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    out = parser._backfill_declared_fields({"id": "post1", "message": "hi"})
+    assert synthesized not in out
+    assert out == {"id": "post1", "message": "hi"}
+
+
+def test_backfill_drops_support_16397_instagram_q16_shape() -> None:
+    """Exact field-list shape from the SUPPORT-16397 Instagram failure
+    (``Extra columns found: "comments, from_full_name, from_id"`` on the
+    ``...media`` table). With the combined runtime + synthesized-name fix the
+    parent row must NOT carry any of those three columns:
+
+    * ``comments`` — caught dynamically when any media row returns it as
+      ``{"data": [...]}`` (``_observed_connections``);
+    * ``from_id`` / ``from_full_name`` — caught by the synthesized-name allowlist.
+    """
+    row_config = _row_config_for(
+        "id,caption,media_type,like_count,ig_id,comments_count,is_comment_enabled,"
+        "media_url,owner,permalink,shortcode,timestamp,thumbnail_url,"
+        "comments,from_id,from_full_name"
+    )
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    # Simulate the API revealing ``comments`` as a connection on at least one row.
+    parser._observe_connection_keys({"id": "m0", "comments": {"data": [{"id": "c1"}]}})
+    out = parser._backfill_declared_fields({"id": "media1", "caption": "x", "media_type": "IMAGE", "like_count": 5})
+    for phantom in ("comments", "from_id", "from_full_name"):
+        assert phantom not in out, f"phantom column {phantom} re-injected"
+    # Legitimate flat fields the API omitted still get backfilled with "".
+    assert out["ig_id"] == ""
+    assert out["permalink"] == ""
+
+
+# ---------- _observed_connections runtime detection ----------
+
+
+def test_observed_connections_drops_after_seen_as_dict_with_data() -> None:
+    """If a key appears as ``{"data": [...]}`` in any earlier row, subsequent rows
+    that omit the key must NOT receive it as a backfilled empty column. Catches
+    account-specific or future connection edges not in the static allowlist."""
+    row_config = _row_config_for("id,message,custom_edge")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    # First row reveals `custom_edge` as a connection.
+    parser._process_fields({"id": "1", "message": "a", "custom_edge": {"data": [{"x": 1}]}})
+    assert "custom_edge" in parser._observed_connections
+    # Second row omits `custom_edge` — must NOT be backfilled.
+    out = parser._backfill_declared_fields({"id": "2", "message": "b"})
+    assert "custom_edge" not in out
+
+
+def test_observed_connections_drops_after_seen_as_summary_only() -> None:
+    """Same dynamic detection when a key appears with only ``summary`` (no ``data``),
+    as ``reactions.summary(total_count)`` does."""
+    row_config = _row_config_for("id,reactions_count,my_reactions")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    parser._process_fields({"id": "1", "my_reactions": {"summary": {"total_count": 3}}})
+    assert "my_reactions" in parser._observed_connections
+    out = parser._backfill_declared_fields({"id": "2"})
+    assert "my_reactions" not in out
+
+
+def test_observed_connections_does_not_drop_flat_scalar_fields() -> None:
+    """A regular scalar key seen in a previous row must NOT end up in observed
+    connections — otherwise CFTL-630 regresses for genuine flat fields."""
+    row_config = _row_config_for("id,impressions,reach")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    parser._process_fields({"id": "1", "impressions": 100, "reach": 80})
+    assert parser._observed_connections == set()
+    # Row with API omitting `impressions` must still get backfilled.
+    out = parser._backfill_declared_fields({"id": "2", "reach": 0})
+    assert out["impressions"] == ""
+
+
+def test_observe_connection_keys_picks_up_list_of_dicts() -> None:
+    """FB Ads ``actions`` style fields come back as a list of dicts. Without
+    catching them in ``_observe_connection_keys``, they'd be backfilled as empty
+    strings on parent rows (then leak into action-stats rows via
+    ``_add_action_stats_to_main_table``)."""
+    row_config = _row_config_for("id,actions,action_values")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    parser._observe_connection_keys({"id": "1", "actions": [{"action_type": "view", "value": 1}]})
+    assert "actions" in parser._observed_connections
+    out = parser._backfill_declared_fields({"id": "2"})
+    assert "actions" not in out
+
+
+def test_pre_scan_catches_connection_revealed_in_later_row() -> None:
+    """End-to-end: a query whose FIRST row omits ``comments`` but LATER rows have it
+    as a connection. The within-page pre-scan in ``iter_parsed_data`` must register
+    the connection before backfill runs on row 1 — otherwise row 1 gets a phantom
+    ``comments`` column while later rows do not, producing a mixed schema (CFTL-656)."""
+    row_config = _row_config_for("id,message,comments")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    response = {
+        "data": [
+            # row 0 omits `comments` entirely (the bug-trigger case)
+            {"id": "p1", "message": "first"},
+            # row 1 reveals it as a connection edge
+            {"id": "p2", "message": "second", "comments": {"data": [{"id": "c1", "text": "hi"}]}},
+        ]
+    }
+    result = parser.parse_data(response, "page", "page1", "feed")
+    main_table = next(v for k, v in result.items() if not k.endswith("comments"))
+    for row in main_table:
+        assert "comments" not in row, f"row {row!r} still has phantom 'comments' column"
+
+
+# ---------- apply_backfill flag: nested-row no-backfill ----------
+
+
+def test_process_row_apply_backfill_false_skips_backfill() -> None:
+    """``_process_row`` must not backfill declared fields when called from the nested
+    recursion path. Otherwise the parent query's field list bleeds into child-table
+    rows (the ``feed_attachments`` / ``media_comments`` extra-columns symptom in
+    SUPPORT-16397)."""
+    row_config = _row_config_for("id,message,created_time,shares")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    result: dict = {}
+    # Simulate a child-row payload that lacks parent-only fields (`message`, `shares`).
+    child_row = {"id": "comment1", "from_name": "Alice", "comment_text": "hi"}
+    parser._process_row(child_row, "page_feed_comments", "post1", "comments", result, apply_backfill=False)
+    rows = next(iter(result.values()))
+    assert len(rows) == 1
+    emitted = rows[0]
+    for parent_only in ("message", "shares", "created_time"):
+        assert parent_only not in emitted, (
+            f"child row received parent-only field {parent_only} despite apply_backfill=False"
+        )
+
+
+def test_process_row_apply_backfill_true_still_backfills() -> None:
+    """Sanity: the outer-query path keeps the CFTL-630 backfill behavior."""
+    row_config = _row_config_for("id,message,created_time,shares")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    result: dict = {}
+    outer_row = {"id": "post1", "message": "hi", "created_time": "2026-01-01"}
+    parser._process_row(outer_row, "page_feed", "page1", None, result, apply_backfill=True)
+    rows = next(iter(result.values()))
+    assert len(rows) == 1
+    assert rows[0]["shares"] == ""
+
+
+def test_nested_data_recursion_passes_apply_backfill_false() -> None:
+    """End-to-end: a feed-style response with a nested ``comments`` connection must
+    NOT inject the parent query's declared fields into the child ``feed_comments``
+    rows."""
+    row_config = _row_config_for("id,message,created_time,shares,permalink_url,is_published")
+    parser = OutputParser(page_loader=None, page_id="page1", row_config=row_config)
+    response = {
+        "data": [
+            {
+                "id": "post1",
+                "message": "outer",
+                "comments": {
+                    "data": [
+                        {"id": "c1", "from": {"id": "u1", "name": "Alice"}},
+                        {"id": "c2", "from": {"id": "u2", "name": "Bob"}},
+                    ]
+                },
+            }
+        ]
+    }
+    result = parser.parse_data(response, "page", "page1", "feed")
+    # The recursion produces a child table whose name carries the nested edge identifier.
+    comments_table = next((v for k, v in result.items() if k.endswith("comments") or "comments" in k), None)
+    assert comments_table is not None, f"child table missing; got tables: {list(result)}"
+    assert len(comments_table) == 2, f"expected 2 child rows, got {len(comments_table)}"
+    parent_only_fields = {"message", "created_time", "shares", "permalink_url", "is_published"}
+    for child_row in comments_table:
+        leaking = parent_only_fields & set(child_row)
+        assert not leaking, f"child row leaked parent fields {leaking}: {child_row}"
