@@ -35,4 +35,4 @@ line-length = 120
 target-version = "py313"
 
 [tool.ruff.lint]
-extend-select = ["I", "UP"]
+extend-select = ["I", "UP", "G"]
