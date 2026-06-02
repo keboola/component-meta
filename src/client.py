@@ -356,7 +356,19 @@ class FacebookClient:
             if not page_content:
                 continue
 
-            yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
+            # Pagination/parsing happens lazily here. A failure on one object's nested
+            # pagination (e.g. Facebook code=2 on a deep insights paging.next that outlives
+            # the transient-retry budget) must not kill the whole extraction with an opaque
+            # "Internal Server Error" — log it with full context and move on to the next object.
+            query_name = getattr(row_config, "name", None) or getattr(getattr(row_config, "query", None), "path", "?")
+            try:
+                yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
+            except Exception as e:
+                logger.error(
+                    f"Failed while paginating/parsing query '{query_name}' for object {page_id}: "
+                    f"{type(e).__name__}: {e}"
+                )
+                continue
 
     def get_accounts(self, url_path: str, fields: str | None) -> list[dict[str, Any]]:
         params = {}

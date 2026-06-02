@@ -82,8 +82,8 @@ _FB_TRANSIENT_ERROR_CODES = frozenset(
         613,  # Rate limit exceeded
     }
 )
-_FB_TRANSIENT_ERROR_MAX_RETRIES = 3
-_FB_TRANSIENT_ERROR_BACKOFF_BASE = 5  # seconds; delays are 5s, 10s, 20s
+_FB_TRANSIENT_ERROR_MAX_RETRIES = 5
+_FB_TRANSIENT_ERROR_BACKOFF_BASE = 5  # seconds; delays are 5s, 10s, 20s, 40s, 80s
 
 
 class AsyncInsightsJobTransientError(Exception):

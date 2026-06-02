@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 from keboola.component.exceptions import UserException
 
-from src.page_loader import AsyncInsightsJobTransientError, PageLoader
+from src.page_loader import _FB_TRANSIENT_ERROR_MAX_RETRIES, AsyncInsightsJobTransientError, PageLoader
 
 
 class TestAsyncInsightsTransientRetry(unittest.TestCase):
@@ -44,8 +44,11 @@ class TestAsyncInsightsTransientRetry(unittest.TestCase):
         with self.assertRaises(UserException):
             self.loader._load_async_insights(self.query_config, "act_123")
 
-        # initial attempt + _FB_TRANSIENT_ERROR_MAX_RETRIES (3) = 4 submissions
-        self.assertEqual(self.loader.start_async_insights_job.call_count, 4)
+        # initial attempt + _FB_TRANSIENT_ERROR_MAX_RETRIES re-submissions
+        self.assertEqual(
+            self.loader.start_async_insights_job.call_count,
+            _FB_TRANSIENT_ERROR_MAX_RETRIES + 1,
+        )
 
     @patch("src.page_loader.time.sleep", return_value=None)
     def test_no_report_id_returns_empty_without_retry(self, _sleep):
