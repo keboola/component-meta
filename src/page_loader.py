@@ -285,8 +285,10 @@ class PageLoader:
                 if attempt < _FB_TRANSIENT_ERROR_MAX_RETRIES and FacebookErrorHandler.is_transient_error(e):
                     wait = _FB_TRANSIENT_ERROR_BACKOFF_BASE * (2**attempt)
                     logger.warning(
-                        f"Facebook transient error, attempt {attempt + 1}/{_FB_TRANSIENT_ERROR_MAX_RETRIES + 1}, "
-                        f"retrying in {wait}s"
+                        "Facebook transient error, attempt %s/%s, retrying in %ss",
+                        attempt + 1,
+                        _FB_TRANSIENT_ERROR_MAX_RETRIES + 1,
+                        wait,
                     )
                     time.sleep(wait)
                 else:
@@ -304,7 +306,7 @@ class PageLoader:
         if not report_id:
             return {"data": []}
 
-        logger.info(f"Started polling for insights job report: {report_id}")
+        logger.info("Started polling for insights job report: %s", report_id)
 
         # Poll for completion
         return self.poll_async_job(report_id)
@@ -319,8 +321,8 @@ class PageLoader:
         base_params.update(params)
         params = base_params
 
-        logger.info(f"Starting async insights request: {endpoint_path}")
-        logger.debug(f"Async insights params: {params}")
+        logger.info("Starting async insights request: %s", endpoint_path)
+        logger.debug("Async insights params: %s", params)
 
         try:
             response = self.client.post(endpoint_path=endpoint_path, json=params)
@@ -329,11 +331,11 @@ class PageLoader:
                 logger.warning("No 'report_run_id' found in the async insights response.")
                 return None
 
-            logger.info(f"Async job started successfully with report ID: {report_id}")
+            logger.info("Async job started successfully with report ID: %s", report_id)
             return report_id
 
         except Exception as e:
-            logger.error(f"Error starting async insights job: {e}")
+            logger.error("Error starting async insights job: %s", e)
             return None
 
     def poll_async_job(self, report_id: str, access_token: str = None) -> dict[str, Any]:
@@ -355,7 +357,7 @@ class PageLoader:
                 async_percent = response.get("async_percent_completion", 0)
                 async_status = response.get("async_status", "Unknown")
 
-                logger.info(f"Async job {report_id}: {async_percent}% complete, status: {async_status}")
+                logger.info("Async job %s: %s%% complete, status: %s", report_id, async_percent, async_status)
 
                 is_finished = async_percent == 100
 
@@ -367,7 +369,7 @@ class PageLoader:
                     attempt += 1
 
             except Exception as e:
-                logger.error(f"Error polling async job {report_id}: {str(e)}")
+                logger.error("Error polling async job %s: %s", report_id, e)
                 raise e
 
         if not is_finished or async_status != "Job Completed":
@@ -379,7 +381,7 @@ class PageLoader:
             final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
             return final_response if final_response else {"data": []}
         except Exception as e:
-            logger.error(f"Failed to get final results for job {report_id}: {str(e)}")
+            logger.error("Failed to get final results for job %s: %s", report_id, e)
             return {"data": []}
 
     def _load_regular_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
@@ -388,8 +390,8 @@ class PageLoader:
 
         endpoint_path = self._build_endpoint_path(query_config, page_id)
 
-        logger.debug(f"Loading page data from: {endpoint_path}")
-        logger.debug(f"Request params: {base_params}")
+        logger.debug("Loading page data from: %s", endpoint_path)
+        logger.debug("Request params: %s", base_params)
 
         try:
             response = self._get_with_transient_retry(endpoint_path, base_params)
@@ -402,14 +404,18 @@ class PageLoader:
             # Check for recoverable errors
             is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
             if is_recoverable:
-                logger.warning(f"Skipping account: {error_desc}")
+                logger.warning("Skipping account: %s", error_desc)
                 return {"data": []}
 
             # Non-recoverable error
-            logger.error(f"HTTP error while loading page data: {e}")
+            logger.error("HTTP error while loading page data: %s", e)
             response = getattr(e, "response", None)
             if response is not None:
-                logger.error(f"Facebook API error response: {response.text}")
+                try:
+                    err = response.json().get("error", {})
+                    logger.error("FB API error code=%s message=%s", err.get("code"), err.get("message"))
+                except ValueError:
+                    logger.error("FB API error body length=%d (not JSON)", len(response.text))
             raise
 
         except RetryError as e:
@@ -419,7 +425,7 @@ class PageLoader:
             ) from e
 
         except Exception as e:
-            logger.error(f"Failed to load page data: {e}")
+            logger.error("Failed to load page data: %s", e)
             raise
 
     def _build_params(self, query_config) -> dict[str, Any]:
@@ -457,8 +463,10 @@ class PageLoader:
             for unrecognized in re.findall(r"\.([a-zA-Z_]+)\(", fields):
                 if unrecognized not in known_params:
                     logger.warning(
-                        f"Unrecognized DSL parameter '.{unrecognized}(...)' in query fields — "
-                        f"it will be ignored. Known parameters: {sorted(known_params)}"
+                        "Unrecognized DSL parameter '.%s(...)' in query fields — "
+                        "it will be ignored. Known parameters: %s",
+                        unrecognized,
+                        sorted(known_params),
                     )
 
             # Extract fields from curly braces (e.g., "insights.level(ad){ad_id,ad_name,spend}")
@@ -518,13 +526,13 @@ class PageLoader:
             # Convert lists to single values (parse_qs returns lists)
             params = {k: v[0] if isinstance(v, list) and len(v) == 1 else v for k, v in query_params.items()}
 
-            logger.debug(f"Loading paginated data from path: {path}")
-            logger.debug(f"Pagination params: {params}")
+            logger.debug("Loading paginated data from path: %s", path)
+            logger.debug("Pagination params: %s", params)
 
             # Check if pagination should be skipped (e.g., future timestamps)
             should_skip, reason = PaginationHandler.should_skip_pagination(params)
             if should_skip:
-                logger.info(f"Skipping pagination: {reason} for URL: {url}")
+                logger.info("Skipping pagination: %s for URL: %s", reason, url)
                 return {"data": []}
 
             # Adjust params if needed (e.g., remove future 'until')
@@ -540,15 +548,19 @@ class PageLoader:
             # Check for recoverable errors
             is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
             if is_recoverable:
-                logger.warning(f"Skipping account: {error_desc}")
+                logger.warning("Skipping account: %s", error_desc)
                 return {"data": []}
 
             # Non-recoverable error
             status_code = getattr(getattr(e, "response", None), "status_code", None)
-            logger.error(f"HTTP error while loading paginated data (status={status_code}): {e}")
+            logger.error("HTTP error while loading paginated data (status=%s): %s", status_code, e)
             response = getattr(e, "response", None)
             if response is not None:
-                logger.error(f"Facebook API error response: {response.text}")
+                try:
+                    err = response.json().get("error", {})
+                    logger.error("FB API error code=%s message=%s", err.get("code"), err.get("message"))
+                except ValueError:
+                    logger.error("FB API error body length=%d (not JSON)", len(response.text))
             raise
 
         except RetryError as e:
@@ -558,5 +570,5 @@ class PageLoader:
             ) from e
 
         except Exception as e:
-            logger.error(f"Failed to load paginated data from URL {url}: {str(e)}")
+            logger.error("Failed to load paginated data from URL %s: %s", url, e)
             raise
