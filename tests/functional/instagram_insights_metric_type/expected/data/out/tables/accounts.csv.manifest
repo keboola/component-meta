@@ -1,0 +1,1 @@
+{"destination": "in.c-keboola-ex-instagram-v2-01kpn2wrew4272k20s5zrwym2x.accounts", "incremental": false, "primary_key": ["id"], "write_always": false, "delimiter": ",", "enclosure": "\""}

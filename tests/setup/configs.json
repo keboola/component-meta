@@ -814,7 +814,7 @@
     }
   },
   {
-    "name": "instagram_keboola_accounts",
+    "name": "instagram_keboola_account",
     "config": {
       "authorization": {
         "oauth_api": {
@@ -1167,7 +1167,7 @@
     }
   },
   {
-    "name": "facebook_ads_keboola_accounts",
+    "name": "facebook_ads_keboola_account",
     "config": {
       "authorization": {
         "oauth_api": {
@@ -3840,7 +3840,7 @@
             "name": "query_208",
             "run-by-id": false,
             "query": {
-              "fields": "insights.date_preset(last_30d)\n        .time_increment(1)\n        .filtering([{\n          field: \"action_type\",\n          operator: \"IN\",\n          value: [\"offsite_conversion.fb_pixel_custom.Odeslání formuláře\"]\n        }]) {\n  campaign_id,\n  campaign_name,\n  conversions\n}",
+              "fields": "insights.date_preset(last_30d)\n        .time_increment(1)\n        .filtering([{\n          field: \"action_type\",\n          operator: \"IN\",\n          value: [\"offsite_conversion.fb_pixel_custom.Odesl\u00e1n\u00ed formul\u00e1\u0159e\"]\n        }]) {\n  campaign_id,\n  campaign_name,\n  conversions\n}",
               "ids": "act_361744628296290",
               "limit": "100",
               "path": "campaigns",

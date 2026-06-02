@@ -1,1 +1,0 @@
-{"destination": "in.c-keboola-ex-facebook-ads-v2-01ks2a6jhf3m3g42xxh2vvfey5.query_67_insights", "incremental": true, "primary_key": ["parent_id", "account_id", "date_start", "date_stop"], "write_always": false, "delimiter": ",", "enclosure": "\""}

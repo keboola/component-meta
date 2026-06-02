@@ -1,0 +1,12 @@
+ex_account_id,fb_graph_node,parent_id,publisher_platform,account_id,account_name,campaign_id,campaign_name,clicks,date_start,date_stop,impressions,reach,spend
+act_361744628296290,page_campaigns_insights,120241721599750604,audience_network,361744628296290,Keboola G+S,120241721599750604,dis_mix_file_build-your-own-financial-data-system,0,2026-03-05,2026-03-05,6,3,0
+act_361744628296290,page_campaigns_insights,120241721599750604,facebook,361744628296290,Keboola G+S,120241721599750604,dis_mix_file_build-your-own-financial-data-system,7,2026-03-05,2026-03-05,546,408,12.25
+act_361744628296290,page_campaigns_insights,120241721599750604,instagram,361744628296290,Keboola G+S,120241721599750604,dis_mix_file_build-your-own-financial-data-system,2,2026-03-05,2026-03-05,689,560,13.37
+act_361744628296290,page_campaigns_insights,120241680109740604,audience_network,361744628296290,Keboola G+S,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,1,2026-03-05,2026-03-05,25,7,0.06
+act_361744628296290,page_campaigns_insights,120241680109740604,facebook,361744628296290,Keboola G+S,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,11,2026-03-05,2026-03-05,1202,798,21.7
+act_361744628296290,page_campaigns_insights,120241680109740604,instagram,361744628296290,Keboola G+S,120241680109740604,dis_mix_file_you-outgrew-excel-now-what_conv,2,2026-03-05,2026-03-05,801,577,16.69
+act_361744628296290,page_campaigns_insights,120240576453960604,facebook,361744628296290,Keboola G+S,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,2,2026-03-05,2026-03-05,196,164,5.81
+act_361744628296290,page_campaigns_insights,120240576453960604,instagram,361744628296290,Keboola G+S,120240576453960604,dis_mix_file_the-multi-entity-cfos-financial-intelligence-guide_conv,0,2026-03-05,2026-03-05,110,100,2.91
+act_361744628296290,page_campaigns_insights,120240477971130604,audience_network,361744628296290,Keboola G+S,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,1,2026-03-05,2026-03-05,5,4,0.08
+act_361744628296290,page_campaigns_insights,120240477971130604,facebook,361744628296290,Keboola G+S,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,2,2026-03-05,2026-03-05,129,110,3.93
+act_361744628296290,page_campaigns_insights,120240477971130604,instagram,361744628296290,Keboola G+S,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,2,2026-03-05,2026-03-05,267,229,8.24
