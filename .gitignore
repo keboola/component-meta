@@ -15,6 +15,3 @@ __pycache__/
 tests/functional/*/source/data/out/
 tests/functional/*/source/data/in/
 vcr_keboola_platform_testing
-.vcr-debug/
-secrets.json
-tests/functional/*/source/data/config.secrets.json
