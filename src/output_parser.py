@@ -48,31 +48,6 @@ class OutputParser:
         "frequency_control_specs",
     ]
 
-    # Parser-synthesized output column names that are NEVER valid FB Graph bare field
-    # names. Users who declared these as bare tokens in their config field list were
-    # copying parser child-row outputs back into the request — the FB API silently
-    # ignored those tokens, returning rows that didn't contain them. Pre-PR #50 the
-    # parser then emitted no column at all; PR #50's backfill injected them as empty
-    # strings on parent rows, which surfaced as ``Extra columns found: "from_id, ..."``
-    # Storage failures (CFTL-656 / SUPPORT-16397).
-    #
-    # Runtime detection in ``_observed_connections`` catches connection-shaped values
-    # the API actually returns (``{"data": [...]}``, list-of-dicts), so we deliberately
-    # do NOT keep a general FB connection-edge allowlist — that risks dropping a name
-    # that is a legitimate scalar field somewhere. This allowlist is limited to names
-    # the parser itself synthesizes when flattening nested ``from{...}`` expansions and
-    # is therefore safe: no resource type uses these as flat scalar fields, the API
-    # never returns them as keys, and users only encountered them as legacy CSV output
-    # column names.
-    PARSER_SYNTHESIZED_FIELDS = frozenset(
-        {
-            "from_id",
-            "from_name",
-            "from_full_name",
-            "from_username",
-        }
-    )
-
     def __init__(self, page_loader, page_id: str, row_config):
         self.page_loader = page_loader
         self.page_id = page_id
@@ -80,11 +55,6 @@ class OutputParser:
         # Parse the declared field list once — used by _backfill_declared_fields to keep
         # the output CSV schema stable when the FB API omits a field for the period (CFTL-630).
         self._declared_fields = self._parse_declared_fields(getattr(row_config, "query", None))
-        # FB Graph connection names observed in API responses for THIS query are tracked here
-        # and excluded from backfill on subsequent rows. Catches connection edges that aren't
-        # in the static allowlist (e.g. account-specific custom edges). Populated by
-        # ``_process_fields`` as it routes ``{"data": [...]}`` keys to child tables.
-        self._observed_connections: set[str] = set()
 
     # Minimum rows buffered before yielding a streaming batch (CFTL-473).
     # Page-sized yields made test suites ~6x slower because every batch pays
@@ -101,7 +71,6 @@ class OutputParser:
         parent_id: str,
         table_name: str | None = None,
         row_threshold: int | None = None,
-        apply_backfill: bool = True,
     ) -> Iterator[dict[str, list[dict[str, Any]]]]:
         """Stream parsed rows as ``{table: [rows...]}`` batches (CFTL-473 / SUPPORT-15993).
 
@@ -114,11 +83,6 @@ class OutputParser:
 
         Nested-field pagination is still resolved synchronously inside each outer
         row to preserve existing row ordering guarantees.
-
-        ``apply_backfill`` gates the declared-field backfill on each emitted row. It is
-        ``True`` for the outer query (so CFTL-630 stays fixed) and ``False`` when the
-        parser recurses into nested child tables via ``_process_nested_data`` — child
-        rows must not receive the parent query's declared-field schema (CFTL-656).
         """
         threshold = row_threshold if row_threshold is not None else self.DEFAULT_STREAM_ROW_THRESHOLD
         if not isinstance(threshold, int) or threshold <= 0:
@@ -131,15 +95,8 @@ class OutputParser:
             if not rows:
                 break
 
-            # Pre-scan: observe connection-shaped keys across all rows in this page
-            # BEFORE running backfill on any of them. Without this, a connection that
-            # appears in row N can't influence backfill on rows 1..N-1 (CFTL-656).
-            if apply_backfill:
-                for row in rows:
-                    self._observe_connection_keys(row)
-
             for row in rows:
-                self._process_row(row, fb_node, parent_id, table_name, result, apply_backfill=apply_backfill)
+                self._process_row(row, fb_node, parent_id, table_name, result)
                 buffered_rows = sum(len(v) for v in result.values())
                 if buffered_rows >= threshold:
                     yield result
@@ -149,40 +106,21 @@ class OutputParser:
         if result:
             yield result
 
-    def _observe_connection_keys(self, row: dict[str, Any]) -> None:
-        """Record any key whose value is a FB Graph connection-shaped payload.
-
-        Values that look like ``{"data": [...]}``, ``{"summary": {...}}``, or a
-        list whose first element is a dict identify the key as a connection edge —
-        it will be extracted as a child table by ``_process_fields`` and must not
-        also be backfilled onto the parent row as an empty string (CFTL-656).
-        """
-        for key, value in row.items():
-            if isinstance(value, dict) and ("data" in value or "summary" in value):
-                self._observed_connections.add(key)
-            elif isinstance(value, list) and value and isinstance(value[0], dict):
-                self._observed_connections.add(key)
-
     def parse_data(
         self,
         response: dict,
         fb_node: str,
         parent_id: str,
         table_name: str | None = None,
-        apply_backfill: bool = True,
     ) -> dict[str, list[dict[str, Any]]]:
         """Fully accumulate rows into a single dict (pre-CFTL-473 behavior).
 
         Kept for recursive nested-field processing, where synchronous accumulation is
         intentional: nested responses share the outer row's lifetime and must be merged
         into the page's batch in deterministic order.
-
-        ``apply_backfill`` is forwarded to ``iter_parsed_data``; ``_process_nested_data``
-        sets it to ``False`` so child-table rows do not receive the parent's declared
-        fields (CFTL-656).
         """
         result: dict[str, list[dict[str, Any]]] = {}
-        for batch in self.iter_parsed_data(response, fb_node, parent_id, table_name, apply_backfill=apply_backfill):
+        for batch in self.iter_parsed_data(response, fb_node, parent_id, table_name):
             for k, v in batch.items():
                 if k in result:
                     result[k].extend(v)
@@ -223,22 +161,14 @@ class OutputParser:
         parent_id: str,
         table_name: str | None,
         result: dict[str, list[dict[str, Any]]],
-        apply_backfill: bool = True,
     ) -> None:
-        """Process a single row from the API response.
-
-        ``apply_backfill`` defaults to ``True`` for the outer query (preserves
-        CFTL-630). Recursive calls from ``_process_nested_data`` pass ``False`` so
-        child-table rows do not receive the parent's declared-field schema
-        (CFTL-656).
-        """
+        """Process a single row from the API response."""
         table_name = self._get_table_name(table_name or getattr(self.row_config.query, "path", ""))
 
         # Backfill fields the user explicitly requested but that FB omitted from this row.
         # Stops Storage loads from failing with "Missing columns: impressions" when the
         # API returns no rows containing a metric for the queried period (CFTL-630).
-        if apply_backfill:
-            row = self._backfill_declared_fields(row)
+        row = self._backfill_declared_fields(row)
 
         # Create base row with metadata
         base_row = self._create_base_row(fb_graph_node, parent_id)
@@ -285,18 +215,11 @@ class OutputParser:
         for it in the queried period. Downstream Storage loads then fail with
         ``Missing columns: ...`` because the destination table already has the column
         from a previous run. Filling absent declared fields with ``""`` keeps the
-        output CSV schema stable regardless of API response content (CFTL-630).
-
-        ``_observed_connections`` excludes any declared field name the parser has
-        already seen in this query as a connection-shaped value (``{"data": [...]}``
-        / ``{"summary": ...}`` / list-of-dicts). Injecting those as empty strings on
-        the parent row would produce phantom columns and the "Extra columns found"
-        Storage failure documented in SUPPORT-16397 (CFTL-656).
+        output CSV schema stable regardless of API response content.
         """
         if not self._declared_fields:
             return row
-        excluded = self.PARSER_SYNTHESIZED_FIELDS | self._observed_connections
-        missing = [field for field in self._declared_fields if field not in row and field not in excluded]
+        missing = [field for field in self._declared_fields if field not in row]
         if not missing:
             return row
         filled = dict(row)
@@ -339,8 +262,7 @@ class OutputParser:
             if isinstance(fields_val, str):
                 return OutputParser._split_field_dsl(fields_val)
             if isinstance(fields_val, list):
-                names = [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
-                return [name for name in names if name]
+                return [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
 
         return []
 
@@ -380,22 +302,10 @@ class OutputParser:
 
     @staticmethod
     def _base_field_name(field_dsl: str) -> str:
-        """Return the token if it is a flat scalar field; empty string otherwise.
-
-        Only flat scalar names (``impressions``, ``ad_id``, ``shares``) are columns
-        on the parent row and need backfilling when the API omits them. Tokens with
-        ``{...}`` expansion (``comments{message,from}``) or ``.modifier(...)`` calls
-        (``comments.limit(0).summary(true)``, ``reactions.type(SAD)``) are nested-edge
-        traversals that produce CHILD tables and have no parent-row column — backfilling
-        them as empty strings on the parent injects phantom columns and breaks Storage
-        loads with "Extra columns found" (CFTL-656 / SUPPORT-16397).
-        """
+        """Strip ``{...}`` expansion and ``.modifier(args)`` suffix from a DSL token."""
         token = field_dsl.replace("\n", "").strip()
-        if not token:
-            return ""
-        if any(c in token for c in "{.("):
-            return ""
-        return token
+        cuts = [i for i in (token.find(c) for c in "{.(") if i >= 0]
+        return token[: min(cuts)].strip() if cuts else token
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""
@@ -437,10 +347,6 @@ class OutputParser:
                 processed["values"] = value
             elif isinstance(value, dict) and "data" in value:
                 processed["nested_tables"][key] = value
-                # Once we have seen a key as a connection edge in any row, exclude it
-                # from declared-field backfill on every subsequent row of this query
-                # (CFTL-656 dynamic detection — complements FB_CONNECTION_EDGES).
-                self._observed_connections.add(key)
                 # Also check if this nested object has summary alongside data
                 if "summary" in value:
                     fake_nested = {"data": [value["summary"]]}
@@ -448,7 +354,6 @@ class OutputParser:
             elif isinstance(value, dict) and "summary" in value:
                 fake_nested = {"data": [value["summary"]]}
                 processed["nested_tables"]["summary"] = fake_nested
-                self._observed_connections.add(key)
             elif key in self.ADS_ACTION_STATS_ROW and isinstance(value, list):
                 # Handle Facebook Ads action stats as separate table
                 processed["action_stats"][key] = value
@@ -699,22 +604,12 @@ class OutputParser:
             return f"{self.row_config.name}_{stats_field_name}_insights"
 
     def _process_nested_data(self, nested_tables: dict, original_row: dict, fb_graph_node: str, result: dict) -> None:
-        """Process nested table data recursively into the current batch.
-
-        The recursive parse runs with ``apply_backfill=False`` because the parent
-        query's declared field list describes the parent row's schema, not the
-        child table's. Without this gate, every nested row got the parent's
-        declared fields injected as empty strings — surfaced as
-        ``Extra columns found`` Storage failures on child tables like
-        ``feed_attachments`` / ``feed_comments`` (CFTL-656 / SUPPORT-16397).
-        """
+        """Process nested table data recursively into the current batch."""
         for table_name, table_data in nested_tables.items():
             nested_graph_node = f"{fb_graph_node}_{table_name}"
             nested_row_id = original_row.get("id")
 
-            nested_result = self.parse_data(
-                table_data, nested_graph_node, nested_row_id, table_name, apply_backfill=False
-            )
+            nested_result = self.parse_data(table_data, nested_graph_node, nested_row_id, table_name)
 
             # Merge nested results
             for nested_table, nested_rows in nested_result.items():
