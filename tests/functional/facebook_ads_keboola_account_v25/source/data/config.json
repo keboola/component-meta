@@ -1173,6 +1173,20 @@
         }
       },
       {
+        "id": 94,
+        "type": "nested-query",
+        "name": "query_94",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(ad)\n    .action_breakdowns(action_type)\n    .time_range({'since':'2025-04-01','until':'2025-04-30'})\n    .time_increment(1)\n    .attribution_windows(['7d_click'])\n{\n    ad_id,\n    ad_name,\n    adset_id,\n    adset_name,\n    campaign_id,\n    campaign_name,\n    date_start,\n    date_stop,\n    impressions,\n    clicks,\n    spend,\n    reach,\n    ctr,\n    cpc,\n    cpm,\n    cpp,\n    objective,\n    optimization_goal,\n    frequency,\n    unique_clicks,\n    unique_ctr,\n    cost_per_unique_click,\n    actions{\n        action_type,\n        value\n    },\n    action_values{\n        action_type,\n        value\n    },\n    cost_per_action_type{\n        action_type,\n        value\n    },\n    purchase_roas{\n        action_type,\n        value\n    },\n    website_purchase_roas{\n        action_type,\n        value\n    }\n}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
         "id": 95,
         "type": "nested-query",
         "name": "query_95",
@@ -1206,6 +1220,20 @@
           "ids": "act_361744628296290",
           "limit": "25",
           "path": ""
+        }
+      },
+      {
+        "id": 98,
+        "type": "nested-query",
+        "name": "query_98",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(ad).action_breakdowns(action_type).time_ranges([\n\"{'since' : '2021-08-21','until' : '2021-08-22'}\",\n\"{'since' : '2021-08-22','until' : '2021-08-23'}\",\n\"{'since' : '2021-08-23','until' : '2021-08-24'}\"]){ad_id,ad_name,impressions,reach,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "50",
+          "path": "",
+          "since": "",
+          "until": ""
         }
       },
       {
@@ -1258,6 +1286,100 @@
           "ids": "act_361744628296290",
           "limit": "25",
           "path": ""
+        }
+      },
+      {
+        "id": 103,
+        "type": "nested-query",
+        "name": "query_103",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(adset).breakdowns(device_platform).date_preset(yesterday).time_increment(1).use_unified_attribution_setting(true).filtering([{'field':'action_type','operator':'EQUAL', 'value':'purchase'}]){adset_id,actions,action_values}",
+          "ids": "act_361744628296290",
+          "limit": "15",
+          "path": ""
+        }
+      },
+      {
+        "id": 104,
+        "type": "nested-query",
+        "name": "query_104",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(adset).breakdowns(device_platform).date_preset(yesterday).time_increment(1).use_unified_attribution_setting(true).filtering([{'field':'action_type','operator':'EQUAL', 'value':'purchase'}]){adset_id,actions,action_values}",
+          "ids": "act_361744628296290",
+          "limit": "15",
+          "path": ""
+        }
+      },
+      {
+        "id": 105,
+        "type": "nested-query",
+        "name": "query_105",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(ad).breakdowns(device_platform).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){ad_id,impressions,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "1",
+          "path": "",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 106,
+        "type": "nested-query",
+        "name": "query_106",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(ad).breakdowns(device_platform).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){ad_id,impressions,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "1",
+          "path": "",
+          "since": "30 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 107,
+        "type": "nested-query",
+        "name": "query_107",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(adset).breakdowns(device_platform).date_preset(last_7d).time_increment(1).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){adset_id,impressions,clicks,spend,conversions,conversion_values}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
+        "id": 108,
+        "type": "nested-query",
+        "name": "query_108",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(adset).breakdowns(device_platform).date_preset(last_7d).time_increment(1).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){adset_id,impressions,actions,action_values}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
+        "id": 109,
+        "type": "nested-query",
+        "name": "query_109",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(account).breakdowns(product_id).date_preset(yesterday).time_increment(1).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){impressions,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "1",
+          "path": "",
+          "since": "30 days ago",
+          "until": "today"
         }
       },
       {
@@ -1321,6 +1443,42 @@
         "run-by-id": false,
         "query": {
           "fields": "insights.breakdowns(country).level(ad).date_preset(last_7d).time_increment(1){campaign_id,campaign_name,ad_id,ad_name,impressions,clicks,spend} ",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 115,
+        "type": "nested-query",
+        "name": "query_115",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(ad).date_preset(yesterday).time_increment(1).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,impressions,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 116,
+        "type": "nested-query",
+        "name": "query_116",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.level(ad).time_range({'since':'2022-09-29','until':'2022-09-29'}).time_increment(1).filtering([{'field':'impressions','operator':'GREATER_THAN', 'value':0}]){ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,impressions,clicks,inline_link_clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": ""
+        }
+      },
+      {
+        "id": 117,
+        "type": "nested-query",
+        "name": "query_117",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).filtering([{field:'country',operator:'IN',value:['CZ']}]){spend,date_start,date_stop}",
           "ids": "act_361744628296290",
           "limit": "25",
           "path": ""
@@ -1576,6 +1734,32 @@
         }
       },
       {
+        "id": 137,
+        "type": "nested-query",
+        "name": "query_137",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).action_breakdowns(action_type).action_attribution_windows(['1d_click','7d_click','28d_click','1d_view','incrementality']).filtering([{'field':'action_type','operator':'IN','value':['omni_view_content','omni_purchase','omni_add_to_cart','omni_initiated_checkout']}]){campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,impressions,actions,clicks,spend,cpm,reach,frequency}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "ads",
+          "since": ""
+        }
+      },
+      {
+        "id": 138,
+        "type": "nested-query",
+        "name": "query_138",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).action_breakdowns(action_type).action_attribution_windows(['1d_click','7d_click','28d_click','1d_view','incrementality']).filtering([{'field':'action_type','operator':'IN','value':['omni_view_content','omni_purchase','omni_add_to_cart','omni_initiated_checkout']}]){campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,impressions,actions,clicks,outbound_clicks,spend,cpm,cpp,cost_per_outbound_click,reach,frequency,action_values,account_currency}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "ads",
+          "since": ""
+        }
+      },
+      {
         "id": 139,
         "type": "nested-query",
         "name": "query_139",
@@ -1622,6 +1806,18 @@
           "fields": "insights.action_breakdowns(action_type).date_preset(last_30d).time_increment(1){campaign_id,campaign_name,adset_id,adset_name,ad_id,ad_name,impressions,actions,clicks,spend,reach,frequency}",
           "ids": "act_361744628296290",
           "limit": "33",
+          "path": "ads"
+        }
+      },
+      {
+        "id": 143,
+        "type": "nested-query",
+        "name": "query_143",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.action_breakdowns(action_type).time_range({'since':'2018-02-01','until':'2018-12-31'}).time_increment(1){ad_id,campaign_id,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "25",
           "path": "ads"
         }
       },
@@ -1757,6 +1953,32 @@
           "path": "ads",
           "since": "",
           "until": ""
+        }
+      },
+      {
+        "id": 154,
+        "type": "nested-query",
+        "name": "query_154",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).filtering([{field:'country',operator:'IN',value:['CZ']}]){spend,date_start}",
+          "ids": "act_361744628296290",
+          "limit": "100",
+          "path": "ads",
+          "since": "7 days ago",
+          "until": "today"
+        }
+      },
+      {
+        "id": 155,
+        "type": "nested-query",
+        "name": "query_155",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).filtering([{field:\"ad.impressions\",operator:\"GREATER_THAN\",value:0}]){ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,impressions,clicks,spend} ",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "ads"
         }
       },
       {
@@ -2012,6 +2234,18 @@
         }
       },
       {
+        "id": 175,
+        "type": "nested-query",
+        "name": "query_175",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.breakdowns(product_id).date_preset(yesterday).filtering([{'field':'impressions','operator':'GREATER_THAN','value':1}]).time_increment(1){account_id,campaign_id,adset_id,impressions, clicks, spend}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "adsets"
+        }
+      },
+      {
         "id": 176,
         "type": "nested-query",
         "name": "query_176",
@@ -2051,6 +2285,30 @@
           "path": "adsets",
           "since": "30 days ago",
           "until": "1 days ago"
+        }
+      },
+      {
+        "id": 179,
+        "type": "nested-query",
+        "name": "query_179",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).filtering([{field:\"campaign.id\",operator:\"IN\",value:['act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290']}]){account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,spend,actions}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "adsets"
+        }
+      },
+      {
+        "id": 180,
+        "type": "nested-query",
+        "name": "query_180",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_7d).time_increment(1).filtering([{field:\"campaign.id\",operator:\"IN\",value:['act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290','act_361744628296290']}]){account_id,account_name,campaign_id,campaign_name,adset_id,adset_name,spend,actions}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "adsets"
         }
       },
       {
@@ -2158,6 +2416,20 @@
         }
       },
       {
+        "id": 189,
+        "type": "nested-query",
+        "name": "query_189",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(yesterday).time_increment(all_days).action_attribution_windows(['7d_click']).breakdowns(product_id)\n.action_breakdowns(action_type)\n.filtering([\n  {field:'action_type',operator:'IN',value:['offsite_conversion.fb_pixel_purchase']}\n]){campaign_id,campaign_name,spend,actions,action_values}",
+          "ids": "act_361744628296290,act_361744628296290",
+          "limit": "25",
+          "path": "campaigns",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
         "id": 190,
         "type": "nested-query",
         "name": "query_190",
@@ -2232,12 +2504,36 @@
         }
       },
       {
+        "id": 196,
+        "type": "nested-query",
+        "name": "query_196",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.breakdowns(country).date_preset(last_14d).time_increment(1).action_attribution_windows(['1d_click','1d_view','7d_click','28d_click']).fields(account_id,account_name,campaign_id,campaign_name,spend,account_currency,impressions,clicks,conversion_values,conversions,action_values,actions)\n",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "campaigns"
+        }
+      },
+      {
         "id": 197,
         "type": "nested-query",
         "name": "query_197",
         "run-by-id": false,
         "query": {
           "fields": "insights. action_attribution_windows(7d_click).breakdowns(publisher_platform).date_preset(yesterday).time_increment(1){account_id,account_name,campaign_id,campaign_name,impressions,clicks,spend,reach}",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "campaigns"
+        }
+      },
+      {
+        "id": 198,
+        "type": "nested-query",
+        "name": "query_198",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.breakdowns(country).date_preset(last_14d).time_increment(1).action_attribution_windows(['1d_click','1d_view','7d_click','28d_click']).fields(account_id,account_name,campaign_id,campaign_name,spend,account_currency,impressions,clicks,conversion_values,conversions,action_values,actions)\n",
           "ids": "act_361744628296290",
           "limit": "25",
           "path": "campaigns"
@@ -2334,6 +2630,46 @@
           "ids": "act_361744628296290",
           "limit": "25",
           "path": "campaigns"
+        }
+      },
+      {
+        "id": 206,
+        "type": "nested-query",
+        "name": "query_206",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(yesterday).time_increment(1).filtering([{\"field\":\"publisher_platform\",\"operator\":\"IN\",\"value\":[\"instagram\"]}]){date_start,date_stop,account_id,campaign_id,impressions,reach,clicks,spend}",
+          "ids": "act_361744628296290",
+          "limit": "5000",
+          "path": "campaigns"
+        }
+      },
+      {
+        "id": 207,
+        "type": "nested-query",
+        "name": "query_207",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(this_year).time_increment(1).filtering([{field:\"ad.impressions\",operator:\"GREATER_THAN\",value:0}]){campaign_id,campaign_name,impressions,clicks,spend} ",
+          "ids": "act_361744628296290",
+          "limit": "25",
+          "path": "campaigns",
+          "since": "",
+          "until": ""
+        }
+      },
+      {
+        "id": 208,
+        "type": "nested-query",
+        "name": "query_208",
+        "run-by-id": false,
+        "query": {
+          "fields": "insights.date_preset(last_30d)\n        .time_increment(1)\n        .filtering([{\n          field: \"action_type\",\n          operator: \"IN\",\n          value: [\"offsite_conversion.fb_pixel_custom.Odesl\u00e1n\u00ed formul\u00e1\u0159e\"]\n        }]) {\n  campaign_id,\n  campaign_name,\n  conversions\n}",
+          "ids": "act_361744628296290",
+          "limit": "100",
+          "path": "campaigns",
+          "since": "5 days ago",
+          "until": "today"
         }
       },
       {
