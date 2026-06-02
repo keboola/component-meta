@@ -1,0 +1,17 @@
+ex_account_id,fb_graph_node,parent_id,device_platform,campaign_id,campaign_name,clicks,cpc,ctr,date_start,date_stop,frequency,impressions,reach,spend
+act_361744628296290,page_campaigns_insights,120245452617390604,desktop,120245452617390604,dis_mix_webinar_podcast_journey-to-ai-ready-finance-episode1_lead,0,,0,2026-06-01,2026-06-01,1,3,3,0.99
+act_361744628296290,page_campaigns_insights,120245452617390604,mobile_app,120245452617390604,dis_mix_webinar_podcast_journey-to-ai-ready-finance-episode1_lead,6,2.215,1.463415,2026-06-01,2026-06-01,1.138889,410,360,13.29
+act_361744628296290,page_campaigns_insights,120245452617390604,mobile_web,120245452617390604,dis_mix_webinar_podcast_journey-to-ai-ready-finance-episode1_lead,0,,0,2026-06-01,2026-06-01,1.333333,8,6,0.11
+act_361744628296290,page_campaigns_insights,120245091999540604,desktop,120245091999540604,dis_mix_lead_financial-intelligence_data-consolidation,0,,0,2026-06-01,2026-06-01,2.736842,416,152,1.36
+act_361744628296290,page_campaigns_insights,120245091999540604,mobile_app,120245091999540604,dis_mix_lead_financial-intelligence_data-consolidation,44,0.664318,0.676195,2026-06-01,2026-06-01,1.204108,6507,5404,29.23
+act_361744628296290,page_campaigns_insights,120245091999540604,mobile_web,120245091999540604,dis_mix_lead_financial-intelligence_data-consolidation,0,,0,2026-06-01,2026-06-01,1.05,21,20,0.04
+act_361744628296290,page_campaigns_insights,120244035146690604,desktop,120244035146690604,dis_mix_lead_financial-intelligence,0,,0,2026-06-01,2026-06-01,1.878049,154,82,0.44
+act_361744628296290,page_campaigns_insights,120244035146690604,mobile_app,120244035146690604,dis_mix_lead_financial-intelligence,36,0.7325,0.640797,2026-06-01,2026-06-01,1.142102,5618,4919,26.37
+act_361744628296290,page_campaigns_insights,120244035146690604,mobile_web,120244035146690604,dis_mix_lead_financial-intelligence,0,,0,2026-06-01,2026-06-01,1,2,2,0.01
+act_361744628296290,page_campaigns_insights,120243017763560604,desktop,120243017763560604,dis_mix_file_cfo-blind-spots_conv,1,0.94,4.166667,2026-06-01,2026-06-01,1,24,24,0.94
+act_361744628296290,page_campaigns_insights,120243017763560604,mobile_app,120243017763560604,dis_mix_file_cfo-blind-spots_conv,8,3.7525,0.571837,2026-06-01,2026-06-01,1.203959,1399,1162,30.02
+act_361744628296290,page_campaigns_insights,120243017763560604,mobile_web,120243017763560604,dis_mix_file_cfo-blind-spots_conv,0,,0,2026-06-01,2026-06-01,1.319149,62,47,0.65
+act_361744628296290,page_campaigns_insights,120240477971130604,desktop,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,0,,0,2026-06-01,2026-06-01,1.285714,144,112,2.69
+act_361744628296290,page_campaigns_insights,120240477971130604,mobile_app,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,26,3.720769,0.645482,2026-06-01,2026-06-01,1.202029,4028,3351,96.74
+act_361744628296290,page_campaigns_insights,120240477971130604,mobile_web,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,2,0.19,3.448276,2026-06-01,2026-06-01,1.074074,58,54,0.38
+act_361744628296290,page_campaigns_insights,120240477971130604,unknown,120240477971130604,dis_mix_file_the-cfo-intelligence-transformation-blueprint_conv,0,,0,2026-06-01,2026-06-01,1,1,1,0.13
