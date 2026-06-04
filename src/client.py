@@ -1,16 +1,29 @@
 import logging
 import re
+import time
 from collections.abc import Iterator
 from typing import Any
 
 from keboola.component.dao import OauthCredentials
 from keboola.component.exceptions import UserException
 from keboola.http_client import HttpClient
-from requests import HTTPError
+from requests import HTTPError, RequestException
+from requests.exceptions import RetryError
 
 from configuration import Account, QueryRow
 from output_parser import OutputParser
-from page_loader import PageLoader
+from page_loader import (
+    _FB_TRANSIENT_ERROR_BACKOFF_BASE,
+    _FB_TRANSIENT_ERROR_MAX_RETRIES,
+    AsyncInsightsJobTransientError,
+    PageLoader,
+)
+
+# Errors that mean "this one object failed transiently / at the API" — contain them
+# (skip the object, count it, warn at end of run) instead of killing the whole extraction.
+# UserException (user-actionable misconfig) and programming errors (KeyError, ...) are
+# intentionally NOT here, so they still propagate.
+_CONTAINED_OBJECT_ERRORS = (HTTPError, RetryError, RequestException, AsyncInsightsJobTransientError)
 
 
 class AccessTokenFilter(logging.Filter):
@@ -112,6 +125,9 @@ class FacebookClient:
         self.oauth = oauth
         self.api_version = api_version
         self.page_tokens = None  # Cache for page tokens
+        # Count of objects skipped due to contained API errors; surfaced as an
+        # end-of-run warning so partial output is not silently read as complete.
+        self.skipped_objects = 0
 
         if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
             logger.info("Direct insert token is used for authentication.")
@@ -207,6 +223,9 @@ class FacebookClient:
                         "output_parser": OutputParser(page_loader, page_id, row_config),
                         "fb_graph_node": self._get_fb_graph_node(is_page_token, row_config),
                         "access_token": token,
+                        # Needed to re-submit the report on a transient poll failure.
+                        "row_config": row_config,
+                        "start_params": self._with_token({}, token),
                     }
             except Exception as e:
                 logger.error(f"Failed to start async job for {page_id}: {e}")
@@ -214,19 +233,49 @@ class FacebookClient:
 
     def _poll_and_process_async_jobs(self, all_job_details: dict) -> Iterator[dict]:
         for report_id, details in all_job_details.items():
+            page_id = details["page_id"]
             try:
-                page_loader = details["page_loader"]
-                # Get the access token from the job details
-                access_token = details.get("access_token", self.oauth.data.get("access_token"))
-                page_data = page_loader.poll_async_job(report_id, access_token)
+                page_data = self._poll_async_with_resubmit(report_id, details)
                 if not page_data.get("data"):
                     continue
-                output_parser = details["output_parser"]
-                fb_graph_node = details["fb_graph_node"]
-                page_id = details["page_id"]
-                yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
-            except Exception as e:
-                logger.error(f"Failed to process async job result for report_id: {report_id}: {e}")
+                yield from details["output_parser"].iter_parsed_data(page_data, details["fb_graph_node"], page_id)
+            except _CONTAINED_OBJECT_ERRORS as e:
+                # Transient/API failure for this one report — contain it so the rest of the
+                # run completes; UserException and programming errors still propagate.
+                logger.error(
+                    f"Skipping async report {report_id} (object {page_id}) after errors: {type(e).__name__}: {e}"
+                )
+                self.skipped_objects += 1
+
+    def _poll_async_with_resubmit(self, report_id: str, details: dict) -> dict[str, Any]:
+        """Poll an async report, re-submitting it with exponential backoff on transient failures.
+
+        Facebook fails report jobs transiently under load ("Job Failed"/"Job Skipped"/timeout);
+        ``poll_async_job`` raises ``AsyncInsightsJobTransientError`` for these. We re-submit the
+        report and re-poll. Once the retry budget is exhausted the last error propagates and the
+        caller contains it (skip + count). This is the *production* retry path — the previous
+        loop in ``PageLoader._load_async_insights`` was never reached by a real job.
+        """
+        page_loader = details["page_loader"]
+        access_token = details.get("access_token", self.oauth.data.get("access_token"))
+        for attempt in range(_FB_TRANSIENT_ERROR_MAX_RETRIES + 1):
+            try:
+                return page_loader.poll_async_job(report_id, access_token)
+            except AsyncInsightsJobTransientError as e:
+                if attempt >= _FB_TRANSIENT_ERROR_MAX_RETRIES:
+                    raise
+                wait = _FB_TRANSIENT_ERROR_BACKOFF_BASE * (2**attempt)
+                logger.warning(
+                    f"Async report {report_id} transiently failed ({e}); resubmitting, "
+                    f"attempt {attempt + 2}/{_FB_TRANSIENT_ERROR_MAX_RETRIES + 1}, retrying in {wait}s"
+                )
+                time.sleep(wait)
+                report_id = page_loader.start_async_insights_job(
+                    details["row_config"].query, details["page_id"], params=details["start_params"]
+                )
+                if not report_id:
+                    return {"data": []}
+        return {"data": []}  # unreachable — loop always returns or raises
 
     def _handle_batch_request(self, account_ids: list[str], row_config) -> Iterator[dict]:
         """
@@ -363,11 +412,13 @@ class FacebookClient:
             query_name = getattr(row_config, "name", None) or getattr(getattr(row_config, "query", None), "path", "?")
             try:
                 yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
-            except Exception as e:
+            except _CONTAINED_OBJECT_ERRORS as e:
+                # Contain transient/API failures for this one object; UserException
+                # (user-actionable) and programming errors deliberately propagate.
                 logger.error(
-                    f"Failed while paginating/parsing query '{query_name}' for object {page_id}: "
-                    f"{type(e).__name__}: {e}"
+                    f"Skipping query '{query_name}' for object {page_id} after errors: {type(e).__name__}: {e}"
                 )
+                self.skipped_objects += 1
                 continue
 
     def get_accounts(self, url_path: str, fields: str | None) -> list[dict[str, Any]]:

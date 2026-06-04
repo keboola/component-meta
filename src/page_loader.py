@@ -301,37 +301,16 @@ class PageLoader:
         return None  # unreachable — loop always returns or raises
 
     def load_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
+        # Async-insights queries are NOT loaded here: FacebookClient runs them via
+        # start_async_insights_job + _poll_and_process_async_jobs (parallel start, then poll
+        # with re-submit/backoff). load_page is only ever called for sync queries, whose
+        # query_type is never "async-insights-query"; guard against future misrouting.
         if self.query_type == "async-insights-query":
-            return self._load_async_insights(query_config, page_id, params)
-        else:
-            return self._load_regular_page(query_config, page_id, params)
-
-    def _load_async_insights(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
-        # Facebook frequently fails async report jobs transiently under load ("Job Failed" /
-        # "Job Skipped" / poll timeout). Re-submit the report with exponential backoff before
-        # giving up — mirrors _get_with_transient_retry() for synchronous GETs.
-        last_error: AsyncInsightsJobTransientError | None = None
-        for attempt in range(_FB_TRANSIENT_ERROR_MAX_RETRIES + 1):
-            report_id = self.start_async_insights_job(query_config, page_id, params)
-            if not report_id:
-                return {"data": []}
-
-            logger.info(f"Started polling for insights job report: {report_id}")
-            try:
-                return self.poll_async_job(report_id)
-            except AsyncInsightsJobTransientError as e:
-                last_error = e
-                if attempt < _FB_TRANSIENT_ERROR_MAX_RETRIES:
-                    wait = _FB_TRANSIENT_ERROR_BACKOFF_BASE * (2**attempt)
-                    logger.warning(
-                        f"Async insights report transiently failed ({e}); resubmitting, "
-                        f"attempt {attempt + 2}/{_FB_TRANSIENT_ERROR_MAX_RETRIES + 1}, retrying in {wait}s"
-                    )
-                    time.sleep(wait)
-
-        raise UserException(
-            f"Async insights job failed after {_FB_TRANSIENT_ERROR_MAX_RETRIES + 1} attempts: {last_error}"
-        )
+            raise RuntimeError(
+                "async-insights-query must be processed via the async job path "
+                "(start_async_insights_job / poll_async_job), not load_page()"
+            )
+        return self._load_regular_page(query_config, page_id, params)
 
     def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> str | None:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
