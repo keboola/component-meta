@@ -189,6 +189,12 @@ class Component(ComponentBase):
                 self._write_rows(table_name, rows_list, primary_key, True)
                 logger.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
+        if self.client.skipped_objects:
+            logger.warning(
+                f"{self.client.skipped_objects} object(s) were skipped due to API errors; "
+                f"output may be incomplete for this run."
+            )
+
     def _finalize_tables(self) -> None:
         for cache_record in self._writer_cache.values():
             cache_record.writer.writeheader()
