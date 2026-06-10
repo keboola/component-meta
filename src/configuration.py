@@ -39,3 +39,6 @@ class Configuration(BaseModel):
     queries: list[QueryRow] = Field(default_factory=list)
     api_version: str = Field(alias="api-version", default="v23.0")
     bucket_id: str | None = Field(alias="bucket-id", default=None)
+    # When True, a Facebook authorization error (expired token or missing per-account
+    # permissions) raised during extraction fails the job instead of being skipped.
+    fail_on_missing_permissions: bool = Field(alias="fail-on-missing-permissions", default=False)

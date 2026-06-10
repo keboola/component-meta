@@ -10,7 +10,7 @@ from requests import HTTPError
 
 from configuration import Account, QueryRow
 from output_parser import OutputParser
-from page_loader import PageLoader
+from page_loader import FacebookErrorHandler, PageLoader
 
 
 class AccessTokenFilter(logging.Filter):
@@ -108,9 +108,10 @@ class PageTokenResolver:
 
 
 class FacebookClient:
-    def __init__(self, oauth: OauthCredentials, api_version: str):
+    def __init__(self, oauth: OauthCredentials, api_version: str, fail_on_missing_permissions: bool = False):
         self.oauth = oauth
         self.api_version = api_version
+        self.fail_on_missing_permissions = fail_on_missing_permissions
         self.page_tokens = None  # Cache for page tokens
 
         if self.oauth.data and self.oauth.data.get("token", None) and not self.oauth.data.get("access_token", None):
@@ -196,7 +197,12 @@ class FacebookClient:
             page_id = str(page_id)
             try:
                 # Use the shared client and pass token in params
-                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                page_loader = PageLoader(
+                    self.client,
+                    row_config.type,
+                    self.api_version,
+                    fail_on_missing_permissions=self.fail_on_missing_permissions,
+                )
                 report_id = page_loader.start_async_insights_job(
                     row_config.query, page_id, params=self._with_token({}, token)
                 )
@@ -208,6 +214,9 @@ class FacebookClient:
                         "fb_graph_node": self._get_fb_graph_node(is_page_token, row_config),
                         "access_token": token,
                     }
+            except UserException:
+                # Deliberate fail-fast (e.g. fail-on-missing-permissions) must propagate.
+                raise
             except Exception as e:
                 logger.error(f"Failed to start async job for {page_id}: {e}")
         return job_details
@@ -225,6 +234,9 @@ class FacebookClient:
                 fb_graph_node = details["fb_graph_node"]
                 page_id = details["page_id"]
                 yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
+            except UserException:
+                # Deliberate fail-fast (e.g. fail-on-missing-permissions) must propagate.
+                raise
             except Exception as e:
                 logger.error(f"Failed to process async job result for report_id: {report_id}: {e}")
 
@@ -296,6 +308,9 @@ class FacebookClient:
                         logger.info("Batch request requires page token, falling back to individual requests.")
                         # Let the code fall through to individual processing below.
                     else:
+                        # Fail the job on authorization errors when the option is enabled
+                        if self.fail_on_missing_permissions:
+                            FacebookErrorHandler.raise_if_authorization_error(e, context="batch fetch")
                         logger.error(f"Batch request failed with a non-token error: {error_text}")
                         return  # A definitive failure, stop processing.
 
@@ -326,7 +341,12 @@ class FacebookClient:
             try:
                 # Create new client with page token
                 # Use the shared client and pass token in params
-                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                page_loader = PageLoader(
+                    self.client,
+                    row_config.type,
+                    self.api_version,
+                    fail_on_missing_permissions=self.fail_on_missing_permissions,
+                )
                 output_parser = OutputParser(page_loader, page_id, row_config)
 
                 # Construct Facebook Graph node path
@@ -336,16 +356,26 @@ class FacebookClient:
                 page_data = page_loader.load_page(row_config.query, page_id, params={"access_token": token})
                 page_content = self._extract_page_content(row_config.query.path, page_data)
 
+            except UserException:
+                # Deliberate fail-fast (e.g. fail-on-missing-permissions) must propagate.
+                raise
             except Exception as e:
                 if is_page_token and str(e).startswith("400"):
                     logger.debug(f"Page token failed for {page_id}, trying user token")
                     try:
                         # Fallback to user token
-                        page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                        page_loader = PageLoader(
+                            self.client,
+                            row_config.type,
+                            self.api_version,
+                            fail_on_missing_permissions=self.fail_on_missing_permissions,
+                        )
                         output_parser = OutputParser(page_loader, page_id, row_config)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
                         page_content = self._extract_page_content(row_config.query.path, page_data)
+                    except UserException:
+                        raise
                     except Exception as user_token_error:
                         logger.debug(f"User token also failed for {page_id}: {str(user_token_error)}")
                         continue
