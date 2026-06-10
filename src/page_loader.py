@@ -76,6 +76,22 @@ INVALID_METRIC_ERROR = FacebookErrorCode(code=100, message_fragment="should be s
 # also a permission failure — it is matched separately below.
 _FB_AUTHORIZATION_ERROR_CODES = frozenset({10, 190, 200})
 
+
+class AuthorizationError(Exception):
+    """Internal signal for a Facebook authorization/permission error on one account.
+
+    Raised (instead of being swallowed) only when 'fail-on-missing-permissions' is enabled, and
+    collected by the client so the job can report every affected account at once and then fail.
+    Not a UserException on purpose — it must not abort the run on the first occurrence.
+    """
+
+    def __init__(self, account_id: str | None, code: int | None, message: str):
+        self.account_id = account_id
+        self.code = code
+        self.message = message
+        super().__init__(f"authorization error for account {account_id}: {message} (code {code})")
+
+
 # Facebook API error codes that are transient and safe to retry.
 # See https://developers.facebook.com/docs/graph-api/guides/error-handling/#errorcodes
 # Rate-limit codes (4, 17, 32, 341, 613) would ideally use X-Business-Use-Case-Usage /
@@ -191,34 +207,19 @@ class FacebookErrorHandler:
         return FacebookErrorHandler._matches_error(http_error, OBJECT_NOT_FOUND_ERROR)
 
     @staticmethod
-    def raise_if_authorization_error(http_error: HTTPError, context: str = "") -> None:
-        """Raise UserException for Facebook authorization errors.
-
-        Called only when the 'fail-on-missing-permissions' option is enabled, so that a token
-        missing permissions fails the job instead of silently producing an empty/partial result.
-        """
-        if not FacebookErrorHandler.is_authorization_error(http_error):
-            return
-
-        api_msg = ""
+    def authorization_error_details(http_error: HTTPError) -> tuple[int | None, str]:
+        """Return the (code, message) of a Facebook error response for reporting to the user."""
         code = None
+        message = ""
         response = getattr(http_error, "response", None)
         if response is not None:
             try:
                 err = response.json().get("error", {})
-                api_msg = (err.get("message") or "").strip()
                 code = err.get("code")
+                message = (err.get("message") or "").strip()
             except Exception:
                 pass
-
-        where = f" while {context}" if context else ""
-        detail = f"{api_msg} (code {code})" if api_msg else f"code {code}"
-        raise UserException(
-            f"Facebook authorization error{where}: {detail}. "
-            "The access token is missing required permissions — re-authorize the extractor or "
-            "grant the necessary access (e.g. ads_read / ads_management) on the affected account. "
-            "Disable 'Fail the job on authorization errors' to skip inaccessible accounts and continue."
-        ) from http_error
+        return code, message
 
     @staticmethod
     def is_transient_error(http_error: HTTPError) -> bool:
@@ -398,11 +399,10 @@ class PageLoader:
             return report_id
 
         except HTTPError as e:
-            # Fail the job on authorization errors when the option is enabled
-            if self.fail_on_missing_permissions:
-                FacebookErrorHandler.raise_if_authorization_error(
-                    e, context=f"starting async insights job for {page_id}"
-                )
+            # Surface authorization errors for collection when the option is enabled
+            if self.fail_on_missing_permissions and FacebookErrorHandler.is_authorization_error(e):
+                code, message = FacebookErrorHandler.authorization_error_details(e)
+                raise AuthorizationError(account_id=page_id, code=code, message=message) from e
             logger.error(f"Error starting async insights job: {e}")
             return None
         except Exception as e:
@@ -452,11 +452,10 @@ class PageLoader:
             final_response = self.client.get(endpoint_path=f"/{self.api_version}/{report_id}/insights", params=params)
             return final_response if final_response else {"data": []}
         except HTTPError as e:
-            # Fail the job on authorization errors when the option is enabled
-            if self.fail_on_missing_permissions:
-                FacebookErrorHandler.raise_if_authorization_error(
-                    e, context=f"fetching results for async job {report_id}"
-                )
+            # Surface authorization errors for collection when the option is enabled
+            if self.fail_on_missing_permissions and FacebookErrorHandler.is_authorization_error(e):
+                code, message = FacebookErrorHandler.authorization_error_details(e)
+                raise AuthorizationError(account_id=None, code=code, message=message) from e
             logger.error(f"Failed to get final results for job {report_id}: {str(e)}")
             return {"data": []}
         except Exception as e:
@@ -480,9 +479,10 @@ class PageLoader:
             # Raise UserException for misconfigured queries before checking recoverable errors
             FacebookErrorHandler.raise_if_user_actionable(e)
 
-            # Fail the job on authorization errors when the option is enabled
-            if self.fail_on_missing_permissions:
-                FacebookErrorHandler.raise_if_authorization_error(e, context=f"loading '{endpoint_path}'")
+            # Surface authorization errors for collection when the option is enabled
+            if self.fail_on_missing_permissions and FacebookErrorHandler.is_authorization_error(e):
+                code, message = FacebookErrorHandler.authorization_error_details(e)
+                raise AuthorizationError(account_id=page_id, code=code, message=message) from e
 
             # Check for recoverable errors
             is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)
@@ -622,9 +622,10 @@ class PageLoader:
             # Raise UserException for misconfigured queries before checking recoverable errors
             FacebookErrorHandler.raise_if_user_actionable(e)
 
-            # Fail the job on authorization errors when the option is enabled
-            if self.fail_on_missing_permissions:
-                FacebookErrorHandler.raise_if_authorization_error(e, context="loading paginated data")
+            # Surface authorization errors for collection when the option is enabled
+            if self.fail_on_missing_permissions and FacebookErrorHandler.is_authorization_error(e):
+                code, message = FacebookErrorHandler.authorization_error_details(e)
+                raise AuthorizationError(account_id=None, code=code, message=message) from e
 
             # Check for recoverable errors
             is_recoverable, error_desc = FacebookErrorHandler.is_recoverable_error(e)

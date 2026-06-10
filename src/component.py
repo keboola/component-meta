@@ -193,6 +193,10 @@ class Component(ComponentBase):
                 self._write_rows(table_name, rows_list, primary_key, True)
                 logger.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
+        # If the option is enabled, fail the job once with every account that lacked permissions.
+        # Raising here (exit 1) means the platform discards all output, so no partial data lands.
+        self.client.raise_for_permission_errors()
+
     def _finalize_tables(self) -> None:
         for cache_record in self._writer_cache.values():
             cache_record.writer.writeheader()

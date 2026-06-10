@@ -1,10 +1,14 @@
 """
 Unit tests for the 'fail-on-missing-permissions' option (CFTL-489 / SUPPORT-15700).
 
+Behavior: when enabled, per-account Facebook authorization errors are collected during
+extraction and the job fails once at the end (listing every affected account) instead of
+silently producing empty/partial output. Default off preserves current behavior.
+
 Covers:
-- FacebookErrorHandler authorization-error detection / escalation
-- PageLoader HTTP boundary: flag on -> UserException; flag off -> current behavior
-- FacebookClient per-account loop: a deliberate UserException propagates (not swallowed)
+- FacebookErrorHandler authorization-error detection + detail extraction
+- PageLoader HTTP boundary: flag on -> AuthorizationError; flag off -> current behavior
+- FacebookClient: collects AuthorizationError per account and raises one UserException at the end
 """
 
 import json
@@ -14,8 +18,12 @@ from unittest.mock import MagicMock, patch
 from keboola.component.exceptions import UserException
 from requests import HTTPError
 
-from src.client import FacebookClient
-from src.page_loader import FacebookErrorHandler, PageLoader
+# Import from the top-level module names that the production code uses internally
+# (component.py -> `from client import ...`, client.py -> `from page_loader import ...`).
+# This keeps the AuthorizationError class identity consistent with the isinstance() check in
+# client.py — importing it via `src.page_loader` would be a different module object.
+from client import FacebookClient
+from page_loader import AuthorizationError, FacebookErrorHandler, PageLoader
 
 
 def _make_http_error(code=None, subcode=None, message="", status_code=400):
@@ -71,18 +79,11 @@ class TestAuthorizationErrorDetection(unittest.TestCase):
         err.response = None
         self.assertFalse(FacebookErrorHandler.is_authorization_error(err))
 
-    def test_raise_if_authorization_error_raises_for_auth(self):
+    def test_authorization_error_details_extracts_code_and_message(self):
         err = _make_http_error(code=200, message=NO_GRANT_MSG)
-        with self.assertRaises(UserException) as ctx:
-            FacebookErrorHandler.raise_if_authorization_error(err, context="loading 'ads'")
-        # message should carry the FB detail and the remediation hint
-        self.assertIn("code 200", str(ctx.exception))
-        self.assertIn("loading 'ads'", str(ctx.exception))
-
-    def test_raise_if_authorization_error_noop_for_non_auth(self):
-        err = _make_http_error(code=4, message="rate limit")
-        # Should NOT raise
-        FacebookErrorHandler.raise_if_authorization_error(err, context="loading 'ads'")
+        code, message = FacebookErrorHandler.authorization_error_details(err)
+        self.assertEqual(code, 200)
+        self.assertEqual(message, NO_GRANT_MSG)
 
 
 class TestPageLoaderAuthorizationBoundary(unittest.TestCase):
@@ -104,29 +105,39 @@ class TestPageLoaderAuthorizationBoundary(unittest.TestCase):
             fail_on_missing_permissions=fail,
         )
 
-    def test_flag_on_code_200_raises_user_exception(self):
+    def test_flag_on_code_200_raises_authorization_error(self):
         self.client.get.side_effect = _make_http_error(code=200, message=NO_GRANT_MSG)
         loader = self._loader(fail=True)
-        with self.assertRaises(UserException):
+        with self.assertRaises(AuthorizationError) as ctx:
+            loader._load_regular_page(self.query_config, "123")
+        self.assertEqual(ctx.exception.account_id, "123")
+        self.assertEqual(ctx.exception.code, 200)
+        self.assertEqual(ctx.exception.message, NO_GRANT_MSG)
+
+    def test_flag_on_missing_permissions_raises_authorization_error(self):
+        # code 100 / subcode 33 is "recoverable" today; with the flag it is surfaced for collection
+        self.client.get.side_effect = _make_http_error(code=100, subcode=33, message=MISSING_PERMS_MSG)
+        loader = self._loader(fail=True)
+        with self.assertRaises(AuthorizationError):
             loader._load_regular_page(self.query_config, "123")
 
     def test_flag_off_missing_permissions_returns_empty(self):
-        # code 100 / subcode 33 is "recoverable" today -> empty data, job continues
+        # code 100 / subcode 33 stays recoverable -> empty data, job continues (current behavior)
         self.client.get.side_effect = _make_http_error(code=100, subcode=33, message=MISSING_PERMS_MSG)
         loader = self._loader(fail=False)
         result = loader._load_regular_page(self.query_config, "123")
         self.assertEqual(result, {"data": []})
 
-    def test_flag_on_missing_permissions_raises_user_exception(self):
-        # with the flag on, the same "recoverable" permission error fails the job
-        self.client.get.side_effect = _make_http_error(code=100, subcode=33, message=MISSING_PERMS_MSG)
-        loader = self._loader(fail=True)
-        with self.assertRaises(UserException):
+    def test_flag_off_code_200_does_not_raise_authorization_error(self):
+        # non-recoverable -> re-raises the HTTPError (client swallows it), never AuthorizationError
+        self.client.get.side_effect = _make_http_error(code=200, message=NO_GRANT_MSG)
+        loader = self._loader(fail=False)
+        with self.assertRaises(HTTPError):
             loader._load_regular_page(self.query_config, "123")
 
 
-class TestClientPropagation(unittest.TestCase):
-    def _make_client(self, fail):
+class TestClientCollectAndFail(unittest.TestCase):
+    def _make_client(self, fail=True):
         oauth = MagicMock()
         oauth.data = {"access_token": "tok"}
         return FacebookClient(oauth, "v23.0", fail_on_missing_permissions=fail)
@@ -140,24 +151,54 @@ class TestClientPropagation(unittest.TestCase):
         row.query.ids = ""
         return row
 
-    def _account(self):
+    def _account(self, account_id):
         account = MagicMock()
-        account.id = "123"
+        account.id = account_id
         return account
 
-    @patch("src.client.PageLoader")
-    def test_user_exception_propagates_when_flag_on(self, mock_page_loader):
-        mock_page_loader.return_value.load_page.side_effect = UserException("missing permissions")
-        client = self._make_client(fail=True)
-        with self.assertRaises(UserException):
-            list(client._process_single_sync_query([self._account()], self._make_row()))
+    @patch("client.PageLoader")
+    def test_collects_per_account_and_does_not_raise_mid_iteration(self, mock_page_loader):
+        def _raise_auth(query, page_id, **kwargs):
+            raise AuthorizationError(account_id=page_id, code=200, message=NO_GRANT_MSG)
 
-    @patch("src.client.PageLoader")
-    def test_generic_error_is_swallowed(self, mock_page_loader):
+        mock_page_loader.return_value.load_page.side_effect = _raise_auth
+        client = self._make_client(fail=True)
+
+        # iterating does not raise — errors are collected, not fatal on first hit
+        result = list(client._process_single_sync_query([self._account("123"), self._account("456")], self._make_row()))
+        self.assertEqual(result, [])
+        self.assertEqual(len(client.permission_errors), 2)
+        self.assertEqual({e["account_id"] for e in client.permission_errors}, {"123", "456"})
+
+        # raising at the end reports every affected account in one UserException
+        with self.assertRaises(UserException) as ctx:
+            client.raise_for_permission_errors()
+        msg = str(ctx.exception)
+        self.assertIn("2 account(s)", msg)
+        self.assertIn("123", msg)
+        self.assertIn("456", msg)
+
+    def test_raise_for_permission_errors_noop_when_empty(self):
+        client = self._make_client(fail=True)
+        # should not raise
+        client.raise_for_permission_errors()
+
+    def test_raise_for_permission_errors_dedupes_by_account(self):
+        client = self._make_client(fail=True)
+        # same account failing on multiple queries -> reported once
+        client._record_permission_error(AuthorizationError("123", 200, NO_GRANT_MSG), "Ads")
+        client._record_permission_error(AuthorizationError("123", 200, NO_GRANT_MSG), "Adsets")
+        with self.assertRaises(UserException) as ctx:
+            client.raise_for_permission_errors()
+        self.assertIn("1 account(s)", str(ctx.exception))
+
+    @patch("client.PageLoader")
+    def test_generic_error_is_swallowed_and_not_collected(self, mock_page_loader):
         mock_page_loader.return_value.load_page.side_effect = Exception("some non-auth failure")
         client = self._make_client(fail=False)
-        result = list(client._process_single_sync_query([self._account()], self._make_row()))
+        result = list(client._process_single_sync_query([self._account("123")], self._make_row()))
         self.assertEqual(result, [])
+        self.assertEqual(client.permission_errors, [])
 
 
 if __name__ == "__main__":
