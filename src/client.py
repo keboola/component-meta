@@ -280,8 +280,6 @@ class FacebookClient:
                         "row_config": row_config,
                         "start_params": self._with_token({}, token),
                     }
-            except UserException:
-                raise
             except AuthorizationError as e:
                 self._record_permission_error(e, row_config.name)
             except Exception as e:
@@ -461,8 +459,6 @@ class FacebookClient:
                 page_data = page_loader.load_page(row_config.query, page_id, params={"access_token": token})
                 page_content = self._extract_page_content(row_config.query.path, page_data)
 
-            except UserException:
-                raise
             except Exception as e:
                 is_auth_error = isinstance(e, AuthorizationError)
                 # For page-token queries, the page token itself may lack access — retry with the
@@ -481,8 +477,6 @@ class FacebookClient:
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
                         page_content = self._extract_page_content(row_config.query.path, page_data)
-                    except UserException:
-                        raise
                     except AuthorizationError as fallback_error:
                         self._record_permission_error(fallback_error, row_config.name)
                         continue
