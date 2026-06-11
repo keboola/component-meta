@@ -107,8 +107,15 @@ _FB_TRANSIENT_ERROR_CODES = frozenset(
         613,  # Rate limit exceeded
     }
 )
-_FB_TRANSIENT_ERROR_MAX_RETRIES = 3
-_FB_TRANSIENT_ERROR_BACKOFF_BASE = 5  # seconds; delays are 5s, 10s, 20s
+_FB_TRANSIENT_ERROR_MAX_RETRIES = 5
+_FB_TRANSIENT_ERROR_BACKOFF_BASE = 5  # seconds; delays are 5s, 10s, 20s, 40s, 80s
+
+
+class AsyncInsightsJobTransientError(Exception):
+    """Raised when a Facebook async insights report fails transiently (``Job Failed`` /
+    ``Job Skipped`` / poll timeout). These are recoverable by re-submitting the report —
+    Facebook returns them under load — so they must not surface as a hard ``UserException``.
+    """
 
 
 def resolve_query_window(query_config) -> tuple[str | None, str | None]:
@@ -360,20 +367,16 @@ class PageLoader:
         return None  # unreachable — loop always returns or raises
 
     def load_page(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
+        # Async-insights queries are NOT loaded here: FacebookClient runs them via
+        # start_async_insights_job + _poll_and_process_async_jobs (parallel start, then poll
+        # with re-submit/backoff). load_page is only ever called for sync queries, whose
+        # query_type is never "async-insights-query"; guard against future misrouting.
         if self.query_type == "async-insights-query":
-            return self._load_async_insights(query_config, page_id, params)
-        else:
-            return self._load_regular_page(query_config, page_id, params)
-
-    def _load_async_insights(self, query_config, page_id: str, params: dict[str, Any] = None) -> dict[str, Any]:
-        report_id = self.start_async_insights_job(query_config, page_id, params)
-        if not report_id:
-            return {"data": []}
-
-        logger.info(f"Started polling for insights job report: {report_id}")
-
-        # Poll for completion
-        return self.poll_async_job(report_id)
+            raise RuntimeError(
+                "async-insights-query must be processed via the async job path "
+                "(start_async_insights_job / poll_async_job), not load_page()"
+            )
+        return self._load_regular_page(query_config, page_id, params)
 
     def start_async_insights_job(self, query_config, page_id: str, params: dict = {}) -> str | None:
         page_id = page_id if page_id.startswith("act_") else f"act_{page_id}"
@@ -433,18 +436,22 @@ class PageLoader:
                 is_finished = async_percent == 100
 
                 if async_status in ["Job Failed", "Job Skipped"]:
-                    raise UserException(f"Async insights job failed: {async_status}")
+                    # Transient under load — caller re-submits the report.
+                    raise AsyncInsightsJobTransientError(f"async_status={async_status}")
 
                 if not is_finished or async_status != "Job Completed":
                     time.sleep(5)
                     attempt += 1
 
+            except AsyncInsightsJobTransientError:
+                raise
             except Exception as e:
                 logger.error(f"Error polling async job {report_id}: {str(e)}")
                 raise e
 
         if not is_finished or async_status != "Job Completed":
-            raise UserException(f"Async insights job {report_id} did not complete within timeout")
+            # Did not complete within the poll budget — also transient; let the caller re-submit.
+            raise AsyncInsightsJobTransientError(f"report {report_id} did not complete within timeout")
 
         # Get final results with access token
         try:

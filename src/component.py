@@ -193,6 +193,12 @@ class Component(ComponentBase):
                 self._write_rows(table_name, rows_list, primary_key, True)
                 logger.debug(f"Wrote batch of {len(rows_list)} rows to table {table_name}")
 
+        if self.client.skipped_objects:
+            logger.warning(
+                f"{self.client.skipped_objects} object(s) were skipped due to API errors; "
+                f"output may be incomplete for this run."
+            )
+
         # If the option is enabled, fail the job once with every account that lacked permissions.
         # Raising here (exit 1) means the platform discards all output, so no partial data lands.
         self.client.raise_for_permission_errors()
