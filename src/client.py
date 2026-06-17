@@ -16,6 +16,8 @@ from page_loader import (
     _FB_TRANSIENT_ERROR_BACKOFF_BASE,
     _FB_TRANSIENT_ERROR_MAX_RETRIES,
     AsyncInsightsJobTransientError,
+    AuthorizationError,
+    FacebookErrorHandler,
     PageLoader,
 )
 
@@ -121,9 +123,13 @@ class PageTokenResolver:
 
 
 class FacebookClient:
-    def __init__(self, oauth: OauthCredentials, api_version: str):
+    def __init__(self, oauth: OauthCredentials, api_version: str, fail_on_missing_permissions: bool = False):
         self.oauth = oauth
         self.api_version = api_version
+        self.fail_on_missing_permissions = fail_on_missing_permissions
+        # Authorization errors collected across all accounts/queries when the option is enabled.
+        # The run fails at the end (raise_for_permission_errors) so every affected account is reported.
+        self.permission_errors: list[dict[str, Any]] = []
         self.page_tokens = None  # Cache for page tokens
         # Count of objects skipped due to contained API errors; surfaced as an
         # end-of-run warning so partial output is not silently read as complete.
@@ -147,6 +153,48 @@ class FacebookClient:
         params = dict(params) if params else {}
         params["access_token"] = token or self.oauth.data.get("access_token")
         return params
+
+    def _record_permission_error(self, error: AuthorizationError, query_name: str | None = None) -> None:
+        """Collect a per-account authorization error to report (and fail) at the end of the run."""
+        self.permission_errors.append(
+            {
+                "account_id": error.account_id,
+                "query": query_name,
+                "code": error.code,
+                "message": error.message,
+            }
+        )
+
+    def raise_for_permission_errors(self) -> None:
+        """Raise a single UserException summarizing every account that hit an authorization error.
+
+        Called after all queries have been processed so the user sees the full list at once.
+        A non-zero exit means the platform discards all output, so no partial data is committed.
+        """
+        if not self.permission_errors:
+            return
+
+        # One line per affected account (dedupe by account id; fall back to message when unknown)
+        seen: dict[Any, dict[str, Any]] = {}
+        for err in self.permission_errors:
+            key = err.get("account_id") or err.get("message")
+            seen.setdefault(key, err)
+
+        lines = []
+        for err in seen.values():
+            account = err.get("account_id") or "unknown account"
+            message = err.get("message") or ""
+            code = err.get("code")
+            detail = f"{message} (code {code})" if message else f"code {code}"
+            lines.append(f"  - account {account}: {detail}")
+
+        raise UserException(
+            f"Facebook authorization errors prevented data extraction for {len(seen)} account(s). "
+            "The access token is missing required permissions — re-authorize the extractor or grant "
+            "the necessary access (e.g. ads_read / ads_management) on the affected accounts:\n"
+            + "\n".join(lines)
+            + "\nDisable 'Fail the job on authorization errors' to skip inaccessible accounts and continue."
+        )
 
     def _extract_page_content(self, query_path: str | None, page_data: dict[str, Any]) -> list[dict[str, Any]]:
         """
@@ -212,7 +260,12 @@ class FacebookClient:
             page_id = str(page_id)
             try:
                 # Use the shared client and pass token in params
-                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                page_loader = PageLoader(
+                    self.client,
+                    row_config.type,
+                    self.api_version,
+                    fail_on_missing_permissions=self.fail_on_missing_permissions,
+                )
                 report_id = page_loader.start_async_insights_job(
                     row_config.query, page_id, params=self._with_token({}, token)
                 )
@@ -227,6 +280,8 @@ class FacebookClient:
                         "row_config": row_config,
                         "start_params": self._with_token({}, token),
                     }
+            except AuthorizationError as e:
+                self._record_permission_error(e, row_config.name)
             except Exception as e:
                 logger.error(f"Failed to start async job for {page_id}: {e}")
         return job_details
@@ -239,6 +294,12 @@ class FacebookClient:
                 if not page_data.get("data"):
                     continue
                 yield from details["output_parser"].iter_parsed_data(page_data, details["fb_graph_node"], page_id)
+            except UserException:
+                raise
+            except AuthorizationError as e:
+                if e.account_id is None:
+                    e.account_id = page_id
+                self._record_permission_error(e, details["row_config"].name)
             except _CONTAINED_OBJECT_ERRORS as e:
                 # Transient/API failure for this one report — contain it so the rest of the
                 # run completes; UserException and programming errors still propagate.
@@ -345,6 +406,14 @@ class FacebookClient:
                         logger.info("Batch request requires page token, falling back to individual requests.")
                         # Let the code fall through to individual processing below.
                     else:
+                        # Collect authorization errors (batch covers all accounts at once)
+                        if self.fail_on_missing_permissions and FacebookErrorHandler.is_authorization_error(e):
+                            code, message = FacebookErrorHandler.authorization_error_details(e)
+                            self._record_permission_error(
+                                AuthorizationError(account_id=None, code=code, message=message),
+                                row_config.name,
+                            )
+                            return
                         logger.error(f"Batch request failed with a non-token error: {error_text}")
                         return  # A definitive failure, stop processing.
 
@@ -375,7 +444,12 @@ class FacebookClient:
             try:
                 # Create new client with page token
                 # Use the shared client and pass token in params
-                page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                page_loader = PageLoader(
+                    self.client,
+                    row_config.type,
+                    self.api_version,
+                    fail_on_missing_permissions=self.fail_on_missing_permissions,
+                )
                 output_parser = OutputParser(page_loader, page_id, row_config)
 
                 # Construct Facebook Graph node path
@@ -386,18 +460,32 @@ class FacebookClient:
                 page_content = self._extract_page_content(row_config.query.path, page_data)
 
             except Exception as e:
-                if is_page_token and str(e).startswith("400"):
-                    logger.debug(f"Page token failed for {page_id}, trying user token")
+                is_auth_error = isinstance(e, AuthorizationError)
+                # For page-token queries, the page token itself may lack access — retry with the
+                # user token (also the original recovery for "400 Page Access Token" errors).
+                if is_page_token and (is_auth_error or str(e).startswith("400")):
+                    logger.debug(f"Primary token failed for {page_id}, trying user token")
                     try:
                         # Fallback to user token
-                        page_loader = PageLoader(self.client, row_config.type, self.api_version)
+                        page_loader = PageLoader(
+                            self.client,
+                            row_config.type,
+                            self.api_version,
+                            fail_on_missing_permissions=self.fail_on_missing_permissions,
+                        )
                         output_parser = OutputParser(page_loader, page_id, row_config)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
                         page_content = self._extract_page_content(row_config.query.path, page_data)
+                    except AuthorizationError as fallback_error:
+                        self._record_permission_error(fallback_error, row_config.name)
+                        continue
                     except Exception as user_token_error:
                         logger.debug(f"User token also failed for {page_id}: {str(user_token_error)}")
                         continue
+                elif is_auth_error:
+                    self._record_permission_error(e, row_config.name)
+                    continue
                 else:
                     logger.error(f"Failed to load data for {page_id}: {str(e)}")
                     continue
@@ -412,6 +500,12 @@ class FacebookClient:
             query_name = getattr(row_config, "name", None) or getattr(getattr(row_config, "query", None), "path", "?")
             try:
                 yield from output_parser.iter_parsed_data(page_data, fb_graph_node, page_id)
+            except AuthorizationError as e:
+                # A permission error during lazy pagination is collected like any other.
+                if e.account_id is None:
+                    e.account_id = page_id
+                self._record_permission_error(e, row_config.name)
+                continue
             except _CONTAINED_OBJECT_ERRORS as e:
                 # Contain transient/API failures for this one object; UserException
                 # (user-actionable) and programming errors deliberately propagate.

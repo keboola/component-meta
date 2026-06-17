@@ -144,7 +144,11 @@ class Component(ComponentBase):
         params = self.configuration.parameters
         params["accounts"] = params.get("accounts") or {}
         self.config = Configuration(**params)
-        self.client: FacebookClient = FacebookClient(self.configuration.oauth_credentials, self.config.api_version)
+        self.client: FacebookClient = FacebookClient(
+            self.configuration.oauth_credentials,
+            self.config.api_version,
+            fail_on_missing_permissions=self.config.fail_on_missing_permissions,
+        )
         self.bucket_id = self._retrieve_bucket_id()
 
     def run(self) -> None:
@@ -194,6 +198,10 @@ class Component(ComponentBase):
                 f"{self.client.skipped_objects} object(s) were skipped due to API errors; "
                 f"output may be incomplete for this run."
             )
+
+        # If the option is enabled, fail the job once with every account that lacked permissions.
+        # Raising here (exit 1) means the platform discards all output, so no partial data lands.
+        self.client.raise_for_permission_errors()
 
     def _finalize_tables(self) -> None:
         for cache_record in self._writer_cache.values():
