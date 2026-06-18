@@ -139,6 +139,55 @@ def test_off_path_does_not_backfill_end_to_end():
     assert on_rows[0]["spend"] == "5.00"
 
 
+# --- bare insights DSL in parameters (CFTL-630 regression) ---------------
+
+
+_BARE_DSL = (
+    "insights.level(campaign).action_attribution_windows(1d_click)"
+    ".action_breakdowns(action_type).date_preset(last_7d).time_increment(1)"
+    "{campaign_name,campaign_id,actions,action_values}"
+)
+
+
+def test_parse_declared_fields_bare_dsl_in_parameters():
+    """Bare DSL string in parameters (no fields= prefix) must yield the brace contents."""
+    parser = _parser(v1_compatibility=True, fields="", parameters=_BARE_DSL)
+    assert parser._declared_fields == ["campaign_name", "campaign_id", "actions", "action_values"]
+
+
+def test_parse_declared_fields_bare_dsl_with_none_fields():
+    """Same as above but with fields=None (async-insights-query shape)."""
+    parser = _parser(v1_compatibility=True, fields=None, parameters=_BARE_DSL)
+    assert parser._declared_fields == ["campaign_name", "campaign_id", "actions", "action_values"]
+
+
+def test_parse_declared_fields_ampersand_fields_still_works():
+    """Regression: level=campaign&fields=... shape must still parse correctly."""
+    parser = _parser(v1_compatibility=True, fields="", parameters="level=campaign&fields=campaign_id,impressions")
+    assert parser._declared_fields == ["campaign_id", "impressions"]
+
+
+def test_backfill_bare_dsl_end_to_end():
+    """End-to-end: v1_compatibility=True + bare DSL, FB omits a declared field → backfilled."""
+    parser = _parser(v1_compatibility=True, fields=None, parameters=_BARE_DSL, name="camp")
+    # response omits action_values
+    response = {
+        "data": [
+            {
+                "campaign_name": "Summer",
+                "campaign_id": "123",
+                "spend": "5.00",
+                "actions": [{"action_type": "link_click", "value": "10"}],
+            }
+        ]
+    }
+    rows = parser.parse_data(response, fb_node="campaign", parent_id="act_1")
+    all_rows = [r for rows_list in rows.values() for r in rows_list]
+    assert any("action_values" in r and r["action_values"] == "" for r in all_rows), (
+        "action_values should be backfilled to '' when omitted by FB"
+    )
+
+
 # --- FacebookClient propagation ------------------------------------------
 
 

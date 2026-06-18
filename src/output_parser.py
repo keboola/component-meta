@@ -249,6 +249,10 @@ class OutputParser:
 
         parameters = getattr(query, "parameters", None)
         if isinstance(parameters, str):
+            stripped = parameters.strip()
+            if stripped.startswith("insights") and "{" in stripped and "}" in stripped:
+                inner = stripped.split("{", 1)[1].rsplit("}", 1)[0]
+                return cls._split_field_dsl(inner)
             for pair in parameters.split("&"):
                 if pair.startswith("fields="):
                     return cls._split_field_dsl(pair[len("fields=") :])
