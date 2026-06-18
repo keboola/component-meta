@@ -137,3 +137,18 @@ def test_off_path_does_not_backfill_end_to_end():
     assert off_rows[0]["spend"] == "5.00"
     assert on_rows[0]["impressions"] == ""
     assert on_rows[0]["spend"] == "5.00"
+
+
+# --- FacebookClient propagation ------------------------------------------
+
+
+def test_facebook_client_stores_v1_compatibility():
+    from client import FacebookClient
+
+    oauth = MagicMock()
+    oauth.data = {"access_token": "tok"}
+    client = FacebookClient(oauth, "v23.0", True)
+    assert client.v1_compatibility is True
+
+    default_client = FacebookClient(oauth, "v23.0")
+    assert default_client.v1_compatibility is False

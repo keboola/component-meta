@@ -121,9 +121,11 @@ class PageTokenResolver:
 
 
 class FacebookClient:
-    def __init__(self, oauth: OauthCredentials, api_version: str):
+    def __init__(self, oauth: OauthCredentials, api_version: str, v1_compatibility: bool = False):
         self.oauth = oauth
         self.api_version = api_version
+        # CFTL-630: forwarded to every OutputParser this client builds.
+        self.v1_compatibility = v1_compatibility
         self.page_tokens = None  # Cache for page tokens
         # Count of objects skipped due to contained API errors; surfaced as an
         # end-of-run warning so partial output is not silently read as complete.
@@ -220,7 +222,7 @@ class FacebookClient:
                     job_details[report_id] = {
                         "page_id": page_id,
                         "page_loader": page_loader,
-                        "output_parser": OutputParser(page_loader, page_id, row_config),
+                        "output_parser": OutputParser(page_loader, page_id, row_config, self.v1_compatibility),
                         "fb_graph_node": self._get_fb_graph_node(is_page_token, row_config),
                         "access_token": token,
                         # Needed to re-submit the report on a transient poll failure.
@@ -299,7 +301,9 @@ class FacebookClient:
                 logger.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
                 continue
 
-            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+            output_parser = OutputParser(
+                page_loader=None, page_id=item_id, row_config=row_config, v1_compatibility=self.v1_compatibility
+            )
             yield from output_parser.iter_parsed_data(response=item_data, fb_node=fb_graph_node, parent_id=item_id)
 
     def _process_single_sync_query(self, accounts: list[Account], row_config: QueryRow) -> Iterator[dict[str, Any]]:
@@ -331,7 +335,12 @@ class FacebookClient:
                             if isinstance(item_data, dict) and "error" in item_data:
                                 logger.warning(f"Error fetching data for ID {item_id}: {item_data['error']}")
                                 continue
-                            output_parser = OutputParser(page_loader=None, page_id=item_id, row_config=row_config)
+                            output_parser = OutputParser(
+                                page_loader=None,
+                                page_id=item_id,
+                                row_config=row_config,
+                                v1_compatibility=self.v1_compatibility,
+                            )
                             yield from output_parser.iter_parsed_data(
                                 response=item_data,
                                 fb_node=fb_graph_node,
@@ -376,7 +385,7 @@ class FacebookClient:
                 # Create new client with page token
                 # Use the shared client and pass token in params
                 page_loader = PageLoader(self.client, row_config.type, self.api_version)
-                output_parser = OutputParser(page_loader, page_id, row_config)
+                output_parser = OutputParser(page_loader, page_id, row_config, self.v1_compatibility)
 
                 # Construct Facebook Graph node path
                 fb_graph_node = self._get_fb_graph_node(is_page_token, row_config)
@@ -391,7 +400,7 @@ class FacebookClient:
                     try:
                         # Fallback to user token
                         page_loader = PageLoader(self.client, row_config.type, self.api_version)
-                        output_parser = OutputParser(page_loader, page_id, row_config)
+                        output_parser = OutputParser(page_loader, page_id, row_config, self.v1_compatibility)
                         fb_graph_node = self._get_fb_graph_node(False, row_config)
                         page_data = page_loader.load_page(row_config.query, page_id, params=self._with_token({}))
                         page_content = self._extract_page_content(row_config.query.path, page_data)
