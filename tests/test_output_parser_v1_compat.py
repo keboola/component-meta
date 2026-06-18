@@ -52,6 +52,10 @@ def test_copy_common_fields_on_copies_all_scalar_fields():
     parser = _parser(v1_compatibility=True)
     base: dict = {}
     parser._copy_common_fields(base, ORIGINAL_ROW, extended=True)
+    # narrow-list fields are still present
+    assert base["account_id"] == "act_1"
+    assert base["ad_id"] == "ad_9"
+    # extra scalar fields flow through
     assert base["ad_name"] == "Spring Sale"
     assert base["impressions"] == "1234"
     assert base["clicks"] == "56"
@@ -59,3 +63,14 @@ def test_copy_common_fields_on_copies_all_scalar_fields():
     assert base["reach"] == "1000"
     # nested action-stat arrays are never copied as a scalar column
     assert "actions" not in base
+
+
+def test_copy_common_fields_off_extended_false_omits_extended_only_fields():
+    parser = _parser(v1_compatibility=False)
+    base: dict = {}
+    parser._copy_common_fields(base, ORIGINAL_ROW, extended=False)
+    assert base["account_id"] == "act_1"
+    assert base["ad_id"] == "ad_9"
+    # account_name / campaign_name are only appended when extended=True
+    assert "account_name" not in base
+    assert "campaign_name" not in base
