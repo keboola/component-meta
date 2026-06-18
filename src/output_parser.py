@@ -8,39 +8,41 @@ from page_loader import resolve_query_window
 
 class OutputParser:
     # Facebook Ads action stats fields that need special handling
-    ADS_ACTION_STATS_ROW = [
-        "actions",
-        "properties",
-        "conversion_values",
-        "action_values",
-        "canvas_component_avg_pct_view",
-        "cost_per_10_sec_video_view",
-        "cost_per_action_type",
-        "cost_per_unique_action_type",
-        "unique_actions",
-        "video_10_sec_watched_actions",
-        "video_15_sec_watched_actions",
-        "video_30_sec_watched_actions",
-        "video_avg_pct_watched_actions",
-        "video_avg_percent_watched_actions",
-        "video_avg_sec_watched_actions",
-        "video_avg_time_watched_actions",
-        "video_complete_watched_actions",
-        "video_p100_watched_actions",
-        "video_p25_watched_actions",
-        "video_p50_watched_actions",
-        "video_p75_watched_actions",
-        "cost_per_conversion",
-        "cost_per_outbound_click",
-        "video_p95_watched_actions",
-        "website_ctr",
-        "website_purchase_roas",
-        "purchase_roas",
-        "outbound_clicks",
-        "conversions",
-        "video_play_actions",
-        "video_thruplay_watched_actions",
-    ]
+    ADS_ACTION_STATS_ROW = frozenset(
+        [
+            "actions",
+            "properties",
+            "conversion_values",
+            "action_values",
+            "canvas_component_avg_pct_view",
+            "cost_per_10_sec_video_view",
+            "cost_per_action_type",
+            "cost_per_unique_action_type",
+            "unique_actions",
+            "video_10_sec_watched_actions",
+            "video_15_sec_watched_actions",
+            "video_30_sec_watched_actions",
+            "video_avg_pct_watched_actions",
+            "video_avg_percent_watched_actions",
+            "video_avg_sec_watched_actions",
+            "video_avg_time_watched_actions",
+            "video_complete_watched_actions",
+            "video_p100_watched_actions",
+            "video_p25_watched_actions",
+            "video_p50_watched_actions",
+            "video_p75_watched_actions",
+            "cost_per_conversion",
+            "cost_per_outbound_click",
+            "video_p95_watched_actions",
+            "website_ctr",
+            "website_purchase_roas",
+            "purchase_roas",
+            "outbound_clicks",
+            "conversions",
+            "video_play_actions",
+            "video_thruplay_watched_actions",
+        ]
+    )
 
     # Fields that should be JSON encoded instead of flattened
     SERIALIZED_LISTS_TYPES = [
@@ -227,8 +229,8 @@ class OutputParser:
             filled[field] = ""
         return filled
 
-    @staticmethod
-    def _parse_declared_fields(query) -> list[str]:
+    @classmethod
+    def _parse_declared_fields(cls, query) -> list[str]:
         """Return the explicit field list the user declared in the query config.
 
         Recognises the DSL ``insights...{a,b,c}`` form, a plain CSV ``fields = "a,b,c"``,
@@ -241,26 +243,26 @@ class OutputParser:
         if fields_attr.startswith("insights"):
             if "{" in fields_attr and "}" in fields_attr:
                 inner = fields_attr.split("{", 1)[1].rsplit("}", 1)[0]
-                return OutputParser._split_field_dsl(inner)
+                return cls._split_field_dsl(inner)
         elif fields_attr:
-            return OutputParser._split_field_dsl(fields_attr)
+            return cls._split_field_dsl(fields_attr)
 
         parameters = getattr(query, "parameters", None)
         if isinstance(parameters, str):
             for pair in parameters.split("&"):
                 if pair.startswith("fields="):
-                    return OutputParser._split_field_dsl(pair[len("fields=") :])
+                    return cls._split_field_dsl(pair[len("fields=") :])
         elif isinstance(parameters, dict):
             fields_val = parameters.get("fields")
             if isinstance(fields_val, str):
-                return OutputParser._split_field_dsl(fields_val)
+                return cls._split_field_dsl(fields_val)
             if isinstance(fields_val, list):
-                return [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
+                return [cls._base_field_name(str(f)) for f in fields_val if str(f).strip()]
 
         return []
 
-    @staticmethod
-    def _split_field_dsl(fields_str: str) -> list[str]:
+    @classmethod
+    def _split_field_dsl(cls, fields_str: str) -> list[str]:
         """Split a FB Graph field DSL list into base field names.
 
         Splits on commas at depth 0 of both ``{}`` and ``()`` so field expansion
@@ -291,7 +293,7 @@ class OutputParser:
                 current.append(ch)
         if current:
             tokens.append("".join(current))
-        return [name for name in (OutputParser._base_field_name(t) for t in tokens) if name]
+        return [name for name in (cls._base_field_name(t) for t in tokens) if name]
 
     @staticmethod
     def _base_field_name(field_dsl: str) -> str:
