@@ -48,10 +48,12 @@ class OutputParser:
         "frequency_control_specs",
     ]
 
-    def __init__(self, page_loader, page_id: str, row_config):
+    def __init__(self, page_loader, page_id: str, row_config, v1_compatibility: bool = False):
         self.page_loader = page_loader
         self.page_id = page_id
         self.row_config = row_config
+        # CFTL-630: opt-in V1-parity output. Default False = identical to 0.0.17.
+        self.v1_compatibility = v1_compatibility
 
     # Minimum rows buffered before yielding a streaming batch (CFTL-473).
     # Page-sized yields made test suites ~6x slower because every batch pays
@@ -429,6 +431,22 @@ class OutputParser:
                 self._add_row(result, table_name, action_row)
 
     def _copy_common_fields(self, base_row: dict, original_row: dict, extended: bool) -> None:
+        """Copy fields from the originating insights row onto a per-action row.
+
+        With ``v1_compatibility`` on, action-breakdown rows (``extended=True``) receive
+        every scalar field from the originating row — true V1 parity, so metric columns
+        the user requested (``ad_name``, ``impressions``, ``clicks``, ``spend``,
+        ``reach``, …) flow through instead of being silently dropped (CFTL-630). Nested
+        action-stat arrays/dicts are skipped — they are unpacked by ``_populate_action_row``.
+        Off (default) keeps the narrow 0.0.17 list so existing output is unchanged.
+        """
+        if extended and self.v1_compatibility:
+            for key, value in original_row.items():
+                if key in self.ADS_ACTION_STATS_ROW or isinstance(value, dict | list):
+                    continue
+                base_row[key] = value
+            return
+
         fields = [
             "account_id",
             "ad_id",
