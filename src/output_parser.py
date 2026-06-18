@@ -54,6 +54,8 @@ class OutputParser:
         self.row_config = row_config
         # CFTL-630: opt-in V1-parity output. Default False = identical to 0.0.17.
         self.v1_compatibility = v1_compatibility
+        # Parsed once; only consulted by _backfill_declared_fields when the flag is on.
+        self._declared_fields = self._parse_declared_fields(getattr(row_config, "query", None))
 
     # Minimum rows buffered before yielding a streaming batch (CFTL-473).
     # Page-sized yields made test suites ~6x slower because every batch pays
@@ -164,6 +166,11 @@ class OutputParser:
         """Process a single row from the API response."""
         table_name = self._get_table_name(table_name or getattr(self.row_config.query, "path", ""))
 
+        # CFTL-630: backfill fields the user requested but FB omitted for this period,
+        # so Storage loads don't fail with "Missing columns: ...". Opt-in only.
+        if self.v1_compatibility:
+            row = self._backfill_declared_fields(row)
+
         # Create base row with metadata
         base_row = self._create_base_row(fb_graph_node, parent_id)
 
@@ -201,6 +208,97 @@ class OutputParser:
 
         # Process nested tables recursively — resolved synchronously into the current batch.
         self._process_nested_data(processed_data["nested_tables"], row, fb_graph_node, result)
+
+    def _backfill_declared_fields(self, row: dict[str, Any]) -> dict[str, Any]:
+        """Return a row containing every field the user declared in the query.
+
+        Facebook omits a field entirely (not null) when there is no data for it in the
+        queried period. Downstream Storage loads then fail with ``Missing columns: ...``
+        because the destination table already has the column from a prior run. Filling
+        absent declared fields with ``""`` keeps the output CSV schema stable (CFTL-630).
+        """
+        if not self._declared_fields:
+            return row
+        missing = [field for field in self._declared_fields if field not in row]
+        if not missing:
+            return row
+        filled = dict(row)
+        for field in missing:
+            filled[field] = ""
+        return filled
+
+    @staticmethod
+    def _parse_declared_fields(query) -> list[str]:
+        """Return the explicit field list the user declared in the query config.
+
+        Recognises the DSL ``insights...{a,b,c}`` form, a plain CSV ``fields = "a,b,c"``,
+        and a ``fields=...`` entry inside ``parameters`` (string or dict).
+        """
+        if query is None:
+            return []
+
+        fields_attr = str(getattr(query, "fields", "") or "")
+        if fields_attr.startswith("insights"):
+            if "{" in fields_attr and "}" in fields_attr:
+                inner = fields_attr.split("{", 1)[1].rsplit("}", 1)[0]
+                return OutputParser._split_field_dsl(inner)
+        elif fields_attr:
+            return OutputParser._split_field_dsl(fields_attr)
+
+        parameters = getattr(query, "parameters", None)
+        if isinstance(parameters, str):
+            for pair in parameters.split("&"):
+                if pair.startswith("fields="):
+                    return OutputParser._split_field_dsl(pair[len("fields=") :])
+        elif isinstance(parameters, dict):
+            fields_val = parameters.get("fields")
+            if isinstance(fields_val, str):
+                return OutputParser._split_field_dsl(fields_val)
+            if isinstance(fields_val, list):
+                return [OutputParser._base_field_name(str(f)) for f in fields_val if str(f).strip()]
+
+        return []
+
+    @staticmethod
+    def _split_field_dsl(fields_str: str) -> list[str]:
+        """Split a FB Graph field DSL list into base field names.
+
+        Splits on commas at depth 0 of both ``{}`` and ``()`` so field expansion
+        (``comments{message,from{name}}``) and modifier calls
+        (``comments.limit(0).summary(true)``) don't split on their inner commas.
+        """
+        tokens: list[str] = []
+        depth_brace = 0
+        depth_paren = 0
+        current: list[str] = []
+        for ch in fields_str:
+            if ch == "{":
+                depth_brace += 1
+                current.append(ch)
+            elif ch == "}":
+                depth_brace -= 1
+                current.append(ch)
+            elif ch == "(":
+                depth_paren += 1
+                current.append(ch)
+            elif ch == ")":
+                depth_paren -= 1
+                current.append(ch)
+            elif ch == "," and depth_brace == 0 and depth_paren == 0:
+                tokens.append("".join(current))
+                current = []
+            else:
+                current.append(ch)
+        if current:
+            tokens.append("".join(current))
+        return [name for name in (OutputParser._base_field_name(t) for t in tokens) if name]
+
+    @staticmethod
+    def _base_field_name(field_dsl: str) -> str:
+        """Strip ``{...}`` expansion and ``.modifier(args)`` suffix from a DSL token."""
+        token = field_dsl.replace("\n", "").strip()
+        cuts = [i for i in (token.find(c) for c in "{.(") if i >= 0]
+        return token[: min(cuts)].strip() if cuts else token
 
     def _create_base_row(self, fb_graph_node: str, parent_id: str) -> dict[str, Any]:
         """Create base row with standard metadata."""

@@ -74,3 +74,66 @@ def test_copy_common_fields_off_extended_false_omits_extended_only_fields():
     # account_name / campaign_name are only appended when extended=True
     assert "account_name" not in base
     assert "campaign_name" not in base
+
+
+# --- declared-field parsing ---------------------------------------------
+
+
+def test_parse_declared_fields_from_dsl():
+    parser = _parser(v1_compatibility=True, fields="insights.date_preset(last_30d){impressions,ad_name,actions}")
+    assert parser._declared_fields == ["impressions", "ad_name", "actions"]
+
+
+def test_parse_declared_fields_strips_expansion_and_modifiers():
+    parser = _parser(
+        v1_compatibility=True,
+        fields="insights{impressions,comments{message,from{name}},comments.limit(0).summary(true)}",
+    )
+    assert parser._declared_fields == ["impressions", "comments", "comments"]
+
+
+def test_parse_declared_fields_from_plain_csv():
+    parser = _parser(v1_compatibility=True, fields="id,name,impressions")
+    assert parser._declared_fields == ["id", "name", "impressions"]
+
+
+def test_parse_declared_fields_from_parameters_string():
+    parser = _parser(v1_compatibility=True, fields="", parameters="level=ad&fields=impressions,ad_name")
+    assert parser._declared_fields == ["impressions", "ad_name"]
+
+
+def test_parse_declared_fields_from_parameters_dict():
+    parser = _parser(v1_compatibility=True, fields="", parameters={"fields": "impressions,spend"})
+    assert parser._declared_fields == ["impressions", "spend"]
+
+
+# --- _backfill_declared_fields ------------------------------------------
+
+
+def test_backfill_fills_missing_declared_field_with_empty_string():
+    parser = _parser(v1_compatibility=True, fields="id,impressions,spend")
+    filled = parser._backfill_declared_fields({"id": "1", "spend": "5.00"})
+    assert filled["impressions"] == ""
+    assert filled["spend"] == "5.00"  # present values are never overwritten
+
+
+def test_backfill_noop_when_nothing_missing():
+    parser = _parser(v1_compatibility=True, fields="id,impressions")
+    row = {"id": "1", "impressions": "10"}
+    assert parser._backfill_declared_fields(row) == row
+
+
+def test_off_path_does_not_backfill_end_to_end():
+    """With the flag off, an omitted declared field must NOT appear in output."""
+    off = _parser(v1_compatibility=False, fields="id,spend,impressions", name="q")
+    on = _parser(v1_compatibility=True, fields="id,spend,impressions", name="q")
+    # spend is a meaningful (non-identifier) field so the row is emitted; impressions
+    # is declared but omitted by FB. _has_meaningful_data drops rows that carry only
+    # basic identifiers (id/parent_id/ex_account_id/fb_graph_node), so spend is required.
+    response = {"data": [{"id": "1", "spend": "5.00"}]}
+    off_rows = off.parse_data(response, fb_node="page", parent_id="act_1")["q"]
+    on_rows = on.parse_data(response, fb_node="page", parent_id="act_1")["q"]
+    assert "impressions" not in off_rows[0]
+    assert off_rows[0]["spend"] == "5.00"
+    assert on_rows[0]["impressions"] == ""
+    assert on_rows[0]["spend"] == "5.00"
