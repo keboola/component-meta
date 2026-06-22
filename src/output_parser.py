@@ -241,8 +241,8 @@ class OutputParser:
 
         fields_attr = str(getattr(query, "fields", "") or "")
         if fields_attr.startswith("insights"):
-            if "{" in fields_attr and "}" in fields_attr:
-                inner = fields_attr.split("{", 1)[1].rsplit("}", 1)[0]
+            inner = cls._extract_dsl_field_list(fields_attr)
+            if inner is not None:
                 return cls._split_field_dsl(inner)
         elif fields_attr:
             return cls._split_field_dsl(fields_attr)
@@ -250,9 +250,10 @@ class OutputParser:
         parameters = getattr(query, "parameters", None)
         if isinstance(parameters, str):
             stripped = parameters.strip()
-            if stripped.startswith("insights") and "{" in stripped and "}" in stripped:
-                inner = stripped.split("{", 1)[1].rsplit("}", 1)[0]
-                return cls._split_field_dsl(inner)
+            if stripped.startswith("insights"):
+                inner = cls._extract_dsl_field_list(stripped)
+                if inner is not None:
+                    return cls._split_field_dsl(inner)
             for pair in parameters.split("&"):
                 if pair.startswith("fields="):
                     return cls._split_field_dsl(pair[len("fields=") :])
@@ -264,6 +265,34 @@ class OutputParser:
                 return [cls._base_field_name(str(f)) for f in fields_val if str(f).strip()]
 
         return []
+
+    @staticmethod
+    def _extract_dsl_field_list(dsl: str) -> str | None:
+        """Return the inner of the insights DSL field-selection braces, or None.
+
+        The field list is the ``{...}`` group at paren-depth 0 — it comes after all
+        ``.modifier(...)`` calls. Modifiers like ``.time_range({...})`` and
+        ``.filtering([{...}])`` carry their own braces *inside* parens, so the first
+        ``{`` in the string is not necessarily the field list; skip any brace that
+        sits inside ``(...)`` (CFTL-630).
+        """
+        paren = 0
+        for i, ch in enumerate(dsl):
+            if ch == "(":
+                paren += 1
+            elif ch == ")":
+                paren -= 1
+            elif ch == "{" and paren == 0:
+                depth = 0
+                for j in range(i, len(dsl)):
+                    if dsl[j] == "{":
+                        depth += 1
+                    elif dsl[j] == "}":
+                        depth -= 1
+                        if depth == 0:
+                            return dsl[i + 1 : j]
+                return dsl[i + 1 :]  # unbalanced — best-effort
+        return None
 
     @classmethod
     def _split_field_dsl(cls, fields_str: str) -> list[str]:

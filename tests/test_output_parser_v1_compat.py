@@ -167,6 +167,53 @@ def test_parse_declared_fields_ampersand_fields_still_works():
     assert parser._declared_fields == ["campaign_id", "impressions"]
 
 
+# Bare DSL whose .time_range({...}) / .filtering([{...}]) modifiers carry their own
+# braces BEFORE the field-selection braces. The field list is the {...} at paren-depth 0,
+# NOT the first "{" (which sits inside .time_range(...)). Regression for the platform bug
+# where the modifier JSON was parsed as fields and backfilled as junk columns (CFTL-630).
+_BARE_DSL_WITH_MODIFIER_BRACES = (
+    "insights.level(ad)"
+    ".time_range({'since':'2024-07-14','until':'2024-07-30'})"
+    ".time_increment(1)"
+    ".filtering([{'field':'impressions','operator':'GREATER_THAN','value':0}])"
+    "{ad_id,ad_name,adset_id,adset_name,campaign_id,campaign_name,impressions,clicks,inline_link_clicks,spend}"
+)
+
+
+def test_parse_declared_fields_bare_dsl_with_modifier_braces():
+    """The field list is the paren-depth-0 {...}, not braces inside .time_range/.filtering modifiers."""
+    parser = _parser(v1_compatibility=True, fields=None, parameters=_BARE_DSL_WITH_MODIFIER_BRACES)
+    assert parser._declared_fields == [
+        "ad_id",
+        "ad_name",
+        "adset_id",
+        "adset_name",
+        "campaign_id",
+        "campaign_name",
+        "impressions",
+        "clicks",
+        "inline_link_clicks",
+        "spend",
+    ]
+
+
+def test_parse_declared_fields_fields_dsl_with_modifier_braces():
+    """Same brace-skipping when the DSL is in query.fields (not parameters)."""
+    parser = _parser(v1_compatibility=True, fields=_BARE_DSL_WITH_MODIFIER_BRACES)
+    assert parser._declared_fields == [
+        "ad_id",
+        "ad_name",
+        "adset_id",
+        "adset_name",
+        "campaign_id",
+        "campaign_name",
+        "impressions",
+        "clicks",
+        "inline_link_clicks",
+        "spend",
+    ]
+
+
 def test_backfill_bare_dsl_end_to_end():
     """End-to-end: v1_compatibility=True + bare DSL, FB omits a declared field → backfilled."""
     parser = _parser(v1_compatibility=True, fields=None, parameters=_BARE_DSL, name="camp")
