@@ -414,6 +414,30 @@ If the configuration contains a `bucket-id` parameter, data will be stored in th
 }
 ```
 
+## `v1_compatibility` (optional, boolean, default `false`)
+
+Opt-in flag for customers migrating from the V1 (Clojure) Facebook Ads extractor who
+need V2 output to match V1. When `true`:
+
+- **Action-breakdown queries** (`action_breakdowns=action_type` / `action_reaction`)
+  copy **all** scalar fields from the originating insights row onto each per-action row,
+  so metrics such as `impressions`, `ad_name`, `clicks`, `spend`, and `reach` are present
+  on every row instead of only on the rows where `action_type` is empty.
+- Any field requested in the query but **omitted by the Facebook API** for a period with
+  no data is written as an empty value, keeping the output table schema stable across runs
+  (avoids `Some columns are missing in the csv file` Storage load failures).
+
+When `false` (default) the extractor output is unchanged. Leave it off unless you are
+matching V1 output — enabling it makes affected tables wider.
+
+```json
+{
+  "parameters": {
+    "v1_compatibility": true
+  }
+}
+```
+
 ---
 
 Development
