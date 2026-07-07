@@ -39,3 +39,7 @@ class Configuration(BaseModel):
     queries: list[QueryRow] = Field(default_factory=list)
     api_version: str = Field(alias="api-version", default="v23.0")
     bucket_id: str | None = Field(alias="bucket-id", default=None)
+    # CFTL-630 / SUPPORT-16160: opt-in V1-parity output. When false (default) the
+    # OutputParser behaves exactly like 0.0.17. When true it copies all scalar fields
+    # onto per-action-breakdown rows and backfills declared-but-omitted fields.
+    v1_compatibility: bool = Field(default=False)
