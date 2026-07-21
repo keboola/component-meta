@@ -313,6 +313,8 @@ Async Insights Query
 
 Used exclusively for **Facebook Ads**. Submits an asynchronous job to the Marketing API and waits for results. Required for large ad account reports where synchronous requests would time out.
 
+> **⚠️ Breakdown availability (effective August 6, 2026):** Meta requires each ad account to enable the `impression_device` (and any combination containing it), `hourly_stats_aggregated_by_audience_time_zone`, and `frequency_value` breakdowns in **Ads Manager** before they return data. Until an account enables a breakdown, the Marketing API returns **no rows** for it — the extractor logs a warning and writes an empty result for that query. Because this component uses asynchronous report-run requests, the **full history** (including data from before enablement) is returned once the breakdown is enabled. No action is needed if your queries don't use these breakdowns. See Meta's [out-of-cycle changes](https://developers.facebook.com/docs/marketing-api/out-of-cycle-changes) and [breakdowns documentation](https://developers.facebook.com/docs/marketing-api/insights/breakdowns).
+
 ```json
 {
   "id": 1,
