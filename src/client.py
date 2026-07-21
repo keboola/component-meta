@@ -25,6 +25,36 @@ from page_loader import (
 # intentionally NOT here, so they still propagate.
 _CONTAINED_OBJECT_ERRORS = (HTTPError, RetryError, RequestException, AsyncInsightsJobTransientError)
 
+# Ads Insights breakdowns that Meta requires each ad account to explicitly enable in Ads
+# Manager, effective 2026-08-06 (SUPPORT-17071 / CFTL-735). Until an account enables one,
+# the Marketing API returns *no rows* for that breakdown (in both the sync and async APIs);
+# once enabled, the async report-run path this component uses for Ads returns the full
+# history, including data from before enablement. Because an un-enabled breakdown simply
+# yields an empty result, we surface a hint on empty async results so the silent gap is
+# explained instead of being read as "no data".
+# See https://developers.facebook.com/docs/marketing-api/insights/breakdowns
+BREAKDOWNS_REQUIRING_ENABLEMENT = (
+    "impression_device",
+    "hourly_stats_aggregated_by_audience_time_zone",
+    "frequency_value",
+)
+
+
+def breakdowns_requiring_enablement(query_config) -> list[str]:
+    """Return the enablement-gated breakdowns (see ``BREAKDOWNS_REQUIRING_ENABLEMENT``) a query
+    references, matched against both the raw ``parameters`` string (URL form,
+    ``breakdowns=impression_device``) and the ``fields`` DSL (``.breakdowns(...)``).
+
+    A substring match is sufficient and safe here: each gated name is distinctive and cannot be
+    a false substring of another breakdown — notably the gated
+    ``hourly_stats_aggregated_by_audience_time_zone`` is distinct from the ungated
+    ``hourly_stats_aggregated_by_advertiser_time_zone``.
+    """
+    if query_config is None:
+        return []
+    haystack = f"{getattr(query_config, 'parameters', '') or ''} {getattr(query_config, 'fields', '') or ''}"
+    return [breakdown for breakdown in BREAKDOWNS_REQUIRING_ENABLEMENT if breakdown in haystack]
+
 
 class AccessTokenFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
@@ -239,6 +269,7 @@ class FacebookClient:
             try:
                 page_data = self._poll_async_with_resubmit(report_id, details)
                 if not page_data.get("data"):
+                    self._warn_if_breakdown_enablement_needed(details.get("row_config"), page_id)
                     continue
                 yield from details["output_parser"].iter_parsed_data(page_data, details["fb_graph_node"], page_id)
             except _CONTAINED_OBJECT_ERRORS as e:
@@ -248,6 +279,25 @@ class FacebookClient:
                     f"Skipping async report {report_id} (object {page_id}) after errors: {type(e).__name__}: {e}"
                 )
                 self.skipped_objects += 1
+
+    def _warn_if_breakdown_enablement_needed(self, row_config, page_id: str) -> None:
+        """Explain an empty async result that is likely caused by an un-enabled breakdown.
+
+        Effective 2026-08-06 Meta returns zero rows for certain Ads breakdowns until the ad
+        account owner enables them in Ads Manager (SUPPORT-17071 / CFTL-735). When a query that
+        uses one of those breakdowns comes back empty, warn with the account and the actionable
+        fix instead of silently writing nothing.
+        """
+        gated = breakdowns_requiring_enablement(getattr(row_config, "query", None))
+        if not gated:
+            return
+        name = getattr(row_config, "name", None) or "?"
+        logger.warning(
+            f"Query '{name}' returned no data for account {page_id}. It uses breakdown(s) "
+            f"{', '.join(gated)}, which Meta requires each ad account to enable in Ads Manager "
+            f"(effective 2026-08-06). If you expected data, enable the breakdown(s) for this account — "
+            f"see https://developers.facebook.com/docs/marketing-api/insights/breakdowns"
+        )
 
     def _poll_async_with_resubmit(self, report_id: str, details: dict) -> dict[str, Any]:
         """Poll an async report, re-submitting it with exponential backoff on transient failures.

@@ -11,12 +11,13 @@ Every test here goes through a client method that a job invokes.
 """
 
 import unittest
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 from keboola.component.exceptions import UserException
 from requests import HTTPError
 
-from client import FacebookClient
+from client import FacebookClient, breakdowns_requiring_enablement
 from page_loader import _FB_TRANSIENT_ERROR_MAX_RETRIES, AsyncInsightsJobTransientError
 
 
@@ -149,6 +150,71 @@ class TestSyncPaginationResilience(unittest.TestCase):
 
         with self.assertRaises(UserException):
             list(client._process_single_sync_query(accounts, make_sync_row()))
+
+
+def make_async_row(parameters: str = "", fields: str = "", name: str = "ad_perf") -> SimpleNamespace:
+    """A minimal async-insights row_config with a real query for breakdown detection."""
+    return SimpleNamespace(
+        name=name,
+        type="async-insights-query",
+        query=SimpleNamespace(parameters=parameters, fields=fields),
+    )
+
+
+class TestBreakdownsRequiringEnablement(unittest.TestCase):
+    """The pure detector for Aug-6-2026 enablement-gated Ads breakdowns (SUPPORT-17071)."""
+
+    def test_detects_gated_breakdown_in_url_parameters(self):
+        query = SimpleNamespace(parameters="level=ad&breakdowns=impression_device,publisher_platform", fields="")
+        self.assertEqual(breakdowns_requiring_enablement(query), ["impression_device"])
+
+    def test_detects_gated_breakdown_in_dsl_fields(self):
+        query = SimpleNamespace(parameters="", fields="insights.breakdowns(frequency_value){reach}")
+        self.assertEqual(breakdowns_requiring_enablement(query), ["frequency_value"])
+
+    def test_ignores_ungated_advertiser_timezone_variant(self):
+        # audience != advertiser — only the audience variant is gated.
+        query = SimpleNamespace(parameters="breakdowns=hourly_stats_aggregated_by_advertiser_time_zone", fields="")
+        self.assertEqual(breakdowns_requiring_enablement(query), [])
+
+    def test_no_breakdowns_returns_empty(self):
+        query = SimpleNamespace(parameters="level=ad&breakdowns=publisher_platform", fields="")
+        self.assertEqual(breakdowns_requiring_enablement(query), [])
+
+    def test_none_query_returns_empty(self):
+        self.assertEqual(breakdowns_requiring_enablement(None), [])
+
+
+@patch("client.time.sleep", return_value=None)
+class TestBreakdownEnablementWarning(unittest.TestCase):
+    """An empty async result for a gated-breakdown query must be explained, not silent."""
+
+    def _run_empty(self, row_config):
+        loader = MagicMock()
+        loader.poll_async_job.return_value = {"data": []}
+        parser = MagicMock()
+        details = make_async_job_details(loader, parser)
+        details["report-1"]["row_config"] = row_config
+        client = make_client()
+        results = list(client._poll_and_process_async_jobs(details))
+        # Empty result is never a parse; nothing is yielded and nothing is counted as skipped.
+        self.assertEqual(results, [])
+        self.assertEqual(client.skipped_objects, 0)
+        parser.iter_parsed_data.assert_not_called()
+
+    def test_warns_on_empty_result_for_gated_breakdown(self, _sleep):
+        row = make_async_row(parameters="level=ad&breakdowns=impression_device", name="ad_perf")
+        with self.assertLogs("client", level="WARNING") as cm:
+            self._run_empty(row)
+        self.assertTrue(
+            any("impression_device" in msg and "Ads Manager" in msg for msg in cm.output),
+            cm.output,
+        )
+
+    def test_no_warning_on_empty_result_without_gated_breakdown(self, _sleep):
+        row = make_async_row(parameters="level=ad&breakdowns=publisher_platform")
+        with self.assertNoLogs("client", level="WARNING"):
+            self._run_empty(row)
 
 
 if __name__ == "__main__":
