@@ -227,16 +227,11 @@ class TestMissingAuthorization(unittest.TestCase):
     """
 
     def test_missing_oauth_raises_user_exception(self):
+        # UserException is not an AttributeError subclass, so this also pins the
+        # reclassification: the old opaque AttributeError (exit 2) would fail this test.
         with self.assertRaises(UserException) as ctx:
             FacebookClient(None, "v25.0")
         self.assertIn("not authorized", str(ctx.exception))
-
-    def test_missing_oauth_no_longer_raises_attribute_error(self):
-        # Guards the specific regression: the failure must not surface as the opaque
-        # AttributeError that exits 2. UserException is not an AttributeError subclass,
-        # so assertRaises(UserException) here proves the reclassification.
-        with self.assertRaises(UserException):
-            FacebookClient(None, "v25.0")
 
     def test_valid_oauth_still_constructs(self):
         # The authorized path is untouched by the guard.
