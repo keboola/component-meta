@@ -217,5 +217,41 @@ class TestBreakdownEnablementWarning(unittest.TestCase):
             self._run_empty(row)
 
 
+class TestMissingAuthorization(unittest.TestCase):
+    """An unauthorized configuration must fail as a user error, not an internal one.
+
+    ComponentInterface.oauth_credentials is None when the configuration carries no
+    authorization.oauth_api.credentials section. That used to reach self.oauth.data and
+    raise AttributeError("'NoneType' object has no attribute 'data'") -> exit 2, an
+    internal error that hid the real cause (the component was never authorized).
+    """
+
+    def test_missing_oauth_raises_user_exception(self):
+        with self.assertRaises(UserException) as ctx:
+            FacebookClient(None, "v25.0")
+        self.assertIn("not authorized", str(ctx.exception))
+
+    def test_missing_oauth_no_longer_raises_attribute_error(self):
+        # Guards the specific regression: the failure must not surface as the opaque
+        # AttributeError that exits 2. UserException is not an AttributeError subclass,
+        # so assertRaises(UserException) here proves the reclassification.
+        with self.assertRaises(UserException):
+            FacebookClient(None, "v25.0")
+
+    def test_valid_oauth_still_constructs(self):
+        # The authorized path is untouched by the guard.
+        client = make_client()
+        self.assertEqual(client.oauth.data["access_token"], "user-token")
+        self.assertEqual(client.api_version, "v25.0")
+
+    def test_direct_insert_token_still_promoted_to_access_token(self):
+        # The branch immediately after the guard keeps working: a "token"-only payload
+        # is still copied into "access_token".
+        oauth = MagicMock()
+        oauth.data = {"token": "direct-token"}
+        client = FacebookClient(oauth, "v25.0")
+        self.assertEqual(client.oauth.data["access_token"], "direct-token")
+
+
 if __name__ == "__main__":
     unittest.main()

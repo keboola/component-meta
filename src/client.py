@@ -151,7 +151,18 @@ class PageTokenResolver:
 
 
 class FacebookClient:
-    def __init__(self, oauth: OauthCredentials, api_version: str, v1_compatibility: bool = False):
+    def __init__(self, oauth: OauthCredentials | None, api_version: str, v1_compatibility: bool = False):
+        # ComponentInterface.oauth_credentials returns None when the configuration carries no
+        # authorization.oauth_api.credentials section (never authorized, or the authorization was
+        # reset/revoked). Without this guard the first self.oauth.data access below dies with an
+        # opaque AttributeError -> exit 2 (internal error), which tells the user nothing and pages
+        # the team for what is purely a configuration problem.
+        if oauth is None:
+            raise UserException(
+                "The component is not authorized. Please authorize it in the configuration "
+                "(Authorization section) and then run the job again."
+            )
+
         self.oauth = oauth
         self.api_version = api_version
         # CFTL-630: forwarded to every OutputParser this client builds.
