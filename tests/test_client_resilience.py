@@ -248,5 +248,54 @@ class TestMissingAuthorization(unittest.TestCase):
         self.assertEqual(client.oauth.data["access_token"], "direct-token")
 
 
+@patch("client.OutputParser")
+@patch("client.PageLoader")
+class TestNoDeprecatedIdsParameter(unittest.TestCase):
+    """Facebook removes the `ids` multi-ID query parameter on 2026-10-27 (CFTL-807).
+
+    The extractor must never send it. The previously batchable shape — a query with no
+    `path` and a type that is neither "nested-query" nor "async-insights-query" — is the
+    one that used to build `GET /<version>/?ids=a,b,c`, so it is the shape under test.
+    """
+
+    def _prepare(self, MockPL, MockOP):
+        client = make_client()
+        client.client = MagicMock()
+        client._request_require_page_token = MagicMock(return_value=False)
+        client._get_fb_graph_node = MagicMock(return_value="page")
+        loader = MockPL.return_value
+        loader.load_page.return_value = {"id": "act_1", "name": "Account One"}
+        parser = MockOP.return_value
+        parser.iter_parsed_data.return_value = iter([{"my_query": [{"id": "act_1"}]}])
+        account = MagicMock()
+        account.id = "act_1"
+        return client, loader, [account]
+
+    def test_batchable_shape_sends_no_ids_param(self, MockPL, MockOP):
+        client, loader, accounts = self._prepare(MockPL, MockOP)
+        row = make_sync_row(path="")
+
+        results = list(client._process_single_sync_query(accounts, row))
+
+        for call in client.client.get.call_args_list:
+            self.assertNotIn("ids", call.kwargs.get("params", {}))
+        self.assertEqual(loader.load_page.call_count, 1, "each object is fetched on its own")
+        self.assertEqual(results, [{"my_query": [{"id": "act_1"}]}])
+
+    def test_configured_ids_still_filter_accounts_locally(self, MockPL, MockOP):
+        """`query.ids` stays a local account filter — it is not forwarded to Facebook."""
+        client, loader, accounts = self._prepare(MockPL, MockOP)
+        other = MagicMock()
+        other.id = "act_2"
+        row = make_sync_row(path="")
+        row.query.ids = "act_1"
+
+        list(client._process_single_sync_query(accounts + [other], row))
+
+        for call in client.client.get.call_args_list:
+            self.assertNotIn("ids", call.kwargs.get("params", {}))
+        self.assertEqual(loader.load_page.call_count, 1, "only the selected account is fetched")
+
+
 if __name__ == "__main__":
     unittest.main()
