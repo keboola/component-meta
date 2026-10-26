@@ -341,14 +341,8 @@ class FacebookClient:
         return {"data": []}  # unreachable — loop always returns or raises
 
     def _process_single_sync_query(self, accounts: list[Account], row_config: QueryRow) -> Iterator[dict[str, Any]]:
-        # Every sync query is served by per-object requests below.
-        #
-        # This used to try a single multi-ID call first — GET /<version>/?ids=a,b,c&fields=...
-        # Facebook removes the `ids` multi-ID query parameter on 2026-10-27, for all Graph API
-        # versions, so that call would start to fail. The batch branch was already unreachable
-        # (it required a query type that is neither "nested-query" nor "async-insights-query")
-        # and it always fell back to these same per-object requests, so it is removed rather
-        # than re-implemented.
+        # One request per object: Graph API drops the `ids` multi-ID parameter on 2026-10-27
+        # for all versions, so `query.ids` is only a local account filter, never sent to Facebook.
         if ids_str := row_config.query.ids:
             selected_ids = {id for id in ids_str.split(",")}
             accounts = [account for account in accounts if account.id in selected_ids]
